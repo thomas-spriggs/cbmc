@@ -1356,8 +1356,8 @@ void Solver::adaptSolver() {
     bool reinit = false;
     printf("c\nc Try to adapt solver strategies\nc \n");
     /*  printf("c Adjusting solver for the SAT Race 2015 (alpha feature)\n");
-    printf("c key successive Conflicts       : %" PRIu64"\n",stats[noDecisionConflict]);
-    printf("c nb unary clauses learnt        : %" PRIu64"\n",stats[nbUn]);
+    printf("c key successive Conflicts       : %" PRIu64 "\n",stats[noDecisionConflict]);
+    printf("c nb unary clauses learnt        : %" PRIu64 "\n",stats[nbUn]);
     printf("c key avg dec per conflicts      : %.2f\n", (float)decisions / (float)conflicts);*/
     float decpc = (float) decisions / (float) conflicts;
     if(decpc <= 1.2) {

@@ -211,7 +211,7 @@ public:
     int          specialIncReduceDB;
     unsigned int lbLBDFrozenClause;
     bool         chanseokStrategy;
-    int          coLBDBound; // Keep all learnts with lbd<=coLBDBound
+    unsigned int coLBDBound; // Keep all learnts with lbd<=coLBDBound
     // Constant for reducing clause
     int          lbSizeMinimizingClause;
     unsigned int lbLBDMinimizingClause;
