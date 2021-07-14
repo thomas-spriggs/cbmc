@@ -1354,7 +1354,7 @@ bool Solver::simplify() {
 void Solver::adaptSolver() {
     bool adjusted = false;
     bool reinit = false;
-    printf("c\nc Try to adapt solver strategies\nc \n");
+    if (verbosity > 0) printf("c\nc Try to adapt solver strategies\nc \n");
     /*  printf("c Adjusting solver for the SAT Race 2015 (alpha feature)\n");
     printf("c key successive Conflicts       : %" PRIu64 "\n",stats[noDecisionConflict]);
     printf("c nb unary clauses learnt        : %" PRIu64 "\n",stats[nbUn]);
@@ -1365,7 +1365,7 @@ void Solver::adaptSolver() {
         coLBDBound = 4;
         glureduce = true;
         adjusted = true;
-        printf("c Adjusting for low decision levels.\n");
+        if (verbosity > 0) printf("c Adjusting for low decision levels.\n");
         reinit = true;
         firstReduceDB = 2000;
         nbclausesbeforereduce = firstReduceDB;
@@ -1379,10 +1379,10 @@ void Solver::adaptSolver() {
         var_decay = 0.999;
         max_var_decay = 0.999;
         adjusted = true;
-        printf("c Adjusting for low successive conflicts.\n");
+        if (verbosity > 0) printf("c Adjusting for low successive conflicts.\n");
     }
     if(stats[noDecisionConflict] > 54400) {
-        printf("c Adjusting for high successive conflicts.\n");
+        if (verbosity > 0) printf("c Adjusting for high successive conflicts.\n");
         chanseokStrategy = true;
         glureduce = true;
         coLBDBound = 3;
@@ -1396,12 +1396,12 @@ void Solver::adaptSolver() {
         var_decay = 0.91;
         max_var_decay = 0.91;
         adjusted = true;
-        printf("c Adjusting for a very large number of true glue clauses found.\n");
+        if (verbosity > 0) printf("c Adjusting for a very large number of true glue clauses found.\n");
     }
     if(!adjusted) {
-        printf("c Nothing extreme in this problem, continue with glucose default strategies.\n");
+      if (verbosity > 0) printf("c Nothing extreme in this problem, continue with glucose default strategies.\n");
     }
-    printf("c\n");
+    if (verbosity > 0) printf("c\n");
     if(adjusted) { // Let's reinitialize the glucose restart strategy counters
         lbdQueue.fastclear();
         sumLBD = 0;
@@ -1422,7 +1422,7 @@ void Solver::adaptSolver() {
             }
         }
         learnts.shrink(i - j);
-        printf("c Activating Chanseok Strategy: moved %d clauses to the permanent set.\n", moved);
+        if (verbosity > 0) printf("c Activating Chanseok Strategy: moved %d clauses to the permanent set.\n", moved);
     }
 
     if(reinit) {
@@ -1441,7 +1441,7 @@ void Solver::adaptSolver() {
 	}
 	printf("c reinitialization of all variables activity/phase/learnt clauses.\n");
 */
-        printf("c Removing of non permanent clauses.\n");
+        if (verbosity > 0) printf("c Removing of non permanent clauses.\n");
     }
 
 }
@@ -1645,9 +1645,9 @@ lbool Solver::search(int nof_conflicts) {
                 decisions++;
                 next = pickBranchLit();
                 if(next == lit_Undef) {
-                    printf("c last restart ## conflicts  :  %d %d \n", conflictC, decisionLevel());
-                    // Model found:
-                    return l_True;
+		  if (verbosity > 0) printf("c last restart ## conflicts  :  %d %d \n", conflictC, decisionLevel());
+		  // Model found:
+		  return l_True;
                 }
             }
 

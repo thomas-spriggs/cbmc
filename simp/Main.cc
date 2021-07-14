@@ -100,8 +100,6 @@ static Solver* solver;
 int main(int argc, char** argv)
 {
   try {
-    printf("c\nc This is glucose 4.0 --  based on MiniSAT (Many thanks to MiniSAT team)\nc\n");
-
     setUsageHelp("c USAGE: %s [options] <input-file> <result-output-file>\n\n  where input may be either in plain or gzipped DIMACS.\n");
 
 
@@ -126,6 +124,10 @@ int main(int argc, char** argv)
     BoolOption    opt_vbyte          (_certified, "vbyte",    "Emit proof in variable-byte encoding", false);
 
     parseOptions(argc, argv, true);
+
+    if (verb > 0) {
+      printf("c\nc This is glucose 4.0 --  based on MiniSAT (Many thanks to MiniSAT team)\nc\n");
+    }
 
     SimpSolver  S;
     double      initial_time = cpuTime();
@@ -180,8 +182,9 @@ int main(int argc, char** argv)
       }
     }
 
-    if (argc == 1)
+    if (argc == 1 && S.verbosity > 0) {
       printf("c Reading from standard input... Use '--help' for help.\n");
+    }
 
     gzFile in = (argc == 1) ? gzdopen(0, "rb") : gzopen(argv[1], "rb");
     if (in == NULL)
@@ -208,7 +211,7 @@ int main(int argc, char** argv)
 
     S.parsing = 0;
     if(pre/* && !S.isIncremental()*/) {
-      printf("c | Preprocesing is fully done\n");
+      if (S.verbosity > 0) printf("c | Preprocesing is fully done\n");
       S.eliminate(true);
       double simplified_time = cpuTime();
       if (S.verbosity > 0){
@@ -216,7 +219,9 @@ int main(int argc, char** argv)
       }
     }
 
-    printf("c |                                                                                                       |\n");
+    if (S.verbosity > 0) {
+      printf("c |                                                                                                       |\n");
+    }
     if (!S.okay()){
       if (S.certifiedUNSAT) fprintf(S.certifiedOutput, "0\n"), fclose(S.certifiedOutput);
       if (res != NULL) fprintf(res, "UNSAT\n"), fclose(res);
