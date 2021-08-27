@@ -2,6 +2,8 @@
 
 #include "smt2_incremental_decision_procedure.h"
 
+#include <solvers/smt2_incremental/smt_to_smt2_string.h>
+#include <solvers/smt2_incremental/smt_commands.h>
 #include <util/expr.h>
 #include <util/string_utils.h>
 
@@ -11,6 +13,10 @@ smt2_incremental_decision_proceduret::smt2_incremental_decision_proceduret(
     number_of_solver_calls{0},
     solver_process{split_string(member_solver_command, ' ', false, true)}
 {
+  send_to_solver(smt_set_option_commandt{smt_option_produce_modelst{true}});
+  send_to_solver(
+    smt_set_logic_commandt{
+      smt_logic_quantifier_free_uninterpreted_functions_bit_vectorst{}});
 }
 
 exprt smt2_incremental_decision_proceduret::handle(const exprt &expr)

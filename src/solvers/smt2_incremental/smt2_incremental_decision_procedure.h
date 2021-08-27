@@ -34,6 +34,12 @@ protected:
   // Implementation of protected decision_proceduret member function.
   resultt dec_solve() override;
 
+  template <typename smt_typet>
+  void send_to_solver(const smt_typet &smt)
+  {
+    solver_process.send(smt_to_smt2_string(smt));
+  }
+
   /// This is where we store the solver command for reporting the solver used.
   std::string member_solver_command;
   size_t number_of_solver_calls;
