@@ -3,11 +3,13 @@
 #include "smt2_incremental_decision_procedure.h"
 
 #include <util/expr.h>
+#include <util/string_utils.h>
 
 smt2_incremental_decision_proceduret::smt2_incremental_decision_proceduret(
   std::string solver_command)
   : member_solver_command{std::move(solver_command)},
-    number_of_solver_calls{0}
+    number_of_solver_calls{0},
+    solver_process{split_string(member_solver_command, ' ', false, true)}
 {
 }
 

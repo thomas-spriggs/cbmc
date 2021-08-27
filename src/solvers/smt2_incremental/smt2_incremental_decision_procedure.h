@@ -7,6 +7,7 @@
 #define CPROVER_SOLVERS_SMT2_INCREMENTAL_SMT2_INCREMENTAL_DECISION_PROCEDURE_H
 
 #include <solvers/stack_decision_procedure.h>
+#include <util/piped_process.h>
 
 class smt2_incremental_decision_proceduret final
   : public stack_decision_proceduret
@@ -36,6 +37,8 @@ protected:
   /// This is where we store the solver command for reporting the solver used.
   std::string member_solver_command;
   size_t number_of_solver_calls;
+
+  piped_processt solver_process;
 };
 
 #endif // CPROVER_SOLVERS_SMT2_INCREMENTAL_SMT2_INCREMENTAL_DECISION_PROCEDURE_H
