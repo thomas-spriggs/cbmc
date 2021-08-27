@@ -6,7 +6,8 @@
 
 smt2_incremental_decision_proceduret::smt2_incremental_decision_proceduret(
   std::string solver_command)
-  : solver_command{std::move(solver_command)}, number_of_solver_calls{0}
+  : member_solver_command{std::move(solver_command)},
+    number_of_solver_calls{0}
 {
 }
 
@@ -29,7 +30,7 @@ void smt2_incremental_decision_proceduret::print_assignment(
 std::string
 smt2_incremental_decision_proceduret::decision_procedure_text() const
 {
-  return "incremental SMT2 solving via \"" + solver_command + "\"";
+  return "incremental SMT2 solving via \"" + member_solver_command + "\"";
 }
 
 std::size_t

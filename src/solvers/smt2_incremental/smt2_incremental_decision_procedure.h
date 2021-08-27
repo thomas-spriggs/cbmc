@@ -34,7 +34,7 @@ protected:
   resultt dec_solve() override;
 
   /// This is where we store the solver command for reporting the solver used.
-  std::string solver_command;
+  std::string member_solver_command;
   size_t number_of_solver_calls;
 };
 
