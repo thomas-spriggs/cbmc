@@ -205,15 +205,15 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
       "Output pipe creation failed on SetHandleInformation");
   }
   // Create the child process
-  STARTUPINFOW start_info;
   proc_info = util_make_unique<PROCESS_INFORMATION>();
+  start_info = util_make_unique<STARTUPINFOW>();
   ZeroMemory(proc_info.get(), sizeof(PROCESS_INFORMATION));
-  ZeroMemory(&start_info, sizeof(STARTUPINFOW));
-  start_info.cb = sizeof(STARTUPINFOW);
-  start_info.hStdError = child_std_OUT_Wr;
-  start_info.hStdOutput = child_std_OUT_Wr;
-  start_info.hStdInput = child_std_IN_Rd;
-  start_info.dwFlags |= STARTF_USESTDHANDLES;
+  ZeroMemory(start_info.get(), sizeof(STARTUPINFOW));
+  start_info->cb = sizeof(STARTUPINFOW);
+  start_info->hStdError = child_std_OUT_Wr;
+  start_info->hStdOutput = child_std_OUT_Wr;
+  start_info->hStdInput = child_std_IN_Rd;
+  start_info->dwFlags |= STARTF_USESTDHANDLES;
   const std::wstring cmdline = prepare_windows_command_line(commandvec);
   // Note that we do NOT free this since it becomes part of the child
   // and causes heap corruption in Windows if we free!
@@ -226,7 +226,7 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     0,                        // creation flags
     NULL,                     // use parent's environment
     NULL,                     // use parent's current directory
-    &start_info,              // STARTUPINFO pointer
+    start_info.get(),              // STARTUPINFO pointer
     proc_info.get());         // receives PROCESS_INFORMATION
   // Close handles to the stdin and stdout pipes no longer needed by the
   // child process. If they are not explicitly closed, there is no way to

@@ -10,6 +10,7 @@
 // The below are forward declarations for Windows APIs
 struct _PROCESS_INFORMATION;                             // NOLINT
 typedef struct _PROCESS_INFORMATION PROCESS_INFORMATION; // NOLINT
+typedef struct _STARTUPINFOW STARTUPINFOW;
 typedef void *HANDLE;                                    // NOLINT
 #endif
 
@@ -91,6 +92,7 @@ protected:
 #ifdef _WIN32
   // Process information handle for Windows
   std::unique_ptr<PROCESS_INFORMATION> proc_info;
+  std::unique_ptr<STARTUPINFOW> start_info;
   // Handles for communication with child process
   HANDLE child_std_IN_Rd;
   HANDLE child_std_IN_Wr;
