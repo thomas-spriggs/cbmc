@@ -1,0 +1,15 @@
+CORE
+invalid_index_range.c
+--pointer-check -z3
+^EXIT=10$
+^SIGNAL=0$
+^VERIFICATION FAILED$
+line 9 assertion __CPROVER_exists \{ int i; \(0 <= i && i < 20\) && a\[i\] == i \*i \}: SUCCESS
+line 9 dereference failure: pointer outside object bounds in a\[\(signed long int\)i\]: FAILURE
+--
+--
+Check that memory checks fail for pointer dereferences inside an existential
+qualifier, for out of bounds memory access, when using the smt backend and
+the range of the index is unbound. Note that this test is not expected to work
+with the SAT backend at the time of writing, as the SAT backend does not support
+qualifiers in this form.
