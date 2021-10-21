@@ -1581,10 +1581,6 @@ void goto_checkt::add_guarded_property(
 
 void goto_checkt::check_rec_address(const exprt &expr, guardt &guard)
 {
-  // we don't look into quantifiers
-  if(expr.id() == ID_exists || expr.id() == ID_forall)
-    return;
-
   if(expr.id() == ID_dereference)
   {
     check_rec(to_dereference_expr(expr).pointer(), guard);
@@ -1725,16 +1721,12 @@ void goto_checkt::check_rec_arithmetic_op(const exprt &expr, guardt &guard)
 
 void goto_checkt::check_rec(const exprt &expr, guardt &guard)
 {
-  // we don't look into quantifiers
-  if(expr.id() == ID_exists || expr.id() == ID_forall)
-    return;
-
   if(expr.id() == ID_address_of)
   {
     check_rec_address(to_address_of_expr(expr).object(), guard);
     return;
   }
-  else if(expr.id() == ID_and || expr.id() == ID_or)
+  else if(expr.id() == ID_and || expr.id() == ID_or || expr.id() == ID_implies)
   {
     check_rec_logical_op(expr, guard);
     return;
