@@ -58,6 +58,10 @@
 /src/solvers/smt2_incremental @peterschrammel @thomasspriggs @NlightNFotis @TGWDB @chrisr-diffblue
 /src/statement-list/ @kroening @tautschnig @peterschrammel @pkesseli
 
+# Code owners of subdirectories of /src/solvers/ should be codeowners of the
+# solvers makefile to facilitate changes to files included in the build.
+/src/solvers/makefile @kroening @tautschnig @peterschrammel @chrisr-diffblue @thomasspriggs @NlightNFotis @martin-cs
+
 /cmake/        @diffblue/diffblue-opensource
 CMakeLists.txt @diffblue/diffblue-opensource
 
