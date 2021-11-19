@@ -14,17 +14,4 @@ class goto_modelt;
 ///    for making changes to the symbol table at variable renaming time.
 void rename_variables_in_existential_quantifiers(goto_modelt &goto_model);
 
-/// Helper function that recurses over the condition expression of instructions.
-/// \param cond The condition on which we recurse over the operands (subexpressions).
-/// \param model The goto_model we are inserting the new symbol to.
-void recurse_on_condition(exprt &cond, goto_modelt &model);
-
-/// Helper function that does the actual renaming of the variables.
-/// This is called when we reach the atomic parts of the condition expression,
-/// to identify and rename the variables of any quantified statements that
-/// exist as part of the guard.
-/// \param cond The condition in which we are doing the renaming.
-/// \param model The goto_model we are inserting the new symbol to.
-void rename_and_substitute(exprt &cond, goto_modelt &model);
-
 #endif
