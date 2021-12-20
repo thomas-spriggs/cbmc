@@ -1,0 +1,7 @@
+*.o
+*.or
+*.op
+*.od
+*.a
+*/depend.mk
+
