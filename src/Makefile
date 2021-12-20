@@ -117,7 +117,7 @@ clean: $(patsubst %, %_clean, $(DIRS))
 $(patsubst %, %_clean, $(DIRS)):
 	$(MAKE) $(MAKEARGS) -C $(patsubst %_clean, %, $@) clean ; \
 
-# minisat2 and glucose download, for your convenience
+# minisat2, cudd and cadical downloads, for your convenience
 
 DOWNLOADER = curl -L --remote-name
 TAR = tar
@@ -147,15 +147,6 @@ cudd-download:
 	@echo "Compiling Cudd 3.0.0"
 	@(cd ../cudd-3.0.0; ./configure; $(MAKE))
 
-glucose-download:
-	@echo "Downloading glucose-syrup"
-	@$(DOWNLOADER) https://github.com/BrunoDutertre/glucose-syrup/archive/refs/heads/main.tar.gz
-	@$(TAR) xfz main.tar.gz
-	@rm -Rf ../glucose-syrup
-	@mv glucose-syrup-main ../glucose-syrup
-	@(cd ../glucose-syrup; patch -p1 < ../scripts/glucose-syrup-patch)
-	@$(RM) main.tar.gz
-
 cadical_release = rel-1.4.1
 cadical-download:
 	@echo "Downloading CaDiCaL $(cadical_release)"
@@ -169,4 +160,4 @@ cadical-download:
 doc :
 	doxygen
 
-.PHONY: minisat2-download cudd-download glucose-download cadical-download
+.PHONY: minisat2-download cudd-download cadical-download
