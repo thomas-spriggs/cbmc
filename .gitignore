@@ -73,7 +73,6 @@ jbmc/regression/**/tests-symex-driven-loading.log
 
 # libs downloaded by make [name]-download
 minisat*/
-glucose-syrup/
 
 # flex/bison generated files
 src/ansi-c/ansi_c_lex.yy.cpp
