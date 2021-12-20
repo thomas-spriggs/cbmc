@@ -713,11 +713,11 @@ bool SimpSolver::eliminate(bool turn_off_elim)
     //
 
     int toPerform = clauses.size()<=4800000;
-    
+#if 0
     if(!toPerform) {
       printf("c Too many clauses... No preprocessing\n");
     }
-
+#endif
     while (toPerform && (n_touched > 0 || bwdsub_assigns < trail.size() || elim_heap.size() > 0)){
 
         gatherTouchedClauses();

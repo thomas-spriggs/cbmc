@@ -60,8 +60,11 @@ static inline double Glucose::cpuTime(void) {
 
 // Laurent: I know that this will not compile directly under Windows... sorry for that
 static inline double Glucose::realTime() {
+#ifndef _WIN32
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return (double)tv.tv_sec + (double) tv.tv_usec / 1000000; }
+    return (double)tv.tv_sec + (double) tv.tv_usec / 1000000;
+#endif
+}
 
 #endif

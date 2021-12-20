@@ -53,7 +53,9 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 
 #include <assert.h>
 #include <stdint.h>
+#ifndef _MSC_VER
 #include <pthread.h>
+#endif
 
 #include "mtl/IntTypes.h"
 #include "mtl/Alg.h"
