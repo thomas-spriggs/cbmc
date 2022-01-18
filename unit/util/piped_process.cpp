@@ -57,8 +57,7 @@ TEST_CASE(
   int too_many_tries = 0;
   // The expected length of the output string is 6 characters, keep
   // trying up to the retry limit of 5 or the string is long enough
-  while(too_many_tries < 5 && response.length() < 64)
-  {
+  while (too_many_tries < 5 && response.length() < 64) {
     // Wait a short amount of time to try and receive
     process.can_receive(10);
     response += process.receive();
@@ -111,16 +110,15 @@ TEST_CASE(
   "Creating a sub process of z3 and read a response from an echo command.",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  piped_processt process(commands);
+  const std::vector<std::string> command{"z3", "-in"};
+  piped_processt process(command);
+//  piped_processt process{{"ping", "127.0.0.1", "-t"}};
 
   REQUIRE(
-    process.send("(echo \"hi\")\n") ==
+    process.send("(echo \"hi\")\r\n") ==
     piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  //process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "hi");
 

@@ -231,8 +231,8 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   // Close handles to the stdin and stdout pipes no longer needed by the
   // child process. If they are not explicitly closed, there is no way to
   // recognize that the child process has ended (but maybe we don't care).
-  CloseHandle(child_std_OUT_Wr);
-  CloseHandle(child_std_IN_Rd);
+//  CloseHandle(child_std_OUT_Wr);
+//  CloseHandle(child_std_IN_Rd);
   if(!success)
     throw system_exceptiont("Process creation failed.");
 #  else
@@ -348,6 +348,7 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
   if(!WriteFile(child_std_IN_Wr, message.c_str(), narrow<DWORD>(message.size()), NULL, NULL))
   {
     // Error handling with GetLastError ?
+    const auto error = GetLastError();
     return send_responset::FAILED;
   }
 #else
