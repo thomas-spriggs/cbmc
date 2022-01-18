@@ -168,7 +168,7 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   {
     throw system_exceptiont("Input pipe creation failed for child_std_IN_Wr");
   }
-  if(!SetHandleInformation(child_std_IN_Rd, HANDLE_FLAG_INHERIT, 0))
+  if(!SetHandleInformation(child_std_IN_Rd, HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
   {
     throw system_exceptiont(
       "Input pipe creation failed on SetHandleInformation");
