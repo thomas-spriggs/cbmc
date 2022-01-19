@@ -110,7 +110,8 @@ TEST_CASE(
   "Creating a sub process of z3 and read a response from an echo command.",
   "[core][util][piped_process][.z3]")
 {
-  const std::vector<std::string> command{"z3", "-in"};
+  //const std::vector<std::string> command{"z3", "-in"};
+  const std::vector<std::string> command{"messageboxer.exe"};
   piped_processt process(command);
 //  piped_processt process{{"ping", "127.0.0.1", "-t"}};
 
@@ -118,7 +119,7 @@ TEST_CASE(
     process.send("(echo \"hi\")\r\n") ==
     piped_processt::send_responset::SUCCEEDED);
 
-  //process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "hi");
 
