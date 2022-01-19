@@ -110,10 +110,8 @@ TEST_CASE(
   "Creating a sub process of z3 and read a response from an echo command.",
   "[core][util][piped_process][.z3]")
 {
-  //const std::vector<std::string> command{"z3", "-in"};
-  const std::vector<std::string> command{"messageboxer.exe"};
+  const std::vector<std::string> command{"z3", "-in"};
   piped_processt process(command);
-//  piped_processt process{{"ping", "127.0.0.1", "-t"}};
 
   REQUIRE(
     process.send("(echo \"hi\")\r\n") ==
