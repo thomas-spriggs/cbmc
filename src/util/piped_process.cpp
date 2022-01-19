@@ -141,7 +141,7 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   child_std_IN_Wr = CreateNamedPipe(
     in_name.c_str(),
     PIPE_ACCESS_OUTBOUND,         // Writing for us
-    PIPE_TYPE_MESSAGE | PIPE_WAIT, // Messages and blocking
+    PIPE_TYPE_BYTE | PIPE_NOWAIT, // Bytes and non-blocking
     PIPE_UNLIMITED_INSTANCES,     // Probably doesn't matter
     BUFSIZE,
     BUFSIZE, // Output and input bufffer sizes
