@@ -138,10 +138,10 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   // Use process ID as a unique ID for this process at this time.
   base_name.append(std::to_string(GetCurrentProcessId()));
   const std::string in_name = base_name + "\\IN";
-  child_std_IN_Rd = CreateNamedPipe(
+  child_std_IN_Wr = CreateNamedPipe(
     in_name.c_str(),
-    PIPE_ACCESS_INBOUND,          // Reading for us
-    PIPE_TYPE_BYTE | PIPE_NOWAIT, // Bytes and non-blocking
+    PIPE_ACCESS_OUTBOUND,         // Writing for us
+    PIPE_TYPE_MESSAGE | PIPE_WAIT, // Messages and blocking
     PIPE_UNLIMITED_INSTANCES,     // Probably doesn't matter
     BUFSIZE,
     BUFSIZE, // Output and input bufffer sizes
@@ -156,9 +156,9 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     throw system_exceptiont("Input pipe creation failed for child_std_IN_Rd");
   }
   // Connect to the other side of the pipe
-  child_std_IN_Wr = CreateFile(
+  child_std_IN_Rd = CreateFile(
     in_name.c_str(),
-    GENERIC_WRITE,                                  // Write side
+    GENERIC_READ,                                   // Write side
     FILE_SHARE_READ | FILE_SHARE_WRITE,             // Shared read/write
     &sec_attr,                                      // Need this for inherit
     OPEN_EXISTING,                                  // Opening other end
@@ -345,7 +345,8 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
     return send_responset::ERRORED;
   }
 #ifdef _WIN32
-  if(!WriteFile(child_std_IN_Wr, message.c_str(), narrow<DWORD>(message.size()), NULL, NULL))
+  DWORD bytes_written = 0;
+  if(!WriteFile(child_std_IN_Wr, message.c_str(), narrow<DWORD>(message.size() + 1), &bytes_written, NULL))
   {
     // Error handling with GetLastError ?
     const auto error = GetLastError();
