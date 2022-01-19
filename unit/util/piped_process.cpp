@@ -125,7 +125,6 @@ TEST_CASE(
     process.send("(exit)\n") == piped_processt::send_responset::SUCCEEDED);
 }
 
-#ifndef _WIN32
 TEST_CASE(
   "Creating a sub process and interacting with it.",
   "[core][util][piped_process][.z3]")
@@ -310,4 +309,3 @@ TEST_CASE(
   REQUIRE(
     process.send("(exit)\n") == piped_processt::send_responset::SUCCEEDED);
 }
-#endif
