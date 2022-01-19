@@ -345,7 +345,7 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
     return send_responset::ERRORED;
   }
 #ifdef _WIN32
-  const auto message_size = narrow<DWORD>(message.size() + 1);
+  const auto message_size = narrow<DWORD>(message.size());
   DWORD bytes_written = 0;
   if(!WriteFile(child_std_IN_Wr, message.c_str(), message_size, &bytes_written, NULL))
   {
