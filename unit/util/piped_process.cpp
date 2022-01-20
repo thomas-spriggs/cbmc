@@ -15,12 +15,10 @@ TEST_CASE(
 {
   const std::string to_be_echoed = "The Jabberwocky";
   // Need to give path to avoid shell built-in invocation
-  std::vector<std::string> commands;
 #ifdef _WIN32
-  commands.push_back("cmd /c echo The Jabberwocky");
+  const std::vector<std::string> commands{"cmd /c echo " + to_be_echoed};
 #else
-  commands.push_back("/bin/echo");
-  commands.push_back(to_be_echoed);
+  const std::vector<std::string> commands{"/bin/echo", to_be_echoed};
 #endif
   piped_processt process(commands);
 
@@ -37,13 +35,12 @@ TEST_CASE(
   "Creating a sub process with a binary that doesn't exist.",
   "[core][util][piped_process]")
 {
-  std::vector<std::string> commands;
 #ifdef _WIN32
   const std::string expected_error("'abcde' is not recognized");
-  commands.push_back("cmd /c abcde");
+  const std::vector<std::string> commands{"cmd /c abcde"};
 #else
   const std::string expected_error("Launching abcde failed");
-  commands.push_back("abcde");
+  const std::vector<std::string> commands{"abcde"};
 #endif
   piped_processt process(commands);
 
@@ -74,9 +71,8 @@ TEST_CASE(
   "Creating a sub process and terminate it.",
   "[core][util][piped_process]")
 {
-  std::vector<std::string> commands;
 #ifdef _WIN32
-  commands.push_back("cmd /c ping 127.0.0.1 -n 6 > nul");
+  const std::vector<std::string> commands{"cmd /c ping 127.0.0.1 -n 6 > nul"};
   std::chrono::steady_clock::time_point start_time =
     std::chrono::steady_clock::now();
   {
@@ -93,7 +89,7 @@ TEST_CASE(
   // Currently not working under Linux/MacOS?!
   // Likely due to issue in handling signals from child process
 #  if 0
-  commands.push_back("sleep 6");
+  const std::vector<std::string>{"sleep 6"};
   time_t calc = time(NULL);
   piped_processt process(commands);
   process.~piped_processt();
@@ -111,10 +107,8 @@ TEST_CASE(
   "Creating a sub process of z3 and read a response from an echo command.",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  piped_processt process(commands);
+  const std::vector<std::string> command{"z3", "-in"};
+  piped_processt process(command);
 
   REQUIRE(
     process.send("(echo \"hi\")\n") ==
@@ -132,9 +126,7 @@ TEST_CASE(
   "Creating a sub process and interacting with it.",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
+  const std::vector<std::string> commands{"z3", "-in"};
   const std::string termination_statement = "(exit)\n";
   piped_processt process(commands);
 
@@ -162,10 +154,7 @@ TEST_CASE(
   "Use a created piped process instance of z3 to solve a simple SMT problem",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  commands.push_back("-smt2");
+  const std::vector<std::string> commands{"z3", "-in", "-smt2"};
   piped_processt process(commands);
 
   std::string message =
@@ -186,10 +175,7 @@ TEST_CASE(
   "with wait_receive",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  commands.push_back("-smt2");
+  const std::vector<std::string> commands{"z3", "-in", "-smt2"};
   piped_processt process(commands);
 
   std::string statement =
@@ -209,9 +195,7 @@ TEST_CASE(
   "Use a created piped process instance of z3 to test wait_receivable",
   "[core][util][piped_process]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
+  const std::vector<std::string> commands{"z3", "-in"};
   piped_processt process(commands);
 
   REQUIRE(
@@ -238,10 +222,7 @@ TEST_CASE(
   "model, with wait_receivable/can_receive",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  commands.push_back("-smt2");
+  const std::vector<std::string> commands{"z3", "-in", "-smt2"};
   piped_processt process(commands);
 
   std::string statement =
@@ -294,10 +275,7 @@ TEST_CASE(
   "and get the model, using infinite wait can_receive(...)",
   "[core][util][piped_process][.z3]")
 {
-  std::vector<std::string> commands;
-  commands.push_back("z3");
-  commands.push_back("-in");
-  commands.push_back("-smt2");
+  const std::vector<std::string> commands{"z3", "-in", "-smt2"};
   piped_processt process(commands);
 
   std::string statement =
