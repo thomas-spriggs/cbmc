@@ -73,7 +73,7 @@ public:
   /// checks. Will return when the pipe is ready or the other process
   /// is not in a statet::CREATED state (i.e. error has occured).
   /// \param wait_time Time spent in usleep() (microseconds) between checks
-  //         of can_receive(0)
+  ///        of can_receive(0)
   void wait_receivable(int wait_time);
 
   /// Initiate a new subprocess with pipes supporting communication
