@@ -17,11 +17,6 @@ typedef void *HANDLE;                                    // NOLINT
 #include "optional.h"
 #include <vector>
 
-#define PIPED_PROCESS_INFINITE_TIMEOUT                                         \
-  optionalt<std::size_t>                                                       \
-  {                                                                            \
-  }
-
 class piped_processt
 {
 public:
@@ -55,6 +50,10 @@ public:
   /// Get child process status.
   /// \return a statet representing the status of the child process
   statet get_status();
+
+  /// Constant for use as an argument to functions which wait for an optionally
+  /// limited amount of time, where the desired behaviour is not to timeout.
+  static const optionalt<std::size_t> infinite_timeout;
 
   /// See if this process can receive data from the other process.
   /// \param wait_time Amount of time to wait before timing out, with:

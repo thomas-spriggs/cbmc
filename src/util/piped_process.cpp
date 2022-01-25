@@ -408,9 +408,8 @@ std::string piped_processt::receive()
 
 std::string piped_processt::wait_receive()
 {
-  // can_receive(PIPED_PROCESS_INFINITE_TIMEOUT) waits an ubounded time until
-  // there is some data
-  can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  // Wait an unbounded amount of time until there is data to receive.
+  can_receive(infinite_timeout);
   return receive();
 }
 
@@ -418,6 +417,8 @@ piped_processt::statet piped_processt::get_status()
 {
   return process_state;
 }
+
+const optionalt<std::size_t> piped_processt::infinite_timeout = {};
 
 bool piped_processt::can_receive(optionalt<std::size_t> wait_time)
 {

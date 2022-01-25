@@ -25,7 +25,7 @@ TEST_CASE(
   // This is an indirect way to detect when the pipe has something. This
   // could (in theory) also return when there is an error, but this unit
   // test is not doing error handling.
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
 
   REQUIRE(response == to_be_echoed);
@@ -47,7 +47,7 @@ TEST_CASE(
   // This is an indirect way to detect when the pipe has something. This
   // could (in theory) also return when there is an error, but this unit
   // test is not doing error handling.
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = process.receive();
   // This tracks how many times we tried, if for some reason we are stuck
   // give up eventually for this test.
@@ -111,7 +111,7 @@ TEST_CASE(
     process.send("(echo \"hi\")\n") ==
     piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "hi");
 
@@ -131,14 +131,14 @@ TEST_CASE(
     process.send("(echo \"hi\")\n") ==
     piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "hi");
 
   std::string statement = std::string("(echo \"Second string\")\n");
   REQUIRE(process.send(statement) == piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   response = strip_string(process.receive());
   REQUIRE(response == "Second string");
 
@@ -159,7 +159,7 @@ TEST_CASE(
     "(+ (mod x 4) (* 3 (div y 2))) (- x y)))  (check-sat)\n";
   REQUIRE(process.send(message) == piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "sat");
 
@@ -227,14 +227,14 @@ TEST_CASE(
     "(+ (mod x 4) (* 3 (div y 2))) (- x y)))  (check-sat)\n";
   REQUIRE(process.send(statement) == piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "sat");
 
   REQUIRE(
     process.send("(get-model)\n") == piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   // If we receive here we can get less than the full (expected) output.
   // The normal expectation is that the caller will handle parsing and
   // checking of the received data (i.e. it is not the responsibility
@@ -280,7 +280,7 @@ TEST_CASE(
     "(+ (mod x 4) (* 3 (div y 2))) (- x y)))  (check-sat)\n";
   REQUIRE(process.send(statement) == piped_processt::send_responset::SUCCEEDED);
 
-  process.can_receive(PIPED_PROCESS_INFINITE_TIMEOUT);
+  process.can_receive(piped_processt::infinite_timeout);
   std::string response = strip_string(process.receive());
   REQUIRE(response == "sat");
 
