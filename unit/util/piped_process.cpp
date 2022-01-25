@@ -81,9 +81,8 @@ TEST_CASE(
   }
   std::chrono::steady_clock::time_point end_time =
     std::chrono::steady_clock::now();
-  std::chrono::duration<double> time_span =
-    std::chrono::duration_cast<std::chrono::duration<double>>(
-      end_time - start_time);
+  const auto time_span = std::chrono::duration_cast<std::chrono::seconds>(
+    end_time - start_time);
   size_t calc = time_span.count();
 #else
   // Currently not working under Linux/MacOS?!
