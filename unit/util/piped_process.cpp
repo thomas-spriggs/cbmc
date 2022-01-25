@@ -73,17 +73,15 @@ TEST_CASE(
 {
 #ifdef _WIN32
   const std::vector<std::string> commands{"cmd /c ping 127.0.0.1 -n 6 > nul"};
-  std::chrono::steady_clock::time_point start_time =
-    std::chrono::steady_clock::now();
+  const auto start_time = std::chrono::steady_clock::now();
   {
     // Scope restriction to cause destruction
     piped_processt process(commands);
   }
-  std::chrono::steady_clock::time_point end_time =
-    std::chrono::steady_clock::now();
+  const auto end_time = std::chrono::steady_clock::now();
   const auto time_span = std::chrono::duration_cast<std::chrono::seconds>(
     end_time - start_time);
-  size_t calc = time_span.count();
+  const size_t calc = time_span.count();
 #else
   // Currently not working under Linux/MacOS?!
   // Likely due to issue in handling signals from child process
@@ -94,7 +92,7 @@ TEST_CASE(
   process.~piped_processt();
   calc = time(NULL) - calc;
 #  else
-  size_t calc = 0;
+  const size_t calc = 0;
 #  endif
 #endif
   // Command should take >5 seconds, check we called destructor and
