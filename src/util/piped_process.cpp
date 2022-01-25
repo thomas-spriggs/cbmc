@@ -101,6 +101,29 @@
 
 #  define BUFSIZE 2048
 
+struct piped_processt::implementationt
+{
+#ifdef _WIN32
+  // Process information handle for Windows
+  std::unique_ptr<PROCESS_INFORMATION> proc_info;
+  // Handles for communication with child process
+  HANDLE child_std_IN_Rd;
+  HANDLE child_std_IN_Wr;
+  HANDLE child_std_OUT_Rd;
+  HANDLE child_std_OUT_Wr;
+#else
+  // Child process ID.
+  pid_t child_process_id;
+  FILE *command_stream;
+  // The member fields below are so named from the perspective of the
+  // parent -> child process. So `pipe_input` is where we are feeding
+  // commands to the child process, and `pipe_output` is where we read
+  // the results of execution from.
+  int pipe_input[2];
+  int pipe_output[2];
+#endif
+};
+
 #ifdef _WIN32
 /// This function prepares a single wide string for the windows command
 /// line.
@@ -120,7 +143,8 @@ prepare_windows_command_line(const std::vector<std::string> &commandvec)
 }
 #endif
 
-piped_processt::piped_processt(const std::vector<std::string> &commandvec)
+piped_processt::piped_processt(const std::vector<std::string> &commandvec) :
+  implementation{util_make_unique<implementationt>()}
 {
 #  ifdef _WIN32
   // Security attributes for pipe creation
@@ -138,7 +162,7 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   // Use process ID as a unique ID for this process at this time.
   base_name.append(std::to_string(GetCurrentProcessId()));
   const std::string in_name = base_name + "\\IN";
-  child_std_IN_Wr = CreateNamedPipe(
+  implementation->child_std_IN_Wr = CreateNamedPipe(
     in_name.c_str(),
     PIPE_ACCESS_OUTBOUND,         // Writing for us
     PIPE_TYPE_BYTE | PIPE_NOWAIT, // Bytes and non-blocking
@@ -151,12 +175,12 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     // In practice this is not used since we connect immediately and only
     // use one instance (no waiting for a free instance).
     &sec_attr); // For inheritance by child
-  if(child_std_IN_Rd == INVALID_HANDLE_VALUE)
+  if(implementation->child_std_IN_Rd == INVALID_HANDLE_VALUE)
   {
     throw system_exceptiont("Input pipe creation failed for child_std_IN_Rd");
   }
   // Connect to the other side of the pipe
-  child_std_IN_Rd = CreateFile(
+  implementation->child_std_IN_Rd = CreateFile(
     in_name.c_str(),
     GENERIC_READ,                                   // Read side
     FILE_SHARE_READ | FILE_SHARE_WRITE,             // Shared read/write
@@ -164,18 +188,18 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     OPEN_EXISTING,                                  // Opening other end
     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_NO_BUFFERING, // Normal, but don't buffer
     NULL);
-  if(child_std_IN_Wr == INVALID_HANDLE_VALUE)
+  if(implementation->child_std_IN_Wr == INVALID_HANDLE_VALUE)
   {
     throw system_exceptiont("Input pipe creation failed for child_std_IN_Wr");
   }
   if(!SetHandleInformation(
-       child_std_IN_Rd, HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
+    implementation->child_std_IN_Rd, HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
   {
     throw system_exceptiont(
       "Input pipe creation failed on SetHandleInformation");
   }
   const std::string out_name = base_name + "\\OUT";
-  child_std_OUT_Rd = CreateNamedPipe(
+  implementation->child_std_OUT_Rd = CreateNamedPipe(
     out_name.c_str(),
     PIPE_ACCESS_INBOUND,          // Reading for us
     PIPE_TYPE_BYTE | PIPE_NOWAIT, // Bytes and non-blocking
@@ -184,11 +208,11 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     BUFSIZE,    // Output and input bufffer sizes
     0,          // Timeout in ms, 0 = use system default
     &sec_attr); // For inheritance by child
-  if(child_std_OUT_Rd == INVALID_HANDLE_VALUE)
+  if(implementation->child_std_OUT_Rd == INVALID_HANDLE_VALUE)
   {
     throw system_exceptiont("Output pipe creation failed for child_std_OUT_Rd");
   }
-  child_std_OUT_Wr = CreateFile(
+  implementation->child_std_OUT_Wr = CreateFile(
     out_name.c_str(),
     GENERIC_WRITE,                                  // Write side
     FILE_SHARE_READ | FILE_SHARE_WRITE,             // Shared read/write
@@ -196,24 +220,24 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     OPEN_EXISTING,                                  // Opening other end
     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_NO_BUFFERING, // Normal, but don't buffer
     NULL);
-  if(child_std_OUT_Wr == INVALID_HANDLE_VALUE)
+  if(implementation->child_std_OUT_Wr == INVALID_HANDLE_VALUE)
   {
     throw system_exceptiont("Output pipe creation failed for child_std_OUT_Wr");
   }
-  if(!SetHandleInformation(child_std_OUT_Rd, HANDLE_FLAG_INHERIT, 0))
+  if(!SetHandleInformation(implementation->child_std_OUT_Rd, HANDLE_FLAG_INHERIT, 0))
   {
     throw system_exceptiont(
       "Output pipe creation failed on SetHandleInformation");
   }
   // Create the child process
   STARTUPINFOW start_info;
-  proc_info = util_make_unique<PROCESS_INFORMATION>();
-  ZeroMemory(proc_info.get(), sizeof(PROCESS_INFORMATION));
+  implementation->proc_info = util_make_unique<PROCESS_INFORMATION>();
+  ZeroMemory(implementation->proc_info.get(), sizeof(PROCESS_INFORMATION));
   ZeroMemory(&start_info, sizeof(STARTUPINFOW));
   start_info.cb = sizeof(STARTUPINFOW);
-  start_info.hStdError = child_std_OUT_Wr;
-  start_info.hStdOutput = child_std_OUT_Wr;
-  start_info.hStdInput = child_std_IN_Rd;
+  start_info.hStdError = implementation->child_std_OUT_Wr;
+  start_info.hStdOutput = implementation->child_std_OUT_Wr;
+  start_info.hStdInput = implementation->child_std_IN_Rd;
   start_info.dwFlags |= STARTF_USESTDHANDLES;
   const std::wstring cmdline = prepare_windows_command_line(commandvec);
   // Note that we do NOT free this since it becomes part of the child
@@ -228,28 +252,28 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
     NULL,                     // use parent's environment
     NULL,                     // use parent's current directory
     &start_info,              // STARTUPINFO pointer
-    proc_info.get());         // receives PROCESS_INFORMATION
+    implementation->proc_info.get());         // receives PROCESS_INFORMATION
   // Close handles to the stdin and stdout pipes no longer needed by the
   // child process. If they are not explicitly closed, there is no way to
   // recognize that the child process has ended (but maybe we don't care).
-  CloseHandle(child_std_OUT_Wr);
-  CloseHandle(child_std_IN_Rd);
+  CloseHandle(implementation->child_std_OUT_Wr);
+  CloseHandle(implementation->child_std_IN_Rd);
   if(!success)
     throw system_exceptiont("Process creation failed.");
 #  else
 
-  if(pipe(pipe_input) == -1)
+  if(pipe(implementation->pipe_input) == -1)
   {
     throw system_exceptiont("Input pipe creation failed");
   }
 
-  if(pipe(pipe_output) == -1)
+  if(pipe(implementation->pipe_output) == -1)
   {
     throw system_exceptiont("Output pipe creation failed");
   }
 
 
-  if(fcntl(pipe_output[0], F_SETFL, O_NONBLOCK) < 0)
+  if(fcntl(implementation->pipe_output[0], F_SETFL, O_NONBLOCK) < 0)
   {
     throw system_exceptiont("Setting pipe non-blocking failed");
   }
@@ -263,13 +287,13 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
 
     // Close pipes that will be used by the parent so we do
     // not have our own copies and conflicts.
-    close(pipe_input[1]);
-    close(pipe_output[0]);
+    close(implementation->pipe_input[1]);
+    close(implementation->pipe_output[0]);
 
     // Duplicate pipes so we have the ones we need.
-    dup2(pipe_input[0], STDIN_FILENO);
-    dup2(pipe_output[1], STDOUT_FILENO);
-    dup2(pipe_output[1], STDERR_FILENO);
+    dup2(implementation->pipe_input[0], STDIN_FILENO);
+    dup2(implementation->pipe_output[1], STDOUT_FILENO);
+    dup2(implementation->pipe_output[1], STDERR_FILENO);
 
     // Create a char** for the arguments (all the contents of commandvec
     // except the first element, i.e. the command itself).
@@ -304,11 +328,11 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
   {
     // parent process here
     // Close pipes to be used by the child process
-    close(pipe_input[0]);
-    close(pipe_output[1]);
+    close(implementation->pipe_input[0]);
+    close(implementation->pipe_output[1]);
 
     // Get stream for sending to the child process
-    command_stream = fdopen(pipe_input[1], "w");
+    implementation->command_stream = fdopen(implementation->pipe_input[1], "w");
   }
 #  endif
   process_state = statet::RUNNING;
@@ -317,24 +341,24 @@ piped_processt::piped_processt(const std::vector<std::string> &commandvec)
 piped_processt::~piped_processt()
 {
 #  ifdef _WIN32
-  TerminateProcess(proc_info->hProcess, 0);
+  TerminateProcess(implementation->proc_info->hProcess, 0);
   // Disconnecting the pipes also kicks the client off, it should be killed
   // by now, but this will also force the client off.
   // Note that pipes are cleaned up by Windows when all handles to the pipe
   // are closed. Disconnect may be superfluous here.
-  DisconnectNamedPipe(child_std_OUT_Rd);
-  DisconnectNamedPipe(child_std_IN_Wr);
-  CloseHandle(child_std_OUT_Rd);
-  CloseHandle(child_std_IN_Wr);
-  CloseHandle(proc_info->hProcess);
-  CloseHandle(proc_info->hThread);
+  DisconnectNamedPipe(implementation->child_std_OUT_Rd);
+  DisconnectNamedPipe(implementation->child_std_IN_Wr);
+  CloseHandle(implementation->child_std_OUT_Rd);
+  CloseHandle(implementation->child_std_IN_Wr);
+  CloseHandle(implementation->proc_info->hProcess);
+  CloseHandle(implementation->proc_info->hThread);
 #  else
   // Close the parent side of the remaining pipes
-  fclose(command_stream);
+  fclose(implementation->command_stream);
   // Note that the above will call close(pipe_input[1]);
-  close(pipe_output[0]);
+  close(implementation->pipe_output[0]);
   // Send signal to the child process to terminate
-  kill(child_process_id, SIGTERM);
+  kill(implementation->child_process_id, SIGTERM);
 #  endif
 }
 
@@ -349,7 +373,7 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
   const auto message_size = narrow<DWORD>(message.size());
   DWORD bytes_written = 0;
   if(!WriteFile(
-       child_std_IN_Wr, message.c_str(), message_size, &bytes_written, NULL))
+    implementation->child_std_IN_Wr, message.c_str(), message_size, &bytes_written, NULL))
   {
     // Error handling with GetLastError ?
     return send_responset::FAILED;
@@ -359,8 +383,8 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
     "Number of bytes written to sub process must match message size.");
 #else
   // send message to solver process
-  int send_status = fputs(message.c_str(), command_stream);
-  fflush(command_stream);
+  int send_status = fputs(message.c_str(), implementation->command_stream);
+  fflush(implementation->command_stream);
 
   if(send_status == EOF)
   {
@@ -386,9 +410,9 @@ std::string piped_processt::receive()
   while(success)
   {
 #ifdef _WIN32
-    success = ReadFile(child_std_OUT_Rd, buff, BUFSIZE, &nbytes, NULL);
+    success = ReadFile(implementation->child_std_OUT_Rd, buff, BUFSIZE, &nbytes, NULL);
 #else
-    nbytes = read(pipe_output[0], buff, BUFSIZE);
+    nbytes = read(implementation->pipe_output[0], buff, BUFSIZE);
     // Added the status back in here to keep parity with old implementation
     // TODO: check which statuses are really used/needed.
     if(nbytes == 0) // Update if the pipe is stopped
@@ -435,7 +459,7 @@ bool piped_processt::can_receive(optionalt<std::size_t> wait_time)
     const LPDWORD lpTotalBytesAvail = &total_bytes_available;
     const LPDWORD lpBytesLeftThisMessage = nullptr;
     PeekNamedPipe(
-      child_std_OUT_Rd,
+      implementation->child_std_OUT_Rd,
       lpBuffer,
       nBufferSize,
       lpBytesRead,
@@ -453,7 +477,7 @@ bool piped_processt::can_receive(optionalt<std::size_t> wait_time)
 #else
   struct pollfd fds // NOLINT
   {
-    pipe_output[0], POLLIN, 0
+    implementation->pipe_output[0], POLLIN, 0
   };
   nfds_t nfds = POLLIN;
   const int ready = poll(&fds, nfds, timeout);

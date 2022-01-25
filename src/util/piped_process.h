@@ -5,16 +5,10 @@
 #ifndef CPROVER_UTIL_PIPED_PROCESS_H
 #define CPROVER_UTIL_PIPED_PROCESS_H
 
-#ifdef _WIN32
-#  include <memory>
-// The below are forward declarations for Windows APIs
-struct _PROCESS_INFORMATION;                             // NOLINT
-typedef struct _PROCESS_INFORMATION PROCESS_INFORMATION; // NOLINT
-typedef void *HANDLE;                                    // NOLINT
-#endif
-
 #include "nodiscard.h"
 #include "optional.h"
+
+#include <memory>
 #include <vector>
 
 class piped_processt
@@ -87,25 +81,8 @@ public:
   ~piped_processt();
 
 protected:
-#ifdef _WIN32
-  // Process information handle for Windows
-  std::unique_ptr<PROCESS_INFORMATION> proc_info;
-  // Handles for communication with child process
-  HANDLE child_std_IN_Rd;
-  HANDLE child_std_IN_Wr;
-  HANDLE child_std_OUT_Rd;
-  HANDLE child_std_OUT_Wr;
-#else
-  // Child process ID.
-  pid_t child_process_id;
-  FILE *command_stream;
-  // The member fields below are so named from the perspective of the
-  // parent -> child process. So `pipe_input` is where we are feeding
-  // commands to the child process, and `pipe_output` is where we read
-  // the results of execution from.
-  int pipe_input[2];
-  int pipe_output[2];
-#endif
+  struct implementationt;
+  std::unique_ptr<implementationt> implementation;
   statet process_state;
 };
 
