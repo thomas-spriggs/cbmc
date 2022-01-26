@@ -19,7 +19,7 @@ static void validate_bit_vector_predicate_arguments(
     "Left and right operands must have the same bit width.");
 }
 
-#define SMT_BITVECTOR_THEORY_PREDICATE(the_identifier, the_name)               \
+#define SMT_BITVECTOR_THEORY_OPERATOR(the_identifier, the_name, the_return_sort)\
   void smt_bit_vector_theoryt::the_name##t::validate(                          \
     const smt_termt &left, const smt_termt &right)                             \
   {                                                                            \
@@ -27,31 +27,9 @@ static void validate_bit_vector_predicate_arguments(
   }                                                                            \
                                                                                \
   smt_sortt smt_bit_vector_theoryt::the_name##t::return_sort(                  \
-    const smt_termt &, const smt_termt &)                                      \
+    const smt_termt &left, const smt_termt &)                                  \
   {                                                                            \
-    return smt_bool_sortt{};                                                   \
-  }                                                                            \
-                                                                               \
-  const char *smt_bit_vector_theoryt::the_name##t::identifier()                \
-  {                                                                            \
-    return #the_identifier;                                                    \
-  }                                                                            \
-                                                                               \
-  const smt_function_application_termt::factoryt<                              \
-    smt_bit_vector_theoryt::the_name##t>                                       \
-    smt_bit_vector_theoryt::the_name{};
-
-#define SMT_BITVECTOR_THEORY_OPERATOR(the_identifier, the_name)                \
-  void smt_bit_vector_theoryt::the_name##t::validate(                          \
-    const smt_termt &left, const smt_termt &right)                             \
-  {                                                                            \
-    validate_bit_vector_predicate_arguments(left, right);                      \
-  }                                                                            \
-                                                                               \
-  smt_sortt smt_bit_vector_theoryt::the_name##t::return_sort(                  \
-    const smt_termt &left, const smt_termt &)                                      \
-  {                                                                            \
-    return left.get_sort();                                                   \
+    return the_return_sort;                                                    \
   }                                                                            \
                                                                                \
   const char *smt_bit_vector_theoryt::the_name##t::identifier()                \

@@ -8,17 +8,7 @@
 class smt_bit_vector_theoryt
 {
 public:
-#define SMT_BITVECTOR_THEORY_PREDICATE(the_identifier, the_name)               \
-  /* NOLINTNEXTLINE(readability/identifiers) cpplint does not match the ## */  \
-  struct the_name##t final                                                     \
-  {                                                                            \
-    static const char *identifier();                                           \
-    static smt_sortt                                                           \
-    return_sort(const smt_termt &left, const smt_termt &right);                \
-    static void validate(const smt_termt &left, const smt_termt &right);       \
-  };                                                                           \
-  static const smt_function_application_termt::factoryt<the_name##t> the_name;
-#define SMT_BITVECTOR_THEORY_OPERATOR(the_identifier, the_name)               \
+#define SMT_BITVECTOR_THEORY_OPERATOR(the_identifier, the_name, the_return_sort)               \
   /* NOLINTNEXTLINE(readability/identifiers) cpplint does not match the ## */  \
   struct the_name##t final                                                     \
   {                                                                            \
