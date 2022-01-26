@@ -40,5 +40,29 @@ static void validate_bit_vector_predicate_arguments(
   const smt_function_application_termt::factoryt<                              \
     smt_bit_vector_theoryt::the_name##t>                                       \
     smt_bit_vector_theoryt::the_name{};
+
+#define SMT_BITVECTOR_THEORY_OPERATOR(the_identifier, the_name)                \
+  void smt_bit_vector_theoryt::the_name##t::validate(                          \
+    const smt_termt &left, const smt_termt &right)                             \
+  {                                                                            \
+    validate_bit_vector_predicate_arguments(left, right);                      \
+  }                                                                            \
+                                                                               \
+  smt_sortt smt_bit_vector_theoryt::the_name##t::return_sort(                  \
+    const smt_termt &left, const smt_termt &)                                      \
+  {                                                                            \
+    return left.get_sort();                                                   \
+  }                                                                            \
+                                                                               \
+  const char *smt_bit_vector_theoryt::the_name##t::identifier()                \
+  {                                                                            \
+    return #the_identifier;                                                    \
+  }                                                                            \
+                                                                               \
+  const smt_function_application_termt::factoryt<                              \
+    smt_bit_vector_theoryt::the_name##t>                                       \
+    smt_bit_vector_theoryt::the_name{};
+
 #include "smt_bit_vector_theory.def"
 #undef SMT_BITVECTOR_THEORY_PREDICATE
+#undef SMT_BITVECTOR_THEORY_OPERATOR

@@ -11,3 +11,11 @@ SMT_BITVECTOR_THEORY_PREDICATE(bvslt, signed_less_than)
 SMT_BITVECTOR_THEORY_PREDICATE(bvsle, signed_less_than_or_equal)
 SMT_BITVECTOR_THEORY_PREDICATE(bvsgt, signed_greater_than)
 SMT_BITVECTOR_THEORY_PREDICATE(bvsge, signed_greater_than_or_equal)
+// Arithmetic operators, probably to be spun out to their own macro
+SMT_BITVECTOR_THEORY_OPERATOR(bvadd, bitvector_addition)
+SMT_BITVECTOR_THEORY_OPERATOR(bvsub, bitvector_subtraction)
+SMT_BITVECTOR_THEORY_OPERATOR(bvmul, bitvector_multiplication)
+SMT_BITVECTOR_THEORY_OPERATOR(bvudiv, bitvector_division)
+SMT_BITVECTOR_THEORY_OPERATOR(bvurem, bitvector_modulus)
+// Unary operator, implemented in terms of binary operator
+//SMT_BITVECTOR_THEORY_OPERATOR(bvneg, bitvector_negation)
