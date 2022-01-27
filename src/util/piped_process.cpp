@@ -356,7 +356,9 @@ piped_processt::send_responset piped_processt::send(const std::string &message)
   }
   INVARIANT(
     message_size == bytes_written,
-    "Number of bytes written to sub process must match message size.");
+    "Number of bytes written to sub process must match message size. \n" +
+    std::string{"Message size: "} + std::to_string(message_size) + "\n"
+    "bytes written: " + std::to_string(bytes_written));
 #else
   // send message to solver process
   int send_status = fputs(message.c_str(), command_stream);
