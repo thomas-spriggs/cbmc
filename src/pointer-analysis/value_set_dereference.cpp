@@ -501,7 +501,7 @@ value_set_dereferencet::valuet value_set_dereferencet::build_reference_to(
 
       const index_exprt index_expr(
         symbol_expr,
-        pointer_offset(pointer_expr),
+        pointer_offset_exprt{pointer_expr},
         memory_symbol.type.subtype());
 
       result.value=index_expr;
@@ -513,7 +513,7 @@ value_set_dereferencet::valuet value_set_dereferencet::build_reference_to(
     {
       const index_exprt index_expr(
         symbol_expr,
-        pointer_offset(pointer_expr),
+        pointer_offset_exprt{pointer_expr},
         memory_symbol.type.subtype());
       result.value=typecast_exprt(index_expr, dereference_type);
       result.pointer =
@@ -530,7 +530,7 @@ value_set_dereferencet::valuet value_set_dereferencet::build_reference_to(
       else
       {
         result.value = make_byte_extract(
-          symbol_expr, pointer_offset(pointer_expr), dereference_type);
+          symbol_expr, pointer_offset_exprt{pointer_expr}, dereference_type);
         result.pointer = address_of_exprt{result.value};
       }
     }
@@ -582,7 +582,7 @@ value_set_dereferencet::valuet value_set_dereferencet::build_reference_to(
       if(o.offset().is_constant())
         offset=o.offset();
       else
-        offset=pointer_offset(pointer_expr);
+        offset = pointer_offset_exprt{pointer_expr};
 
       exprt adjusted_offset;
 
@@ -647,7 +647,7 @@ value_set_dereferencet::valuet value_set_dereferencet::build_reference_to(
       // this is relative to the root object
       exprt offset;
       if(o.offset().id()==ID_unknown)
-        offset=pointer_offset(pointer_expr);
+        offset = pointer_offset_exprt{pointer_expr};
       else
         offset=o.offset();
 

@@ -474,7 +474,7 @@ car_exprt instrument_spec_assignst::create_car_expr(
       target,
       minus_exprt(
         typecast_exprt::conditional_cast(arg, pointer_type(char_type())),
-        pointer_offset(arg)),
+        pointer_offset_exprt{arg}),
       typecast_exprt::conditional_cast(object_size(arg), signed_size_type()),
       valid_var,
       lower_bound_var,
@@ -633,11 +633,12 @@ exprt instrument_spec_assignst::inclusion_check_single(
     and_exprt{
       {candidate_car.valid_var(),
        same_object(candidate_car.lower_bound_var(), car.lower_bound_var()),
-       less_than_or_equal_exprt{pointer_offset(candidate_car.lower_bound_var()),
-                                pointer_offset(car.lower_bound_var())},
        less_than_or_equal_exprt{
-         pointer_offset(car.upper_bound_var()),
-         pointer_offset(candidate_car.upper_bound_var())}}},
+         pointer_offset_exprt{candidate_car.lower_bound_var()},
+         pointer_offset_exprt{car.lower_bound_var()}},
+       less_than_or_equal_exprt{
+         pointer_offset_exprt{car.upper_bound_var()},
+         pointer_offset_exprt{candidate_car.upper_bound_var()}}}},
     ns);
 }
 

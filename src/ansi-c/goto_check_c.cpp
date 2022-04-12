@@ -1554,8 +1554,8 @@ void goto_check_ct::bounds_check_index(
 
         if(ode.root_object().id() == ID_dereference)
         {
-          exprt p_offset =
-            pointer_offset(to_dereference_expr(ode.root_object()).pointer());
+          pointer_offset_exprt p_offset{
+            to_dereference_expr(ode.root_object()).pointer()};
 
           effective_offset = plus_exprt{
             p_offset,
@@ -1587,7 +1587,7 @@ void goto_check_ct::bounds_check_index(
     const plus_exprt effective_offset{
       ode.offset(),
       typecast_exprt::conditional_cast(
-        pointer_offset(pointer), ode.offset().type())};
+        pointer_offset_exprt{pointer}, ode.offset().type())};
 
     binary_relation_exprt inequality{
       effective_offset,

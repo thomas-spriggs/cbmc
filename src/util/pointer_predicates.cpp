@@ -112,7 +112,7 @@ exprt object_upper_bound(
 
   exprt object_size_expr=object_size(pointer);
 
-  exprt object_offset=pointer_offset(pointer);
+  pointer_offset_exprt object_offset{pointer};
 
   // need to add size
   irep_idt op=ID_ge;
@@ -137,7 +137,7 @@ exprt object_lower_bound(
   const exprt &pointer,
   const exprt &offset)
 {
-  exprt p_offset=pointer_offset(pointer);
+  exprt p_offset = pointer_offset_exprt{pointer};
 
   exprt zero=from_integer(0, p_offset.type());
 

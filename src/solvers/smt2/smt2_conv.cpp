@@ -3282,9 +3282,9 @@ void smt2_convt::convert_relation(const binary_relation_exprt &expr)
       out << "bvsgt";
 
     out << ' ';
-    convert_expr(pointer_offset(expr.op0()));
+    convert_expr(pointer_offset_exprt{expr.op0()});
     out << ' ';
-    convert_expr(pointer_offset(expr.op1()));
+    convert_expr(pointer_offset_exprt{expr.op1()});
     out << ')';
 
     out << ')';

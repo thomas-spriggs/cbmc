@@ -2347,7 +2347,7 @@ exprt c_typecheck_baset::do_special_functions(
 
     typecheck_function_call_arguments(expr);
 
-    exprt pointer_offset_expr=pointer_offset(expr.arguments().front());
+    pointer_offset_exprt pointer_offset_expr{expr.arguments().front()};
     pointer_offset_expr.add_source_location()=source_location;
 
     return typecast_exprt::conditional_cast(pointer_offset_expr, expr.type());
