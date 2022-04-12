@@ -388,7 +388,7 @@ void instrument_spec_assignst::instrument_instructions(
       instruction_it->get_other().get_statement() == ID_havoc_object)
     {
       auto havoc_argument = instruction_it->get_other().operands().front();
-      auto havoc_object = pointer_object(havoc_argument);
+      auto havoc_object = pointer_object_exprt{havoc_argument};
       havoc_object.add_source_location() = instruction_it->source_location();
       goto_programt payload;
       check_inclusion_assignment(havoc_object, cfg_info_opt, payload);
@@ -892,7 +892,7 @@ void instrument_spec_assignst::instrument_call_statement(
     if(function_call.lhs().is_not_nil())
     {
       // grab the returned pointer from malloc
-      auto object = pointer_object(function_call.lhs());
+      auto object = pointer_object_exprt{function_call.lhs()};
       object.add_source_location() = function_call.source_location();
       // move past the call and then insert the CAR
       instruction_it++;
@@ -908,7 +908,7 @@ void instrument_spec_assignst::instrument_call_statement(
   else if(callee_name == "free")
   {
     const auto &ptr = instruction_it->call_arguments().front();
-    auto object = pointer_object(ptr);
+    auto object = pointer_object_exprt{ptr};
     object.add_source_location() = instruction_it->source_location();
     goto_programt payload;
     check_inclusion_heap_allocated_and_invalidate_aliases(

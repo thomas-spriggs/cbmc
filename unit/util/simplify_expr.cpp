@@ -236,8 +236,8 @@ TEST_CASE("Simplify dynamic object comparison", "[core][util]")
   address_of_exprt address_of_other_dynamic_object(other_dynamic_object);
 
   equal_exprt compare_pointer_objects(
-    pointer_object(address_of_dynamic_object),
-    pointer_object(address_of_other_dynamic_object));
+    pointer_object_exprt{address_of_dynamic_object},
+    pointer_object_exprt{address_of_other_dynamic_object});
 
   REQUIRE(simplify_expr(compare_pointer_objects, ns) == false_exprt());
 
@@ -260,10 +260,10 @@ TEST_CASE("Simplify pointer_object equality", "[core][util]")
   symbol_tablet symbol_table;
   namespacet ns(symbol_table);
 
-  exprt p_o_void =
-    pointer_object(null_pointer_exprt{pointer_type(empty_typet{})});
-  exprt p_o_int =
-    pointer_object(null_pointer_exprt{pointer_type(signedbv_typet(32))});
+  pointer_object_exprt p_o_void{
+    null_pointer_exprt{pointer_type(empty_typet{})}};
+  pointer_object_exprt p_o_int{
+    null_pointer_exprt{pointer_type(signedbv_typet(32))}};
 
   exprt simp = simplify_expr(equal_exprt{p_o_void, p_o_int}, ns);
 

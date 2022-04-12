@@ -2380,7 +2380,7 @@ exprt c_typecheck_baset::do_special_functions(
 
     typecheck_function_call_arguments(expr);
 
-    exprt pointer_object_expr = pointer_object(expr.arguments().front());
+    pointer_object_exprt pointer_object_expr(expr.arguments().front());
     pointer_object_expr.add_source_location() = source_location;
 
     return typecast_exprt::conditional_cast(pointer_object_expr, expr.type());

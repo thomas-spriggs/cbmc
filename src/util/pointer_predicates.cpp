@@ -27,7 +27,7 @@ exprt pointer_object(const exprt &p)
 
 exprt same_object(const exprt &p1, const exprt &p2)
 {
-  return equal_exprt(pointer_object(p1), pointer_object(p2));
+  return equal_exprt(pointer_object_exprt{p1}, pointer_object_exprt{p2});
 }
 
 exprt object_size(const exprt &pointer)
