@@ -12,6 +12,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CPROVER_UTIL_POINTER_PREDICATES_H
 #define CPROVER_UTIL_POINTER_PREDICATES_H
 
+#include "c_types.h"
 #include "std_expr.h"
 
 #define SYMEX_DYNAMIC_PREFIX "symex_dynamic::"
@@ -33,6 +34,69 @@ exprt object_lower_bound(
 exprt object_upper_bound(
   const exprt &pointer,
   const exprt &access_size);
+
+/// Expression for extracting the offset component of a pointer.
+class pointer_offset_exprt : public unary_exprt
+{
+public:
+  explicit pointer_offset_exprt(exprt pointer)
+    : unary_exprt(ID_pointer_offset, std::move(pointer), signed_size_type())
+  {
+  }
+
+  const exprt &pointer() const
+  {
+    return op();
+  }
+};
+
+template <>
+inline bool can_cast_expr<pointer_offset_exprt>(const exprt &base)
+{
+  return base.id() == ID_pointer_offset;
+}
+
+/// Expression for extracting the object component of a pointer.
+class pointer_object_exprt : public unary_exprt
+{
+public:
+  explicit pointer_object_exprt(exprt pointer)
+    : unary_exprt(ID_pointer_object, std::move(pointer), size_type())
+  {
+  }
+
+  const exprt &pointer() const
+  {
+    return op();
+  }
+};
+
+template <>
+inline bool can_cast_expr<pointer_object_exprt>(const exprt &base)
+{
+  return base.id() == ID_pointer_object;
+}
+
+/// Expression for finding the size of the object a pointer points to.
+class object_size_exprt : public unary_exprt
+{
+public:
+  explicit object_size_exprt(exprt pointer)
+    : unary_exprt(ID_object_size, std::move(pointer), size_type())
+  {
+  }
+
+  const exprt &pointer() const
+  {
+    return op();
+  }
+};
+
+template <>
+inline bool can_cast_expr<object_size_exprt>(const exprt &base)
+{
+  return base.id() == ID_object_size;
+}
 
 class is_invalid_pointer_exprt : public unary_predicate_exprt
 {
