@@ -621,7 +621,7 @@ bvt bv_pointerst::convert_bitvector(const exprt &expr)
     const literalt same_object_lit = convert(same_object);
 
     // compute the object size (again, possibly using cached results)
-    const exprt object_size = ::object_size(minus_expr.lhs());
+    const object_size_exprt object_size{minus_expr.lhs()};
     const bvt object_size_bv =
       bv_utils.zero_extension(convert_bv(object_size), width);
 

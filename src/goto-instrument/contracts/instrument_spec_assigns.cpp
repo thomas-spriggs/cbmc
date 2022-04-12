@@ -475,7 +475,8 @@ car_exprt instrument_spec_assignst::create_car_expr(
       minus_exprt(
         typecast_exprt::conditional_cast(arg, pointer_type(char_type())),
         pointer_offset_exprt{arg}),
-      typecast_exprt::conditional_cast(object_size(arg), signed_size_type()),
+      typecast_exprt::conditional_cast(
+        object_size_exprt{arg}, signed_size_type()),
       valid_var,
       lower_bound_var,
       upper_bound_var};

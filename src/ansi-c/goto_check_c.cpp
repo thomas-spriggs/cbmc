@@ -1593,7 +1593,7 @@ void goto_check_ct::bounds_check_index(
       effective_offset,
       ID_lt,
       typecast_exprt::conditional_cast(
-        object_size(pointer), effective_offset.type())};
+        object_size_exprt{pointer}, effective_offset.type())};
 
     exprt in_bounds_of_some_explicit_allocation =
       is_in_bounds_of_some_explicit_allocation(

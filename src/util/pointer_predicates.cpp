@@ -110,7 +110,7 @@ exprt object_upper_bound(
   // this is
   // POINTER_OFFSET(p)+access_size>OBJECT_SIZE(pointer)
 
-  exprt object_size_expr=object_size(pointer);
+  object_size_exprt object_size_expr{pointer};
 
   pointer_offset_exprt object_offset{pointer};
 
