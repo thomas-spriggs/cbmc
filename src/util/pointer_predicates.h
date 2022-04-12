@@ -20,8 +20,11 @@ Author: Daniel Kroening, kroening@kroening.com
 exprt same_object(const exprt &p1, const exprt &p2);
 exprt deallocated(const exprt &pointer, const namespacet &);
 exprt dead_object(const exprt &pointer, const namespacet &);
+DEPRECATED(SINCE(2022, 4, 12, "use pointer_offset_exprt instead"))
 exprt pointer_offset(const exprt &pointer);
+DEPRECATED(SINCE(2022, 4, 12, "use pointer_object_exprt instead"))
 exprt pointer_object(const exprt &pointer);
+DEPRECATED(SINCE(2022, 4, 12, "use object_size_exprt instead"))
 exprt object_size(const exprt &pointer);
 exprt good_pointer(const exprt &pointer);
 exprt good_pointer_def(const exprt &pointer, const namespacet &);
