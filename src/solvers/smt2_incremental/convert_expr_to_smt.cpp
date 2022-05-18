@@ -598,6 +598,40 @@ static smt_termt convert_expr_to_smt(
     return convert_multiary_operator_to_terms(
       plus, converted, smt_bit_vector_theoryt::add);
   }
+  else if(std::any_of(
+            plus.operands().cbegin(),
+            plus.operands().cend(),
+            [](exprt operand)
+            { return can_cast_type<pointer_typet>(operand.type()); }))
+  {
+    INVARIANT(
+      plus.operands().size() == 2,
+      "We are only handling a binary version of plus when it has a pointer "
+      "operand");
+
+    exprt pointer;
+    exprt scalar;
+    for(auto &operand : plus.operands())
+    {
+      if(can_cast_type<pointer_typet>(operand.type()))
+      {
+        pointer = operand;
+      }
+      else
+      {
+        scalar = operand;
+      }
+    }
+
+    pointer_typet pointer_type =
+      *type_try_dynamic_cast<pointer_typet>(pointer.type());
+    auto base_type = pointer_type.base_type();
+    auto pointer_size = pointer_sizes.at(base_type);
+
+    return smt_bit_vector_theoryt::add(
+      converted.at(pointer),
+      smt_bit_vector_theoryt::multiply(converted.at(scalar), pointer_size));
+  }
   else
   {
     UNIMPLEMENTED_FEATURE(
