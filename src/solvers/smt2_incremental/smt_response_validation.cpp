@@ -190,17 +190,6 @@ static bool all_subs_are_pairs(const irept &parse_tree)
     [](const irept &sub) { return sub.get_sub().size() == 2; });
 }
 
-static response_or_errort<irep_idt>
-validate_smt_identifier(const irept &parse_tree)
-{
-  if(!parse_tree.get_sub().empty() || parse_tree.id().empty())
-  {
-    return response_or_errort<irep_idt>(
-      "Expected identifier, found - \"" + print_parse_tree(parse_tree) + "\".");
-  }
-  return response_or_errort<irep_idt>(parse_tree.id());
-}
-
 static optionalt<smt_termt> valid_smt_bool(const irept &parse_tree)
 {
   if(!parse_tree.get_sub().empty())
@@ -237,9 +226,25 @@ static optionalt<smt_termt> valid_smt_hex(const std::string &text)
   return {smt_bit_vector_constant_termt{value, width}};
 }
 
+#include <util/prefix.h>
+#include <util/arith_tools.h>
+
 static optionalt<smt_termt>
 valid_smt_bit_vector_constant(const irept &parse_tree)
 {
+  // Match `(_ bv(value) (width))` for example - `(_ bv4 64)`
+  if(parse_tree.get_sub().size() == 3 &&
+     parse_tree.get_sub().at(0).id() == "_" &&
+     parse_tree.get_sub().at(0).get_sub().empty() &&
+     has_prefix(id2string(parse_tree.get_sub().at(1).id()), "bv"))
+  {
+    const auto value_string = id2string(parse_tree.get_sub().at(1).id());
+    const std::string value_digits{value_string.begin() + 2, value_string.end()};
+    const auto bit_width_string = id2string(parse_tree.get_sub().at(2).id());
+    smt_bit_vector_constant_termt term{string2integer(value_string),
+                                       numeric_cast_v<std::size_t>(string2integer(bit_width_string))};
+    return term;
+  }
   if(!parse_tree.get_sub().empty() || parse_tree.id().empty())
     return {};
   const auto value_string = id2string(parse_tree.id());
@@ -260,14 +265,39 @@ static response_or_errort<smt_termt> validate_term(const irept &parse_tree)
                                        print_parse_tree(parse_tree) + "\"."};
 }
 
+static response_or_errort<smt_termt>
+validate_smt_descriptor(const irept &parse_tree, const smt_sortt &sort)
+{
+  INVARIANT(parse_tree.get_sub().empty() != parse_tree.id().empty(), "");
+  if(parse_tree.get_sub().empty() && !parse_tree.id().empty())
+  {
+    return response_or_errort<smt_termt>{smt_identifier_termt{parse_tree.id(), sort}};
+  }
+  if(!parse_tree.get_sub().empty() && parse_tree.id().empty())
+  {
+    auto temp = validate_term(parse_tree);
+    if(const auto term = temp.get_if_valid())
+      INVARIANT(term->get_sort() == sort, "");
+    return temp;
+  }
+  UNREACHABLE;
+}
+
 static response_or_errort<smt_get_value_responset::valuation_pairt>
 validate_valuation_pair(const irept &pair_parse_tree)
 {
   PRECONDITION(pair_parse_tree.get_sub().size() == 2);
   const auto &descriptor = pair_parse_tree.get_sub()[0];
   const auto &value = pair_parse_tree.get_sub()[1];
+  const response_or_errort<smt_termt> value_validation = validate_term(value);
+  if(const auto value_errors = value_validation.get_if_error())
+  {
+    return response_or_errort<smt_get_value_responset::valuation_pairt>{*value_errors};
+  }
+  const auto value_term = value_validation.get_if_valid();
+  INVARIANT(value_term != nullptr, "");
   return validation_propagating<smt_get_value_responset::valuation_pairt>(
-    validate_smt_identifier(descriptor), validate_term(value));
+    validate_smt_descriptor(descriptor, value_term->get_sort()), validate_term(value));
 }
 
 /// \returns: A response or error in the case where the parse tree appears to be
