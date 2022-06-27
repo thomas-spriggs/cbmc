@@ -20,6 +20,7 @@
 #include <solvers/smt2_incremental/convert_expr_to_smt.h>
 #include <solvers/smt2_incremental/smt_bit_vector_theory.h>
 #include <solvers/smt2_incremental/smt_core_theory.h>
+#include <solvers/smt2_incremental/smt_array_theory.h>
 
 #include <functional>
 #include <numeric>
@@ -916,11 +917,12 @@ static smt_termt convert_expr_to_smt(
 }
 
 static smt_termt convert_expr_to_smt(
-  const index_exprt &index,
+  const index_exprt &index_of,
   const sub_expression_mapt &converted)
 {
-  UNIMPLEMENTED_FEATURE(
-    "Generation of SMT formula for index expression: " + index.pretty());
+  const smt_termt &array = converted.at(index_of.array());
+  const smt_termt &index = converted.at(index_of.index());
+  return smt_array_theoryt::select(array, index);
 }
 
 template <typename factoryt, typename shiftt>
