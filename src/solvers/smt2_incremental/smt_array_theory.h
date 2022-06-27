@@ -14,6 +14,7 @@ public:
     static smt_sortt return_sort(const smt_termt &array, const smt_termt &index);
     static void validate(const smt_termt &array, const smt_termt &index);
   };
+  static const smt_function_application_termt::factoryt<selectt> select;
 
   struct storet final
   {
