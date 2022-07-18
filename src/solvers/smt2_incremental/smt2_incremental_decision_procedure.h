@@ -98,6 +98,7 @@ protected:
     expression_handle_identifiers;
   std::unordered_map<exprt, smt_identifier_termt, irep_hash>
     expression_identifiers;
+  std::unordered_map<irep_idt, smt_identifier_termt> identifier_table;
   smt_object_mapt object_map;
   std::vector<bool> object_size_defined;
   smt_object_sizet object_size_function;
