@@ -334,12 +334,12 @@ TEST_CASE(
       generator(bv_typet(42), source_locationt{});
     const smt_identifier_termt nondet_symbol_term2{
       nondet_symbol2.get_identifier(), smt_bit_vector_sortt{42}};
-    // Checking that the 2 calls to the generator returns different nondet_symbol
+    // Check that the 2 calls to the generator returns unique nondet_symbols.
     REQUIRE(
       nondet_symbol1.get_identifier() != nondet_symbol_term2.identifier());
     test.sent_commands.clear();
     test.procedure.handle(equal_exprt{nondet_symbol1, nondet_symbol2});
-    // Checking that we defined 2 symbols and that they are correctly compared as required
+    // Checking that we defined 2 symbols and that they are correctly compared.
     REQUIRE(
       test.sent_commands ==
       std::vector<smt_commandt>{
