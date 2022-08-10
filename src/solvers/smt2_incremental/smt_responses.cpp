@@ -105,10 +105,14 @@ const smt_check_sat_response_kindt &smt_check_sat_responset::kind() const
   return downcast(find(ID_value));
 }
 
+#include <iostream>
+
 smt_get_value_responset::valuation_pairt::valuation_pairt(
   smt_termt descriptor,
   smt_termt value)
 {
+  // std::cout << "[DEBUG] descriptor.get_sort() " << descriptor.get_sort().pretty() << std::endl;
+  // std::cout << "[DEBUG] value.get_sort() " << value.get_sort().pretty() << std::endl; 
   INVARIANT(
     descriptor.get_sort() == value.get_sort(),
     "SMT valuation pair must have matching sort for the descriptor and value.");

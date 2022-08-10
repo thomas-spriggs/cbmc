@@ -573,5 +573,25 @@ TEST_CASE(
       smt_declare_function_commandt{index_term, {}},
       smt_assert_commandt{smt_core_theoryt::equal(
         foo_term, smt_array_theoryt::select(array_term, index_term))}};
+
+      SECTION("Get values of array literal")
+      {
+        test.sent_commands.clear();
+        test.mock_responses = {
+            // get-value response for first element
+            smt_get_value_responset{{{
+              {smt_array_theoryt::select(
+                array_term, smt_bit_vector_constant_termt{0, 32})},
+                smt_bit_vector_constant_termt{9, 8}}}},
+            // get-value response for second element
+            smt_get_value_responset{{{
+              {smt_array_theoryt::select(
+                array_term, smt_bit_vector_constant_termt{1, 32})},
+                smt_bit_vector_constant_termt{12, 8}}}}
+            // key-value pairs with signle element
+            // select for lhs with index
+        };
+        REQUIRE(test.procedure.get(array_literal) == array_literal);
+      }
   }
 }

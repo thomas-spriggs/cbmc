@@ -39,6 +39,7 @@ smt_sortt smt_array_theoryt::storet::return_sort(
 {
   return array.get_sort();
 }
+
 void smt_array_theoryt::storet::validate(
   const smt_termt &array,
   const smt_termt &index,

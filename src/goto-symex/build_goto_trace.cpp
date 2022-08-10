@@ -23,6 +23,7 @@ Author: Daniel Kroening
 #include <solvers/decision_procedure.h>
 
 #include "partial_order_concurrency.h"
+#include <iostream>
 
 static exprt build_full_lhs_rec(
   const decision_proceduret &decision_procedure,
@@ -37,6 +38,7 @@ static exprt build_full_lhs_rec(
 
   if(id==ID_index)
   {
+    // std::cout << "[DEBUG] src_ssa " << src_ssa.pretty() << std::endl;
     // get index value from src_ssa
     exprt index_value = decision_procedure.get(to_index_expr(src_ssa).index());
 

@@ -10,6 +10,8 @@
 #include <solvers/smt2_incremental/construct_value_expr_from_smt.h>
 #include <solvers/smt2_incremental/smt_terms.h>
 
+#include <iostream>
+
 class value_expr_from_smt_factoryt : public smt_term_const_downcast_visitort
 {
 private:
@@ -38,6 +40,8 @@ private:
   void visit(const smt_bit_vector_constant_termt &bit_vector_constant) override
   {
     const auto sort_width = bit_vector_constant.get_sort().bit_width();
+    std::cout << "[DEBUG] constant is " << bit_vector_constant.pretty() << std::endl;
+    std::cout << "[DEBUG] sort_width is " << sort_width << std::endl; 
     if(
       const auto pointer_type =
         type_try_dynamic_cast<pointer_typet>(type_to_construct))
@@ -64,6 +68,7 @@ private:
       const auto bitvector_type =
         type_try_dynamic_cast<bitvector_typet>(type_to_construct))
     {
+      std::cout << "[DEBUG] bitvector_type->get_width is " << bitvector_type->get_width() << std::endl;
       INVARIANT(
         bitvector_type->get_width() == sort_width,
         "Width of smt bit vector term must match the width of bit vector "

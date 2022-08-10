@@ -23,6 +23,8 @@
 
 #include <stack>
 
+#include <iostream>
+
 /// Issues a command to the solving process which is expected to optionally
 /// return a success status followed by the actual response of interest.
 static smt_responset get_response_to_command(
@@ -273,6 +275,7 @@ array_exprt smt2_incremental_decision_proceduret::get_expr(
   elements.reserve(*size);
   for(std::size_t index = 0; index < size; ++index)
   {
+    std::cout << "[DEBUG] Performing push_back of get_expr " << std::endl; 
     elements.push_back(get_expr(
       smt_array_theoryt::select(
         array,
@@ -290,6 +293,7 @@ exprt smt2_incremental_decision_proceduret::get_expr(
   const smt_termt &descriptor,
   const typet &type) const
 {
+  std::cout << "[DEBUG] Descriptor is " << descriptor.pretty() << std::endl;
   const smt_get_value_commandt get_value_command{descriptor};
   const smt_responset response = get_response_to_command(
     *solver_process, get_value_command, identifier_table);
@@ -307,17 +311,28 @@ exprt smt2_incremental_decision_proceduret::get_expr(
       "received multiple pairs - " +
       response.pretty()};
   }
-  return construct_value_expr_from_smt(
+  const auto pairs = get_value_response->pairs()[0].get().value();
+  std::cout << "[DEBUG] Pairs are " << pairs.pretty() << std::endl;
+  const auto constructed_term = construct_value_expr_from_smt(
     get_value_response->pairs()[0].get().value(), type);
+  std::cout << "[DEBUG] Term constructed is " << constructed_term.pretty() << std::endl;
+  return constructed_term;
 }
 
 exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
 {
+  std::cout << "[DEBUG] get of expr " << expr.pretty() << std::endl;
   log.conditional_output(log.debug(), [&](messaget::mstreamt &debug) {
     debug << "`get` - \n  " + expr.pretty(2, 0) << messaget::eom;
   });
   optionalt<smt_termt> descriptor =
     get_identifier(expr, expression_handle_identifiers, expression_identifiers);
+  
+  if(const auto typecast_expr = expr_try_dynamic_cast<typecast_exprt>(expr))
+  {
+    descriptor = get_identifier(typecast_expr->op(), expression_handle_identifiers, expression_identifiers);
+  }
+
   if(!descriptor)
   {
     if(gather_dependent_expressions(expr).empty())
@@ -331,6 +346,7 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
         object_map,
         pointer_sizes_map,
         object_size_function.make_application);
+      std::cout << "[DEBUG] Converted expression " << expr.id() << std::endl;
     }
     else
     {
@@ -352,10 +368,13 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
   }
   if(const auto array_type = type_try_dynamic_cast<array_typet>(expr.type()))
   {
+    std::cout << "[DEBUG] array_type is " << array_type->pretty() << std::endl;
     if(array_type->is_incomplete())
       return expr;
     return get_expr(*descriptor, *array_type);
   }
+
+  std::cout << "[DEBUG] Performing get_expr of type " << expr.type().pretty() << std::endl;
   return get_expr(*descriptor, expr.type());
 }
 
