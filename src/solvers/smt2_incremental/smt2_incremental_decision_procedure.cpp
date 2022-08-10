@@ -62,7 +62,8 @@ get_problem_messages(const smt_responset &response)
 ///   `convert_expr_to_smt`. This is because any sub expressions which
 ///   `convert_expr_to_smt` translates into function applications, must also be
 ///   returned by this`gather_dependent_expressions` function.
-/// \note `symbol_exprt`, `array_exprt` and `nondet_symbol_exprt` add dependant expressions.
+/// \details `symbol_exprt`, `array_exprt` and `nondet_symbol_exprt` add
+///   dependant expressions.
 static std::vector<exprt> gather_dependent_expressions(const exprt &expr)
 {
   std::vector<exprt> dependent_expressions;
