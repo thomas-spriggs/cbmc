@@ -578,6 +578,10 @@ TEST_CASE(
       {
         test.sent_commands.clear();
         test.mock_responses = {
+            // get-value response for array_size
+            smt_get_value_responset{{{
+              {smt_bit_vector_constant_termt{2, 32}},
+                smt_bit_vector_constant_termt{2, 32}}}},
             // get-value response for first element
             smt_get_value_responset{{{
               {smt_array_theoryt::select(
