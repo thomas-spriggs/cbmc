@@ -124,7 +124,8 @@ static smt_termt convert_expr_to_smt(
   const nondet_symbol_exprt &nondet_symbol,
   const sub_expression_mapt &converted)
 {
-  // A nondet_symbol is a lookup to an unconstrained term (already added as a dependency)
+  // A nondet_symbol is a reference to an unconstrained function. This function
+  // will already have been added as a dependency.
   return smt_identifier_termt{
     nondet_symbol.get_identifier(),
     convert_type_to_smt_sort(nondet_symbol.type())};
