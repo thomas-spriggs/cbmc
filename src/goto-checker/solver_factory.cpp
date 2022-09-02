@@ -148,7 +148,10 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
   const auto incremental_smt2_solver =
     options.get_option("incremental-smt2-solver");
   if(!incremental_smt2_solver.empty())
-    return get_incremental_smt2(incremental_smt2_solver);
+  {
+    const auto out_filename = options.get_option("outfile");
+    return get_incremental_smt2(incremental_smt2_solver, out_filename);
+  }
   if(options.get_bool_option("smt2"))
     return get_smt2(get_smt2_solver_type());
   return get_default();
@@ -329,12 +332,30 @@ solver_factoryt::get_string_refinement()
     std::move(decision_procedure), std::move(prop));
 }
 
-std::unique_ptr<solver_factoryt::solvert>
-solver_factoryt::get_incremental_smt2(std::string solver_command)
+std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_incremental_smt2(
+  std::string solver_command,
+  std::string outfile)
 {
   no_beautification();
+
+  std::unique_ptr<std::ofstream> out = nullptr;
+  if(!outfile.empty())
+  {
+#ifdef _MSC_VER
+    out = util_make_unique<std::ofstream>(widen(outfile));
+#else
+    out = util_make_unique<std::ofstream>(outfile);
+#endif
+
+    if(!*out)
+    {
+      throw invalid_command_line_argument_exceptiont(
+        "failed to open file: " + outfile, "--outfile");
+    }
+  }
+
   auto solver_process = util_make_unique<smt_piped_solver_processt>(
-    std::move(solver_command), message_handler);
+    std::move(solver_command), message_handler, std::move(out));
 
   return util_make_unique<solvert>(
     util_make_unique<smt2_incremental_decision_proceduret>(

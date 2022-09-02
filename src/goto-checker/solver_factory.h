@@ -76,7 +76,8 @@ protected:
   std::unique_ptr<solvert> get_external_sat();
   std::unique_ptr<solvert> get_bv_refinement();
   std::unique_ptr<solvert> get_string_refinement();
-  std::unique_ptr<solvert> get_incremental_smt2(std::string solver_command);
+  std::unique_ptr<solvert>
+  get_incremental_smt2(std::string solver_command, std::string outfile);
   std::unique_ptr<solvert> get_smt2(smt2_dect::solvert solver);
 
   smt2_dect::solvert get_smt2_solver_type() const;
