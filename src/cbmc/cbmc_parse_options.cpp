@@ -225,10 +225,12 @@ void cbmc_parse_optionst::get_command_line_options(optionst &options)
   if(cmdline.isset("no-simplify"))
     options.set_option("simplify", false);
 
-  if(cmdline.isset("stop-on-fail") ||
-     cmdline.isset("dimacs") ||
-     cmdline.isset("outfile"))
+  if(
+    cmdline.isset("stop-on-fail") || cmdline.isset("dimacs") ||
+    (cmdline.isset("outfile") && !cmdline.isset("incremental-smt2-solver")))
+  {
     options.set_option("stop-on-fail", true);
+  }
 
   if(
     cmdline.isset("trace") || cmdline.isset("compact-trace") ||
@@ -537,7 +539,9 @@ int cbmc_parse_optionst::doit()
   }
 
   if(
-    options.get_bool_option("dimacs") || !options.get_option("outfile").empty())
+    (options.get_bool_option("dimacs") ||
+     !options.get_option("outfile").empty()) &&
+    !options.is_set("incremental-smt2-solver"))
   {
     if(options.get_bool_option("paths"))
     {
