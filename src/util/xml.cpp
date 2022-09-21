@@ -107,6 +107,7 @@ void xmlt::escape(const std::string &s, std::ostream &out)
       break;
 
     default:
+      out << std::flush;
       DATA_INVARIANT(
         static_cast<unsigned char>(ch) >= 32u,
         "XML does not support escaping non-printable character " +
