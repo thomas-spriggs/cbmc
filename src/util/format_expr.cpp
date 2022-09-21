@@ -526,7 +526,7 @@ void format_expr_configt::setup()
 
   expr_map[ID_string_constant] =
     [](std::ostream &os, const exprt &expr) -> std::ostream & {
-    return os << '"' << expr.get_string(ID_value) << '"';
+    return os << '"' << /*expr.get_string(ID_value) <<*/ '"';
   };
 
   expr_map[ID_function_application] =
