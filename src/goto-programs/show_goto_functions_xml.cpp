@@ -82,7 +82,7 @@ xmlt show_goto_functions_xmlt::convert(
 
         xmlt &instruction_value=
           instruction_entry.new_element("instruction_value");
-        instruction_value.data=instruction_builder.str();
+        //instruction_value.data=instruction_builder.str();
         instruction_value.elements.clear();
       }
     }
