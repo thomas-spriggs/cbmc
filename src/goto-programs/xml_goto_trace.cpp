@@ -114,7 +114,7 @@ void convert(
         xml_failure.set_attribute_bool("hidden", step.hidden);
         xml_failure.set_attribute("thread", std::to_string(step.thread_nr));
         xml_failure.set_attribute("step_nr", std::to_string(step.step_nr));
-        xml_failure.set_attribute("reason", id2string(step.comment));
+        //xml_failure.set_attribute("reason", id2string(step.comment));
         xml_failure.set_attribute("property", id2string(step.property_id));
 
         if(!xml_location.name.empty())
