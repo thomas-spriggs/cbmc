@@ -237,7 +237,6 @@ public:
   }
 
 protected:
-  dt *data;
   static dt empty_d;
 
   static void remove_ref(dt *old_data);
@@ -245,6 +244,7 @@ protected:
   void detach();
 
 public:
+  dt *data;
   const dt &read() const
   {
     return *data;

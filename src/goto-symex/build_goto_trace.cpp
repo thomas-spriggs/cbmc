@@ -202,6 +202,62 @@ replace_nondet_in_type(exprt &expr, const decision_proceduret &solver)
     replace_nondet_in_type(sub, solver);
 }
 
+#include <iostream>
+#define WATCHVAR( var ) \
+    	  std::cerr << "DBG: " << __FILE__ << "(" << __LINE__ << ") " << #var << \
+    	    " = [" << (var) << "]" << std::endl
+
+struct position_irept
+{
+  std::unordered_set<void *> parent_addresses;
+  std::string position;
+  std::reference_wrapper<const irept> irep;
+};
+
+std::string print_address_id(const irept &irep)
+{
+  std::stringstream buffer;
+  buffer << irep.data << "-" << irep.id();
+  return buffer.str();
+}
+
+void print_tree(const irept &irep)
+{
+  const position_irept starting{{}, print_address_id(irep), irep};
+  std::deque<position_irept> work_queue{starting};
+  while(!work_queue.empty())
+  {
+    const position_irept current = std::move(work_queue.back());
+    work_queue.pop_back();
+    std::cerr << current.position;
+    const auto back_edge = current.parent_addresses.find(current.irep.get().data);
+    if(back_edge != current.parent_addresses.cend())
+    {
+      std::cerr << "**CYCLE**" << std::endl;
+      continue;
+    } else {
+      std::cerr << std::endl;
+    }
+
+    auto new_parents = current.parent_addresses;
+    new_parents.insert(current.irep.get().data);
+    for(const auto &pair : current.irep.get().get_named_sub())
+    {
+      const auto sub = pair.second;
+      const auto new_position = current.position + "(" + id2string(pair.first) +
+                                ")" + print_address_id(sub);
+      work_queue.push_back(position_irept{new_parents, new_position, sub});
+    }
+    for(size_t index = 0; index < current.irep.get().get_sub().size(); ++index)
+    {
+      const auto sub = current.irep.get().get_sub()[index];
+      const std::string new_position = current.position + "[" +
+                                       std::to_string(index) + "]" + print_address_id(sub);
+      work_queue.push_back(position_irept{new_parents, new_position, sub});
+    }
+  }
+}
+
 void build_goto_trace(
   const symex_target_equationt &target,
   ssa_step_predicatet is_last_step_to_keep,
@@ -385,6 +441,9 @@ void build_goto_trace(
       {
         goto_trace_step.full_lhs_value =
           decision_procedure.get(SSA_step.ssa_full_lhs);
+        WATCHVAR(goto_trace_step.full_lhs_value.data);
+        print_tree(goto_trace_step.full_lhs_value);
+        WATCHVAR(goto_trace_step.full_lhs_value.pretty());
         simplify(goto_trace_step.full_lhs_value, ns);
         replace_nondet_in_type(
           goto_trace_step.full_lhs_value, decision_procedure);
