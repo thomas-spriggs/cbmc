@@ -338,6 +338,14 @@ void smt2_incremental_decision_proceduret::set_to(const exprt &expr, bool value)
           << expr.pretty(2, 0) << messaget::eom;
   });
 
+  // Work around expressions of the form "x == x" being used to add handles.
+  const auto equal = expr_try_dynamic_cast<equal_exprt>(expr);
+  if(equal && equal->lhs() == equal->rhs())
+  {
+    ensure_handle_for_expr_defined(equal->lhs());
+    return;
+  }
+
   define_dependent_functions(expr);
   auto converted_term = [&]() -> smt_termt {
     const auto expression_handle_identifier =
