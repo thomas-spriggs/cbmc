@@ -41,6 +41,7 @@ const char *smt_array_theoryt::storet::identifier()
 {
   return "store";
 }
+
 smt_sortt smt_array_theoryt::storet::return_sort(
   const smt_termt &array,
   const smt_termt &index,
@@ -48,6 +49,7 @@ smt_sortt smt_array_theoryt::storet::return_sort(
 {
   return array.get_sort();
 }
+
 void smt_array_theoryt::storet::validate(
   const smt_termt &array,
   const smt_termt &index,
