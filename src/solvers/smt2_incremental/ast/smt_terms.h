@@ -178,6 +178,49 @@ private:
     return indices(function, has_indicest<functiont>{});
   }
 
+  template <typename... argument_typest>
+  struct argument_validation_detectort
+  {
+    // This is used to detect if \p functiont has an `validate` member
+    // function. It will resolve to std::true_type if it does or std::false
+    // type otherwise.
+    template <typename functiont, class = void>
+    struct has_validate_functiont : std::false_type
+    {
+    };
+
+    template <typename functiont>
+    struct has_validate_functiont<functiont,
+      void_t<decltype(std::declval<functiont>().validate(
+        std::declval<argument_typest>()...))>> : std::true_type
+    {
+    };
+
+    template <typename functiont>
+    static constexpr bool has_validate_function()
+    {
+      return has_validate_functiont<functiont>::value;
+    }
+
+
+    // This is used to detect if \p functiont has an `validation_errors`
+    // member function. It will resolve to std::true_type if it does or
+    // std::false type otherwise.
+    template <typename functiont, class = void>
+    struct has_validation_errors_functiont : std::false_type
+    {
+    };
+
+    template <typename functiont>
+    struct has_validation_errors_functiont<
+      functiont,
+      void_t<decltype(std::declval<functiont>().validation_errors(
+        std::declval<argument_typest>()...))>> : std::true_type
+    {
+    };
+  };
+
+
 public:
   const smt_identifier_termt &function_identifier() const;
   std::vector<std::reference_wrapper<const smt_termt>> arguments() const;
@@ -193,6 +236,40 @@ public:
     explicit factoryt(function_type_argument_typest &&...arguments) noexcept
       : function{std::forward<function_type_argument_typest>(arguments)...}
     {
+    }
+
+    template <typename... argument_typest>
+    void validate(argument_typest &&...arguments,
+                    const std::true_type &has_validate_function)
+    {
+      function.validate(arguments...);
+    }
+
+    template <typename... argument_typest>
+    void validate(argument_typest &&...arguments,
+                    const std::false_type &has_validate_function)
+    {
+      const auto validation_errors = function.validation_errors(arguments...);
+      INVARIANT(validation_errors.empty(), validation_errors[0]);
+    }
+
+    template <typename... argument_typest>
+    void validate(argument_typest &&...arguments)
+    {
+      const argument_validation_detectort<argument_typest...> detector;
+      const auto has_validate_function = argument_validation_detectort<argument_typest...>::has_validate_functiont<decltype(function)>::value;
+//      using detectort = argument_validation_detectort<argument_typest...>;
+//      using has_validate_functiont =
+//        typename detectort::template has_validate_function<functiont>;
+//      using has_validation_errors_functiont =
+//        typename detectort::template has_validation_errors_function<functiont>;
+//      static_assert(
+//        has_validate_functiont::value !=
+//        has_validation_errors_functiont::value,
+//        "`functiont` is expected to have a `validate` function or a "
+//                    "`validation_errors` function, but not both.");
+//      validate(std::forward<argument_typest>(arguments)...,
+//        detector.has_validate_functiont<functionty>{});
     }
 
     template <typename... argument_typest>
