@@ -27,21 +27,10 @@ void associate_pointer_sizes(
       if(find_result != type_size_map.cend())
         return;
       exprt pointer_size_expr;
-      // There's a special case for a pointer subtype here: the case where the
-      // pointer is `void *`. This means that we don't know the underlying base
-      // type, so we're just assigning a size expression value of 1 (given that
-      // this is going to be used in a multiplication and 1 is the identity
-      // value for multiplication)
-      if(is_void_pointer(*pointer_type))
-      {
         pointer_size_expr = from_integer(1, size_type());
-      }
-      else
-      {
-        auto pointer_size_opt = size_of_expr(pointer_type->base_type(), ns);
-        PRECONDITION(pointer_size_opt.has_value());
-        pointer_size_expr = pointer_size_opt.value();
-      }
+      auto pointer_size_opt = size_of_expr(pointer_type->base_type(), ns);
+      PRECONDITION(pointer_size_opt.has_value());
+      pointer_size_expr = pointer_size_opt.value();
       auto pointer_size_term = convert_expr_to_smt(
         pointer_size_expr,
         object_map,
