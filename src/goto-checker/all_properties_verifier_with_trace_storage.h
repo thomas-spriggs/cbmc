@@ -19,6 +19,7 @@ Author: Daniel Kroening, Peter Schrammel
 #include "incremental_goto_checker.h"
 #include "properties.h"
 #include "report_util.h"
+#include "verification_result.h"
 
 template <class incremental_goto_checkerT>
 class all_properties_verifier_with_trace_storaget : public goto_verifiert
@@ -63,6 +64,13 @@ public:
     }
 
     return determine_result(properties);
+  }
+
+  verification_resultt produce_results()
+  {
+    auto res = operator()();
+    auto props = get_properties();
+    return verification_resultt(props, res);
   }
 
   void report() override

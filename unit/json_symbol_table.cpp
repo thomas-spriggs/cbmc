@@ -20,27 +20,6 @@
 
 #include <iosfwd>
 
-class test_ui_message_handlert : public ui_message_handlert
-{
-public:
-  explicit test_ui_message_handlert(std::ostream &out)
-    : ui_message_handlert(cmdlinet(), ""), json_stream_array(out, 0)
-  {
-  }
-
-  uit get_ui() const
-  {
-    return uit::JSON_UI;
-  }
-
-  json_stream_arrayt &get_json_stream()
-  {
-    return json_stream_array;
-  }
-
-  json_stream_arrayt json_stream_array;
-};
-
 TEST_CASE("json symbol table read/write consistency")
 {
   // Get symbol table associated with goto program
