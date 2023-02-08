@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Fotis Koutoulakis for Diffblue Ltd.
+// Copyright (c) 2023 Fotis Koutoulakis for Diffblue Ltd.
 
 /// \file Integration tests for the the interface of the class for verification results
 ///       produced by various verification engines (classes downstream of 
@@ -14,6 +14,7 @@
 
 #include <testing-utils/use_catch.h>
 #include <testing-utils/get_goto_model_from_c.h>
+#include <testing-utils/run_verification_engine.h>
 #include <testing-utils/message.h>
 
 SCENARIO("When we analyse a model produced from some C code we get back verification results in a structured format", "[goto-checker][verification-result]")
@@ -30,10 +31,7 @@ SCENARIO("When we analyse a model produced from some C code we get back verifica
 
         WHEN("We run that model past the verification engines") {
             // Initialise dependencies of verification engine
-            std::ostringstream out;
-            test_ui_message_handlert_plain ui_message_handler(out);
-            all_properties_verifier_with_trace_storaget<multi_path_symex_checkert> verifier(optionst{}, ui_message_handler, model);
-            auto s = verifier.produce_results();
+            auto s = run_verification_engine(model);
             
             THEN("The verification result should be success") {
                 REQUIRE(s.verifier_result == resultt::PASS);
