@@ -11,4 +11,4 @@
 /// Initiate the verification engine and its dependencies and perform a simple
 /// verification run against the provided goto-model, returning the results
 /// in a structured way.
-verification_resultt run_verification_engine(goto_modelt &model);
+verification_resultt run_verification_engine(goto_modelt &model) ;
