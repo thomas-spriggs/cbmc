@@ -26,7 +26,6 @@
 #include <pointer-analysis/add_failed_symbols.h>
 
 #include <util/config.h>
-#include <util/message.h>
 #include <util/options.h>
 
 #include "message.h"
@@ -51,25 +50,30 @@ verification_resultt run_verification_engine(goto_modelt &model) {
     // engine in a way that provides useful results (otherwise, VCCs may get pruned).
     
     // Initialise dependencies of verification engine
+
+    // Initialise null message handler (acts like a drain, removing noisy
+    // output from test output stream).
     std::ostringstream out;
-    test_ui_message_handlert_plain ui_message_handler(out);
-    messaget log{ui_message_handler};
+    test_null_ui_message_handler null_ui_message_handler(out);
+    messaget log{null_ui_message_handler};
 
     // Initialise options
     auto options = make_internal_default_options();
 
-    // Perform needed instrumentation passes
+    // Perform dependent instrumentation passes before verification engine
+    // runs.
     remove_asm(model);
     link_to_library(
         model,
-        ui_message_handler,
+        null_ui_message_handler,
         cprover_c_library_factory);
     process_goto_program(model, options, log);
     add_failed_symbols(model.symbol_table);
     label_properties(model);
     remove_skip(model);
     
-    all_properties_verifier_with_trace_storaget<multi_path_symex_checkert> verifier(options, ui_message_handler, model);
+    // Run verification engine and return the results
+    all_properties_verifier_with_trace_storaget<multi_path_symex_checkert> verifier(options, null_ui_message_handler, model);
 
     return verifier.produce_results();
 }

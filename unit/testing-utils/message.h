@@ -40,20 +40,26 @@ public:
   json_stream_arrayt json_stream_array;
 };
 
-class test_ui_message_handlert_plain : public ui_message_handlert
+// Used for driving components that produce a lot of noisy output which is
+// mostly unneeded for testing. An example of this is running the verification
+// engine in run_verification_engine.cpp
+class test_null_ui_message_handler : public ui_message_handlert
 {
-public:
-  explicit test_ui_message_handlert_plain(std::ostream &out)
-    : ui_message_handlert(cmdlinet(), "")
+  public:
+  explicit test_null_ui_message_handler(std::ostream &out)
+    : ui_message_handlert(cmdlinet(), "unit")
   {
   }
 
-  uit get_ui() const
+  uit get_ui() const override
   {
     return uit::PLAIN;
   }
+
+  void print(
+    unsigned level,
+    const std::string &message,
+    const source_locationt &location) override {}
 };
-
-
 
 #endif // CPROVER_TESTING_UTILS_MESSAGE_H
