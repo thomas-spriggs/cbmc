@@ -5,6 +5,9 @@
 ///       in the end returning a verification result type so that we can make assertions
 ///       against its structure.
 
+#ifndef CPROVER_TESTING_UTILS_RUN_VERIFICATION_ENGINE_H
+#define CPROVER_TESTING_UTILS_RUN_VERIFICATION_ENGINE_H
+
 #include <goto-checker/verification_result.h>
 #include <goto-programs/goto_model.h>
 
@@ -12,3 +15,5 @@
 /// verification run against the provided goto-model, returning the results
 /// in a structured way.
 verification_resultt run_verification_engine(goto_modelt &model) ;
+
+#endif // CPROVER_TESTING_UTILS_RUN_VERIFICATION_ENGINE_H

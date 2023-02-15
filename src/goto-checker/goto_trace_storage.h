@@ -22,7 +22,8 @@ class goto_trace_storaget
 {
 public:
   explicit goto_trace_storaget(const namespacet &);
-  goto_trace_storaget(const goto_trace_storaget &) = delete;
+  goto_trace_storaget(const goto_trace_storaget &) = default;
+  goto_trace_storaget(goto_trace_storaget&& o) = default;
 
   /// Store trace that ends in a violated assertion
   const goto_tracet &insert(goto_tracet &&);

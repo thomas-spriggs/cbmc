@@ -41,6 +41,7 @@ static optionst make_internal_default_options()
   options.set_option("arrays-uf", "auto");
   options.set_option("depth", UINT32_MAX);
   options.set_option("sat-preprocessor", true);
+  options.set_option("trace", true);
   return options;
 }
 

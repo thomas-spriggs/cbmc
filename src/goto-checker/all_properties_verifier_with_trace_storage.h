@@ -70,7 +70,7 @@ public:
   {
     auto res = operator()();
     auto props = get_properties();
-    return verification_resultt(props, res);
+    return verification_resultt(props, res, std::move(move_traces()));
   }
 
   void report() override
@@ -99,6 +99,11 @@ protected:
   incremental_goto_checkerT incremental_goto_checker;
   std::size_t iterations = 1;
   goto_trace_storaget traces;
+
+  goto_trace_storaget &move_traces()
+  {
+    return traces;
+  }
 };
 
 #endif // CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
