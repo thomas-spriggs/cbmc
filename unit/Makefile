@@ -57,6 +57,7 @@ SRC += analyses/ai/ai.cpp \
        goto-cc/armcc_cmdline.cpp \
        goto-checker/properties/property_status.cpp \
        goto-checker/report_util/is_property_less_than.cpp \
+       goto-checker/verification_results/verification_resultt.cpp \
        goto-instrument/cover_instrument.cpp \
        goto-instrument/cover/cover_only.cpp \
        goto-synthesizer/expr_enumerator/expr_enumerator.cpp \
