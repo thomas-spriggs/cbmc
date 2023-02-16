@@ -1,4 +1,6 @@
-# Title
+\ingroup module_hidden
+
+\page goto-program-transformations Goto Program Transformations
 
 TODO:
 - Add link for each pass to the function that implements it.
