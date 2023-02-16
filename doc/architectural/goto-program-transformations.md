@@ -10,13 +10,18 @@ TODO:
 
 ## Core Transformation Passes
 
-This section lists the transformation passes that must have been applied for the goto model to be in core goto format.
+This section lists the transformation passes that must have been applied for the
+goto model to be in core goto format.
 
-Note that the passes are listed below in the order they are currently called in CBMC. While all dependencies on the ordering are not fully documented, the following order should be used.
+Note that the passes are listed below in the order they are currently called in
+CBMC. While all dependencies on the ordering are not fully documented, the
+following order should be used.
 
 ### Removal/Lowering of Assembly
 
-This pass goes through the goto model and removes or lowers instances of assembly intructions. Assembly instructions are stored in instances of the `other` instruction.
+This pass goes through the goto model and removes or lowers instances of
+assembly intructions. Assembly instructions are stored in instances of the
+`other` instruction.
 
 _This pass has no predeccesor._
 
@@ -24,13 +29,19 @@ _This pass has no predeccesor._
 
 Not sure what this does yet...
 
-_Predecessor passes are [Removal/Lowering of Assembly] or [Linking of Standard Libraries]._
+_Predecessor passes are [Removal/Lowering of Assembly] or
+[Linking of Standard Libraries]._
 
 ### Removal/Lowering of Function Pointers
 
-This pass finds all the instructions which are function calls to the value of a function pointer. Each instruction is then replaced with a switch block. The switch block contains a case for each of the potential targets of the  function pointer. The targets are found by looking for all functions in the goto program that match the type of the function pointer.
+This pass finds all the instructions which are function calls to the value of a
+function pointer. Each instruction is then replaced with a switch block. The
+switch block contains a case for each of the potential targets of the  function
+pointer. The targets are found by looking for all functions in the goto program
+that match the type of the function pointer.
 
-Note that this pass must be applied after all linking has been done. Either for the standard libraries [link] or when combining multiple goto models into one.
+Note that this pass must be applied after all linking has been done. Either for
+the standard libraries [link] or when combining multiple goto models into one.
 
 _Predecessor pass is [String Instrumentation]._
 
@@ -44,7 +55,10 @@ _Predecessor pass is [Removal/Lowering of Function Pointers]._
 
 ### Instrument/Remove Preconditions
 
-This pass moves preconditions associated with functions to call sites rather than at the head of the function. Note that functions may have multiple call sites and in this case the instrumentation is copied to these multiple call sites.
+This pass moves preconditions associated with functions to call sites rather
+than at the head of the function. Note that functions may have multiple call
+sites and in this case the instrumentation is copied to these multiple call
+sites.
 
 _Predecessor pass is [Memory Mapped IO Instrumentation]._
 
@@ -58,30 +72,39 @@ _Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining].
 
 ### Remove/Lower Vector Typed Expressions
 
-This pass removes/lowers expressions corresponding to CPU instruction sets such as MMX, SSE and AVX. For more details on how this is done see vector_typet and remove_vector.cpp.
+This pass removes/lowers expressions corresponding to CPU instruction sets such
+as MMX, SSE and AVX. For more details on how this is done see vector_typet and
+remove_vector.cpp.
 
 _Predecessor pass is [Removal/Lowering of Return Statements]._
 
 
 ### Remove/Lower Complex Typed Expressions
 
-This pass is for the handling of complex numbers in the mathematical sense of a number consisting of paired real and imaginary parts. These are removed/lowered in this pass.
+This pass is for the handling of complex numbers in the mathematical sense of a
+number consisting of paired real and imaginary parts. These are removed/lowered
+in this pass.
 
 _Predecessor pass is [Remove/Lower Vector Typed Expressions]._
 
 
 ### Rewrite Unions
 
-This pass converts union member access into byte extract and byte update operations. 
+This pass converts union member access into byte extract and byte update
+operations. 
 
-**TODO: Pointer/type related operations require closer implementation examination.**
+**TODO: Pointer/type related operations require closer implementation
+examination.**
 
 _Predecessor pass is [Remove/Lower Complex Typed Expressions]._
 
 
 ### goto_check_c
 
-This is a pass that can add many checks and instrumentation largely related to the definition of the C language. Note that this transformation pass is mandatory in the current implementation, however it may have no effect depending on the command line options specified.
+This is a pass that can add many checks and instrumentation largely related to
+the definition of the C language. Note that this transformation pass is
+mandatory in the current implementation, however it may have no effect depending
+on the command line options specified.
 
 **TODO: add some more details/hints on what the options of note are**
 
@@ -90,14 +113,18 @@ _Predecessor pass is [Rewrite Unions]._
 
 ### Adjust Float Expressions
 
-This is a transform from general mathematical operations over floating point types into floating point specific operator variations which include a rounding mode.
+This is a transform from general mathematical operations over floating point
+types into floating point specific operator variations which include a rounding
+mode.
 
 _Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions]._
 
 
 ### Goto Functions Update
 
-This transformation updates **(in memory?)** data goto program fields which may have been invalidated by previous passes. Note that the following are performed by this pass:
+This transformation updates **(in memory?)** data goto program fields which may
+have been invalidated by previous passes. Note that the following are performed
+by this pass:
 - Incoming edges
 - Target numbers
 - location numbers
@@ -108,14 +135,18 @@ _Predecessor passes are [Adjust Float Expressions] or [String Abstraction]._
 
 ### Add Failed Symbols
 
-This pass adds failed symbols to the symbol table only. See `src/pointer-analysis/add_failed_symbols.h` for details.
+This pass adds failed symbols to the symbol table only. See
+`src/pointer-analysis/add_failed_symbols.h` for details.
 
-_Predecessor passes are [Goto Functions Update] or [Add Non-Deterministic Initialisation of Global Scoped Variables]._
+_Predecessor passes are [Goto Functions Update] or
+[Add Non-Deterministic Initialisation of Global Scoped Variables]._
 
 
 ### Remove Skip Instructions
 
-This transformation removes skip instructions. Note that this transformation is called in many places and may be called as part of other transformations. This instance here is part of the mandatory transformation to reach core goto format.
+This transformation removes skip instructions. Note that this transformation is
+called in many places and may be called as part of other transformations. This
+instance here is part of the mandatory transformation to reach core goto format.
 
 _Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions]._
 
@@ -133,27 +164,36 @@ _Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals]._
 
 ## Optional Transformation Passes
 
-The sections lists the optional transformation passes that are optional and will modify a goto model. Note that these are documented here for consistency, but not require for core goto format.
+The sections lists the optional transformation passes that are optional and will
+modify a goto model. Note that these are documented here for consistency, but
+not require for core goto format.
 
-Note for each optional pass there is a listed predeceesor pass. This is the pass currently called before the listed pass in CBMC. While the ordering may not be fully documented, this should be followed.
+Note for each optional pass there is a listed predeceesor pass. This is the pass
+currently called before the listed pass in CBMC. While the ordering may not be
+fully documented, this should be followed.
 
 ### Linking of Standard Libraries
 
-This pass links the function defenitions from the Cprover standard library models to the current goto model.
+This pass links the function defenitions from the Cprover standard library
+models to the current goto model.
 
 _Predecessor pass is [Removal/Lowering of Assembly]._
 
 
 ### Partial Inlining
 
-This pass does partial inlining when this option is switched on. Partal inlining is inlining of functions either: marked as inline, or smaller than a specified limit. For further detail see the implementation XXXXXXX
+This pass does partial inlining when this option is switched on. Partal inlining
+is inlining of functions either: marked as inline, or smaller than a specified
+limit. For further detail see the implementation XXXXXXX
 
 _Predecessor pass is [Instrument/Remove Preconditions]._
 
 
 ### Transform Assertions Assumptions
  
- This pass removes user provided assertions and assumptions when user has opted to do so. Note that this pass removes skip instructions if any other changes are made.
+ This pass removes user provided assertions and assumptions when user has opted
+ to do so. Note that this pass removes skip instructions if any other changes
+ are made.
 
 _Predecessor pass is [goto_check_c]._
 
@@ -167,27 +207,35 @@ _Predecessor pass is [Adjust Float Expressions]._
 
 ### Add Non-Deterministic Initialisation of Global Scoped Variables
 
-This transformation adds non-deterministic initialisation of global scoped variables including static variables. For details see src/goto-`instrument/nondet_static.h`. The initialisation code is added to the `CPROVER_initialize` function in the goto model.
+This transformation adds non-deterministic initialisation of global scoped
+variables including static variables. For details see
+src/goto-`instrument/nondet_static.h`. The initialisation code is added to the
+`CPROVER_initialize` function in the goto model.
 
 _Predecessor pass is [Goto Functions Update]._
 
 
 ### Remove Unused Functions
 
-This pass removes unused functions from the goto model. In practice this builds a collection of all the functions that are potentially called, and then removes any function not in this collection.
+This pass removes unused functions from the goto model. In practice this builds
+a collection of all the functions that are potentially called, and then removes
+any function not in this collection.
 
 _Predecessor pass is [Add Failed Symbols]._
 
 
 ### Add Coverage Goals
 
-This transformation adds coverage goals instrumentation and is only applied if the `--cover` option has been specified.
+This transformation adds coverage goals instrumentation and is only applied if
+the `--cover` option has been specified.
 
 _Predecessor pass is [Remove Skip Instructions]._
 
 
 ### Slicing
 
-This includes various slicing passes as specified by various slicing command line options. For full details see the various slicing options and source code XXXXXXX.
+This includes various slicing passes as specified by various slicing command
+line options. For full details see the various slicing options and source code
+XXXXXXX.
 
 _Predecessor pass is [Label Properties]._
