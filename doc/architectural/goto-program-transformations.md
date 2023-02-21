@@ -27,7 +27,10 @@ _This pass has no predeccesor._
 
 ### String Instrumentation
 
-Not sure what this does yet...
+This (optional) pass adds checks on calls to some of the C standard library
+string functions. It uses the tracking information added by the
+[string-abstraction] pass. It is switched on by the `--string-abstraction`
+command line option.
 
 _Predecessor passes are [Removal/Lowering of Assembly] or
 [Linking of Standard Libraries]._
@@ -200,7 +203,8 @@ _Predecessor pass is [goto_check_c]._
 
 ### String Abstraction
 
-**This is a transformation that is turned on by the XXXXX option.**
+This (optional) transformation pass adds tracking of length of C strings. It is
+switched on by the `--string-abstraction` command line option.
 
 _Predecessor pass is [Adjust Float Expressions]._
 
