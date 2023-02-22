@@ -23,6 +23,9 @@ This pass goes through the goto model and removes or lowers instances of
 assembly intructions. Assembly instructions are stored in instances of the
 `other` instruction.
 
+The implementation of this pass is called via the \ref remove_asm(goto_modelt &)
+function. For full documentation of this pass see \ref remove_asm.h
+
 _This pass has no predeccesor._
 
 ### String Instrumentation
