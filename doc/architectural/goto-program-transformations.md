@@ -32,11 +32,15 @@ _This pass has no predeccesor._
 
 This (optional) pass adds checks on calls to some of the C standard library
 string functions. It uses the tracking information added by the
-[string-abstraction] pass. It is switched on by the `--string-abstraction`
-command line option.
+[string-abstraction](#String Abstraction) pass. It is switched on by the
+`--string-abstraction` command line option.
 
-_Predecessor passes are [Removal/Lowering of Assembly] or
-[Linking of Standard Libraries]._
+The string instrumentation pass is implemented in the `string_instrumentation`
+function.
+
+_Predecessor passes are
+[Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly) or
+[Linking of Standard Libraries](#Linking-of-Standard-Libraries)._
 
 ### Removal/Lowering of Function Pointers
 
