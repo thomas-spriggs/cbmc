@@ -5,17 +5,10 @@
 ///       in the end returning a verification result type so that we can make assertions
 ///       against its structure.
 
+#include "run_verification_engine.h"
 
-#include <sstream>
-
-#include <ansi-c/cprover_library.h>
-
-#include <assembler/remove_asm.h>
-
-#include <goto-checker/multi_path_symex_checker.h>
-#include <goto-checker/all_properties_verifier_with_trace_storage.h>
-#include <goto-checker/properties.h>
-#include <goto-checker/verification_result.h>
+#include <util/config.h>
+#include <util/options.h>
 
 #include <goto-programs/goto_model.h>
 #include <goto-programs/link_to_library.h>
@@ -23,14 +16,17 @@
 #include <goto-programs/remove_skip.h>
 #include <goto-programs/set_properties.h>
 
+#include <ansi-c/cprover_library.h>
+#include <assembler/remove_asm.h>
+#include <goto-checker/all_properties_verifier_with_trace_storage.h>
+#include <goto-checker/multi_path_symex_checker.h>
+#include <goto-checker/properties.h>
+#include <libcprover-cpp/verification_result.h>
 #include <pointer-analysis/add_failed_symbols.h>
-
-#include <util/config.h>
-#include <util/options.h>
 
 #include "message.h"
 
-#include "run_verification_engine.h"
+#include <sstream>
 
 static optionst make_internal_default_options()
 {
@@ -76,6 +72,9 @@ verification_resultt run_verification_engine(goto_modelt &model) {
     // Run verification engine and return the results
     all_properties_verifier_with_trace_storaget<multi_path_symex_checkert> verifier(options, null_ui_message_handler, model);
 
-    return verifier.produce_results();
+    auto res = verifier();
+    auto props = verifier.get_properties();
+
+    return verification_resultt{props, res, std::move(verifier.move_traces())};
 }
 

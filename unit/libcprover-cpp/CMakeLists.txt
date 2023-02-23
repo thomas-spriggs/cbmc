@@ -5,9 +5,11 @@ add_executable(lib-unit ${sources})
 target_include_directories(lib-unit
     PUBLIC
     ${CBMC_SOURCE_DIR}/libcprover-cpp
+    ${CBMC_SOURCE_DIR}/unit/testing-utils
 )
 target_link_libraries(lib-unit
     cprover-api-cpp
+    testing-utils
 )
 
 add_test(

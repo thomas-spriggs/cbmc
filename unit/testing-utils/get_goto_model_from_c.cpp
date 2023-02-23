@@ -24,8 +24,6 @@ Author: Daniel Poetzl
 
 #include <testing-utils/message.h>
 
-#include <iostream>
-
 goto_modelt get_goto_model_from_c(std::istream &in)
 {
   {

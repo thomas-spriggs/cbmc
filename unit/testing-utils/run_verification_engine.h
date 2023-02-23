@@ -8,8 +8,9 @@
 #ifndef CPROVER_TESTING_UTILS_RUN_VERIFICATION_ENGINE_H
 #define CPROVER_TESTING_UTILS_RUN_VERIFICATION_ENGINE_H
 
-#include <goto-checker/verification_result.h>
 #include <goto-programs/goto_model.h>
+
+#include <libcprover-cpp/verification_result.h>
 
 /// Initiate the verification engine and its dependencies and perform a simple
 /// verification run against the provided goto-model, returning the results

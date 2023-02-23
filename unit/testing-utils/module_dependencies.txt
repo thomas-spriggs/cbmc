@@ -3,6 +3,7 @@ ansi-c
 catch
 goto-programs
 langapi
+libcprover-cpp
 solvers/smt2
 testing-utils
 util

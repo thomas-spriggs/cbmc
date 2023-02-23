@@ -29,6 +29,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <iostream>
 
 extern configt config;
 
@@ -54,6 +55,7 @@ api_sessiont::api_sessiont(const api_optionst &options)
   implementation->message_handler =
     util_make_unique<null_message_handlert>(null_message_handlert{});
   implementation->options = options.to_engine_options();
+  implementation->options->set_option("trace", true);
   // Needed to initialise the language options correctly
   cmdlinet cmdline;
   // config is global in config.cpp
@@ -152,7 +154,9 @@ void api_sessiont::verify_model() const
   if(::process_goto_program(
        *implementation->model, *implementation->options, log))
   {
-    return;
+    // TODO: Make more robust.
+    // return;
+    INVARIANT(false, "process_goto_program failed");
   }
 
   // add failed symbols
@@ -174,6 +178,60 @@ void api_sessiont::verify_model() const
       *implementation->options, ui_message_handler, *implementation->model);
   (void)verifier();
   verifier.report();
+}
+
+// TODO: This is a temporary function - it's basically `verify_model`, tweaked
+// to return the results in a structured format. It's temporary in the sense
+// that this will get folded into the `verify_model` function, but I want to do
+// this slightly later because modifying the interface of `verify_model` from the
+// C++ end breaks the Rust API for now, and I want to take steps one at a time.
+verification_resultt api_sessiont::produce_results()
+{
+  PRECONDITION(implementation->model);
+
+  // Remove inline assembler; this needs to happen before adding the library.
+  remove_asm(*implementation->model);
+
+  // add the library
+  messaget log{*implementation->message_handler};
+  log.status() << "Adding CPROVER library (" << config.ansi_c.arch << ")"
+               << messaget::eom;
+  link_to_library(
+    *implementation->model,
+    *implementation->message_handler,
+    cprover_c_library_factory);
+
+  // Common removal of types and complex constructs
+  if(::process_goto_program(
+       *implementation->model, *implementation->options, log))
+  {
+    // TODO: Make more robust.
+    INVARIANT(false, "process_goto_program failed");
+  }
+
+  // add failed symbols
+  // needs to be done before pointer analysis
+  add_failed_symbols(implementation->model->symbol_table);
+
+  // label the assertions
+  // This must be done after adding assertions and
+  // before using the argument of the "property" option.
+  // Do not re-label after using the property slicer because
+  // this would cause the property identifiers to change.
+  label_properties(*implementation->model);
+
+  remove_skip(*implementation->model);
+
+  ui_message_handlert ui_message_handler(*implementation->message_handler);
+  all_properties_verifier_with_trace_storaget<multi_path_symex_checkert>
+    verifier(
+      *implementation->options, ui_message_handler, *implementation->model);
+  auto res = verifier();
+  auto props = verifier.get_properties();
+  // auto traces = verifier.move_traces();
+  // std::cout << "[DEBUG] traces size is " << traces.all().size() << std::endl;
+  // INVARIANT(traces.all().size() == 1, "traces was 1");
+  return verification_resultt(props, res, std::move(verifier.move_traces()));
 }
 
 void api_sessiont::drop_unused_functions() const

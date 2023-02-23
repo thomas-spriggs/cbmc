@@ -12,14 +12,12 @@ Author: Daniel Kroening, Peter Schrammel
 #ifndef CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
 #define CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
 
-#include "goto_verifier.h"
-
 #include "bmc_util.h"
 #include "goto_trace_storage.h"
+#include "goto_verifier.h"
 #include "incremental_goto_checker.h"
 #include "properties.h"
 #include "report_util.h"
-#include "verification_result.h"
 
 template <class incremental_goto_checkerT>
 class all_properties_verifier_with_trace_storaget : public goto_verifiert
@@ -66,13 +64,6 @@ public:
     return determine_result(properties);
   }
 
-  verification_resultt produce_results()
-  {
-    auto res = operator()();
-    auto props = get_properties();
-    return verification_resultt(props, res, std::move(move_traces()));
-  }
-
   void report() override
   {
     if(options.get_bool_option("trace"))
@@ -94,16 +85,20 @@ public:
     return traces;
   }
 
+  /// @brief Allow moving of the traces out to the client.
+  /// \details This method exists to allow moving out the goto_trace_storaget
+  ///     private member, so that consumers of our various APIs can then introspect
+  ///     these results freely.
+  goto_trace_storaget &move_traces()
+  {
+    return traces;
+  }
+
 protected:
   abstract_goto_modelt &goto_model;
   incremental_goto_checkerT incremental_goto_checker;
   std::size_t iterations = 1;
   goto_trace_storaget traces;
-
-  goto_trace_storaget &move_traces()
-  {
-    return traces;
-  }
 };
 
 #endif // CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
