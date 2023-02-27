@@ -35,8 +35,9 @@ string functions. It uses the tracking information added by the
 [string-abstraction](#String Abstraction) pass. It is switched on by the
 `--string-abstraction` command line option.
 
-The string instrumentation pass is implemented in the `string_instrumentation`
-function.
+The implementation of this pass is called via the
+\ref string_instrumentation(goto_modelt &goto_model) function. Detailed
+documentation of this pass belongs in \ref string_instrumentation.h
 
 _Predecessor passes are
 [Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly) or
