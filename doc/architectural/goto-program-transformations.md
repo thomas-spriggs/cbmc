@@ -181,7 +181,7 @@ _Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals]._
 
 The sections lists the optional transformation passes that are optional and will
 modify a goto model. Note that these are documented here for consistency, but
-not require for core goto format.
+not required for core goto format.
 
 Note for each optional pass there is a listed predeceesor pass. This is the pass
 currently called before the listed pass in CBMC. While the ordering may not be
