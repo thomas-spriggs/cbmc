@@ -189,7 +189,7 @@ fully documented, this should be followed.
 
 ### Linking of Standard Libraries
 
-This pass links the function defenitions from the Cprover standard library
+This pass links the function definitions from the Cprover standard library
 models to the current goto model.
 
 _Predecessor pass is [Removal/Lowering of Assembly]._
