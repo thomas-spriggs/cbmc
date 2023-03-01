@@ -28,20 +28,12 @@ function. For full documentation of this pass see \ref remove_asm.h
 
 _This pass has no predeccesor._
 
-### String Instrumentation
+### Linking of Standard Libraries
 
-This (optional) pass adds checks on calls to some of the C standard library
-string functions. It uses the tracking information added by the
-[string-abstraction](#String Abstraction) pass. It is switched on by the
-`--string-abstraction` command line option.
+This pass links the function definitions from the Cprover standard library
+models to the current goto model.
 
-The implementation of this pass is called via the
-\ref string_instrumentation(goto_modelt &goto_model) function. Detailed
-documentation of this pass belongs in \ref string_instrumentation.h
-
-_Predecessor passes are
-[Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly) or
-[Linking of Standard Libraries](#Linking-of-Standard-Libraries)._
+_Predecessor pass is [Removal/Lowering of Assembly]._
 
 ### Removal/Lowering of Function Pointers
 
@@ -54,8 +46,8 @@ that match the type of the function pointer.
 Note that this pass must be applied after all linking has been done. Either for
 the standard libraries [link] or when combining multiple goto models into one.
 
-_Predecessor pass is [String Instrumentation]._
-
+_Predecessor passes are [String Instrumentation] /
+[Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly)._
 
 ### Memory Mapped IO Instrumentation
 
@@ -187,13 +179,19 @@ Note for each optional pass there is a listed predeceesor pass. This is the pass
 currently called before the listed pass in CBMC. While the ordering may not be
 fully documented, this should be followed.
 
-### Linking of Standard Libraries
+### String Instrumentation
 
-This pass links the function definitions from the Cprover standard library
-models to the current goto model.
+This (optional) pass adds checks on calls to some of the C standard library
+string functions. It uses the tracking information added by the
+[string-abstraction](#String Abstraction) pass. It is switched on by the
+`--string-abstraction` command line option.
 
-_Predecessor pass is [Removal/Lowering of Assembly]._
+The implementation of this pass is called via the
+\ref string_instrumentation(goto_modelt &goto_model) function. Detailed
+documentation of this pass belongs in \ref string_instrumentation.h
 
+_The predecessor pass is
+[Linking of Standard Libraries](#Linking-of-Standard-Libraries)._
 
 ### Partial Inlining
 
