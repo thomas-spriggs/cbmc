@@ -41,10 +41,13 @@ This pass finds all the instructions which are function calls to the value of a
 function pointer. Each instruction is then replaced with a switch block. The
 switch block contains a case for each of the potential targets of the  function
 pointer. The targets are found by looking for all functions in the goto program
-that match the type of the function pointer.
+that approximately match the type of the function pointer.
 
-Note that this pass must be applied after all linking has been done. Either for
-the standard libraries [link] or when combining multiple goto models into one.
+Note that for this pass to work as intended, all potential targets of calls to
+function pointers must be in the model. Otherwise they will not be added to the
+relevant switch blocks. This may cause the assertion that the switch blocks'
+fallthrough is unreachable to be shown to be violated via an invalid counter
+example.
 
 _Predecessor passes are [String Instrumentation] /
 [Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly)._
