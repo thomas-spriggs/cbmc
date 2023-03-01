@@ -29,7 +29,7 @@ public:
   /// @brief Move constructor for the goto_trace_storaget class.
   /// \details Exists so that moving of traces into API consumers who
   ///          then peruse the traces is facilitated.
-  goto_trace_storaget(goto_trace_storaget&& o) = default;
+  goto_trace_storaget(goto_trace_storaget &&o) = default;
 
   /// Store trace that ends in a violated assertion
   const goto_tracet &insert(goto_tracet &&);

@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Fotis Koutoulakis for Diffblue Ltd.
 
-/// \file Provide a convenience function whose aim is to initialise the verification
+/// \file run_verification_engine.cpp
+///       Provide a convenience function whose aim is to initialise the verification
 ///       engine and its dependencies, and run it against a passed in goto-model,
 ///       in the end returning a verification result type so that we can make assertions
 ///       against its structure.
@@ -41,40 +42,38 @@ static optionst make_internal_default_options()
   return options;
 }
 
-verification_resultt run_verification_engine(goto_modelt &model) {
-    // NOTE: This function has been modeled after the `api_sessiont::verify_model()` function
-    // in the C++ API, in order to provide the minimum initialisation sequence for a verification
-    // engine in a way that provides useful results (otherwise, VCCs may get pruned).
-    
-    // Initialise dependencies of verification engine
+verification_resultt run_verification_engine(goto_modelt &model)
+{
+  // NOTE: This function has been modeled after the `api_sessiont::verify_model()` function
+  // in the C++ API, in order to provide the minimum initialisation sequence for a verification
+  // engine in a way that provides useful results (otherwise, VCCs may get pruned).
 
-    // Initialise null message handler (acts like a drain, removing noisy
-    // output from test output stream).
-    std::ostringstream out;
-    test_null_ui_message_handler null_ui_message_handler(out);
-    messaget log{null_ui_message_handler};
+  // Initialise dependencies of verification engine
 
-    // Initialise options
-    auto options = make_internal_default_options();
+  // Initialise null message handler (acts like a drain, removing noisy
+  // output from test output stream).
+  std::ostringstream out;
+  test_null_ui_message_handler null_ui_message_handler(out);
+  messaget log{null_ui_message_handler};
 
-    // Perform dependent instrumentation passes before verification engine
-    // runs.
-    remove_asm(model);
-    link_to_library(
-        model,
-        null_ui_message_handler,
-        cprover_c_library_factory);
-    process_goto_program(model, options, log);
-    add_failed_symbols(model.symbol_table);
-    label_properties(model);
-    remove_skip(model);
-    
-    // Run verification engine and return the results
-    all_properties_verifier_with_trace_storaget<multi_path_symex_checkert> verifier(options, null_ui_message_handler, model);
+  // Initialise options
+  auto options = make_internal_default_options();
 
-    auto res = verifier();
-    auto props = verifier.get_properties();
+  // Perform dependent instrumentation passes before verification engine
+  // runs.
+  remove_asm(model);
+  link_to_library(model, null_ui_message_handler, cprover_c_library_factory);
+  process_goto_program(model, options, log);
+  add_failed_symbols(model.symbol_table);
+  label_properties(model);
+  remove_skip(model);
 
-    return verification_resultt{props, res, std::move(verifier.move_traces())};
+  // Run verification engine and return the results
+  all_properties_verifier_with_trace_storaget<multi_path_symex_checkert>
+    verifier(options, null_ui_message_handler, model);
+
+  auto res = verifier();
+  auto props = verifier.get_properties();
+
+  return verification_resultt{props, res, std::move(verifier.move_traces())};
 }
-

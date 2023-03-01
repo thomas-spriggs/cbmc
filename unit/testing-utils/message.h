@@ -10,12 +10,11 @@ Author: Diffblue Limited.
 #define CPROVER_TESTING_UTILS_MESSAGE_H
 
 #include <util/cmdline.h>
-#include <util/ui_message.h>
-#include <util/message.h>
 #include <util/json_stream.h>
+#include <util/message.h>
+#include <util/ui_message.h>
 
 extern null_message_handlert null_message_handler;
-
 
 // Used primarily for driving some tests using the JSON ui interface (json_symbol_table.cpp)
 // but is of greater generality, added in this file to enable better discovery of the class.
@@ -45,7 +44,7 @@ public:
 // engine in run_verification_engine.cpp
 class test_null_ui_message_handler : public ui_message_handlert
 {
-  public:
+public:
   explicit test_null_ui_message_handler(std::ostream &out)
     : ui_message_handlert(cmdlinet(), "unit")
   {
@@ -59,7 +58,9 @@ class test_null_ui_message_handler : public ui_message_handlert
   void print(
     unsigned level,
     const std::string &message,
-    const source_locationt &location) override {}
+    const source_locationt &location) override
+  {
+  }
 };
 
 #endif // CPROVER_TESTING_UTILS_MESSAGE_H
