@@ -52,6 +52,11 @@ relevant switch blocks. This may cause the assertion that the switch blocks'
 fallthrough is unreachable to be shown to be violated via an invalid counter
 example.
 
+The implementation of this pass is called via the \ref
+remove_function_pointers(message_handlert &, goto_modelt &, bool)
+"remove_function_pointers" function. Detailed documentation of this pass belongs
+in \ref remove_function_pointers.h
+
 _Predecessor passes are [String Instrumentation] /
 [Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly)._
 
