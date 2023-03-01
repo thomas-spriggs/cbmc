@@ -33,6 +33,9 @@ _This pass has no predeccesor._
 This pass links the function definitions from the Cprover standard library
 models to the current goto model.
 
+The implementation of this pass is called via the \ref
+link_to_library(goto_modelt &, message_handlert &, const std::function<void(const std::set<irep_idt> &, const symbol_tablet &, symbol_tablet &, message_handlert &)> &) "link_to_library function."
+
 _Predecessor pass is [Removal/Lowering of Assembly]._
 
 ### Removal/Lowering of Function Pointers
