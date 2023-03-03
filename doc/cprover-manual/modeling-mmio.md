@@ -1,9 +1,5 @@
 [CPROVER Manual TOC](../../)
 
-[comment]: <> (
-\page modeling-mmio
-)
-
 ## Modeling Memory-mapped I/O
 
 Input and output between CPU and devices is facilitated using
