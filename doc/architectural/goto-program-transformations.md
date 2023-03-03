@@ -64,9 +64,10 @@ _Predecessor passes are [String Instrumentation] /
 
 This pass finds pointer dereferences and adds corresponding calls to the
 `__CPROVER_mm_io_r` and `__CPROVER_mm_io_w` modelling functions if they exist.
-See \ref modeling-mmio for details of modeling memory-mapped I/O regions of
-device interfaces. This pass is always carried out but will only make changes if
-one of the modelling functions exist.
+See \ref device-behavior "device behavior section of modeling-mmio.md" for
+details of modeling memory-mapped I/O regions of device interfaces. This pass is
+always carried out but will only make changes if one of the modelling functions
+exist.
 
 _Predecessor pass is [Removal/Lowering of Function Pointers]._
 
