@@ -88,12 +88,6 @@ SCENARIO(
           REQUIRE(prop.second.status == property_statust::FAIL);
         }
       }
-
-      THEN("We should be able to get back a trace for the failed property")
-      {
-        const auto &trace = results.traces[dstringt("main.assertion.1")];
-        REQUIRE(trace.steps.size() == 24);
-      }
     }
   }
 }

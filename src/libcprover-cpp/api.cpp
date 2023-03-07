@@ -225,12 +225,9 @@ verification_resultt api_sessiont::produce_results()
   all_properties_verifier_with_trace_storaget<multi_path_symex_checkert>
     verifier(
       *implementation->options, ui_message_handler, *implementation->model);
-  auto res = verifier();
-  auto props = verifier.get_properties();
-  // auto traces = verifier.move_traces();
-  // std::cout << "[DEBUG] traces size is " << traces.all().size() << std::endl;
-  // INVARIANT(traces.all().size() == 1, "traces was 1");
-  return verification_resultt(props, res, std::move(verifier.move_traces()));
+  auto results = verifier();
+  auto properties = verifier.get_properties();
+  return verification_resultt(properties, results);
 }
 
 void api_sessiont::drop_unused_functions() const

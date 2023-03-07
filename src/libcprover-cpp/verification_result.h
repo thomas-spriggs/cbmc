@@ -6,22 +6,18 @@
 #ifndef CPROVER_GOTO_CHECKER_VERIFICATION_RESULT_H
 #define CPROVER_GOTO_CHECKER_VERIFICATION_RESULT_H
 
-#include "goto-checker/goto_trace_storage.h"
 #include "goto-checker/properties.h"
 
 struct verification_resultt
 {
   const propertiest properties;
   resultt verifier_result;
-  goto_trace_storaget traces;
 
   explicit verification_resultt(
     propertiest &_properties,
-    resultt _verifier_result,
-    goto_trace_storaget &&_traces)
+    resultt _verifier_result)
     : properties(_properties),
-      verifier_result(_verifier_result),
-      traces(_traces)
+      verifier_result(_verifier_result)
   {
   }
 };
