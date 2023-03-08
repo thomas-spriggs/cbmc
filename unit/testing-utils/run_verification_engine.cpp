@@ -72,8 +72,10 @@ verification_resultt run_verification_engine(goto_modelt &model)
   all_properties_verifier_with_trace_storaget<multi_path_symex_checkert>
     verifier(options, null_ui_message_handler, model);
 
+  verification_resultt results;
   auto result = verifier();
-  auto props = verifier.get_properties();
-
-  return verification_resultt{props, result};
+  auto properties = verifier.get_properties();
+  results.set_properties(properties);
+  results.set_result(result);
+  return results;
 }

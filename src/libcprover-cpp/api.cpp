@@ -225,9 +225,12 @@ verification_resultt api_sessiont::produce_results()
   all_properties_verifier_with_trace_storaget<multi_path_symex_checkert>
     verifier(
       *implementation->options, ui_message_handler, *implementation->model);
+  verification_resultt result;
   auto results = verifier();
+  result.set_result(results);
   auto properties = verifier.get_properties();
-  return verification_resultt(properties, results);
+  result.set_properties(properties);
+  return result;
 }
 
 void api_sessiont::drop_unused_functions() const
