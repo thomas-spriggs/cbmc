@@ -82,6 +82,9 @@ than at the head of the function. Note that functions may have multiple call
 sites and in this case the instrumentation is copied to these multiple call
 sites.
 
+The implementation of this is called via \ref
+instrument_preconditions(goto_modelt &goto_model)
+
 _Predecessor pass is [Memory Mapped IO Instrumentation]._
 
 
