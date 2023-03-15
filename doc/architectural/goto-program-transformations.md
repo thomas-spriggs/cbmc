@@ -103,7 +103,8 @@ _Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining].
 
 This pass removes/lowers expressions corresponding to CPU instruction sets such
 as MMX, SSE and AVX. For more details on how this is done see vector_typet and
-remove_vector.cpp.
+remove_vector.cpp. The implementation of this is called via \ref
+remove_vector(goto_modelt &goto_model)
 
 _Predecessor pass is [Removal/Lowering of Return Statements]._
 
