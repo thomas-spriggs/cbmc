@@ -83,7 +83,8 @@ sites and in this case the instrumentation is copied to these multiple call
 sites.
 
 The implementation of this is called via \ref
-instrument_preconditions(goto_modelt &goto_model)
+instrument_preconditions(goto_modelt &goto_model) . Documentation of this pass
+belongs in \ref instrument_preconditions.h
 
 _Predecessor pass is [Memory Mapped IO Instrumentation]._
 
