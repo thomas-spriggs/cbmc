@@ -113,7 +113,9 @@ _Predecessor pass is [Removal/Lowering of Return Statements]._
 
 This pass is for the handling of complex numbers in the mathematical sense of a
 number consisting of paired real and imaginary parts. These are removed/lowered
-in this pass.
+in this pass. The implementation of this is called via \ref
+remove_complex(goto_modelt &) . Documentation for this pass belongs in \ref
+remove_complex.h
 
 _Predecessor pass is [Remove/Lower Vector Typed Expressions]._
 
