@@ -93,6 +93,9 @@ _Predecessor pass is [Memory Mapped IO Instrumentation]._
 
 This pass replaces returns of values with writes and reads to global variables.
 
+The implementation of this is called via \ref remove_returns(goto_modelt &) .
+Detailed documentation of this pass can be found in \ref remove_returns.h
+
 _Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining]._
 
 
