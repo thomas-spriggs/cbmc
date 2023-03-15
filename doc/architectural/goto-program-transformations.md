@@ -128,6 +128,8 @@ operations.
 **TODO: Pointer/type related operations require closer implementation
 examination.**
 
+The implementation of this pass is called via \ref rewrite_union(goto_modelt &)
+
 _Predecessor pass is [Remove/Lower Complex Typed Expressions]._
 
 
