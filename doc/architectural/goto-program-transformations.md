@@ -160,6 +160,8 @@ by this pass:
 - location numbers
 - loop numbers
 
+The implementation of this pass is called via \ref goto_functionst::update()
+
 _Predecessor passes are [Adjust Float Expressions] or [String Abstraction]._
 
 
