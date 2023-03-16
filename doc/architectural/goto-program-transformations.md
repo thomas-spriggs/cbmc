@@ -143,6 +143,10 @@ This is a transform from general mathematical operations over floating point
 types into floating point specific operator variations which include a rounding
 mode.
 
+The implementation of this pass is called via \ref
+adjust_float_expressions(goto_modelt &) . Documentation of this pass can be
+found in \ref adjust_float_expressions.h
+
 _Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions]._
 
 
