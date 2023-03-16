@@ -2,12 +2,6 @@
 
 \page goto-program-transformations Goto Program Transformations
 
-TODO:
-- Add link for each pass to the function that implements it.
-- Add to each title the name of the function that implements it.
-- Add link points and cross-linking
-- Fix consistency of Removal/Remove etc.
-
 ## Core Transformation Passes
 
 This section lists the transformation passes that must have been applied for the
@@ -125,9 +119,6 @@ _Predecessor pass is [Remove/Lower Vector Typed Expressions]._
 This pass converts union member access into byte extract and byte update
 operations. 
 
-**TODO: Pointer/type related operations require closer implementation
-examination.**
-
 The implementation of this pass is called via \ref rewrite_union(goto_modelt &)
 
 _Predecessor pass is [Remove/Lower Complex Typed Expressions]._
@@ -139,8 +130,6 @@ This is a pass that can add many checks and instrumentation largely related to
 the definition of the C language. Note that this transformation pass is
 mandatory in the current implementation, however it may have no effect depending
 on the command line options specified.
-
-**TODO: add some more details/hints on what the options of note are**
 
 _Predecessor pass is [Rewrite Unions]._
 
