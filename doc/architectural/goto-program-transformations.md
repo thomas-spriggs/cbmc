@@ -152,7 +152,7 @@ _Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions]._
 
 ### Goto Functions Update
 
-This transformation updates **(in memory?)** data goto program fields which may
+This transformation updates in memory data goto program fields which may
 have been invalidated by previous passes. Note that the following are performed
 by this pass:
 - Incoming edges
