@@ -131,6 +131,9 @@ the definition of the C language. Note that this transformation pass is
 mandatory in the current implementation, however it may have no effect depending
 on the command line options specified.
 
+The implementation of this pass is called via \ref
+goto_check_c(const optionst &, goto_modelt &, message_handlert &)
+
 _Predecessor pass is [Rewrite Unions]._
 
 
