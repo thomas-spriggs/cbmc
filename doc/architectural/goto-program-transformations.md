@@ -263,7 +263,8 @@ _Predecessor pass is [Adjust Float Expressions]._
 This transformation adds non-deterministic initialisation of global scoped
 variables including static variables. For details see
 `src/goto-instrument/nondet_static.h`. The initialisation code is added to the
-`CPROVER_initialize` function in the goto model.
+`CPROVER_initialize` function in the goto model. The implementation of this pass
+is called via the \ref nondet_static(goto_modelt &) function.
 
 _Predecessor pass is [Goto Functions Update]._
 
