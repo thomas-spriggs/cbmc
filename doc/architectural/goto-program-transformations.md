@@ -242,9 +242,10 @@ _Predecessor pass is [Instrument/Remove Preconditions]._
 
 ### Transform Assertions Assumptions
  
- This pass removes user provided assertions and assumptions when user has opted
- to do so. Note that this pass removes skip instructions if any other changes
- are made.
+This pass removes user provided assertions and assumptions when user has opted
+to do so. Note that this pass removes skip instructions if any other changes
+are made. The implementation of this pass is called via the \ref
+transform_assertions_assumptions(const optionst &, goto_modelt &) function.
 
 _Predecessor pass is [goto_check_c]._
 
