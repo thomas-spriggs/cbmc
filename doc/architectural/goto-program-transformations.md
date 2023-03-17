@@ -284,7 +284,9 @@ _Predecessor pass is [Add Failed Symbols]._
 ### Add Coverage Goals
 
 This transformation adds coverage goals instrumentation and is only applied if
-the `--cover` option has been specified.
+the `--cover` option has been specified. The implementation of this pass is
+called via the \ref instrument_cover_goals(const cover_configt &, goto_modelt &, message_handlert &)
+function.
 
 _Predecessor pass is [Remove Skip Instructions]._
 
