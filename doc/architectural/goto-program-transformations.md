@@ -182,6 +182,10 @@ _Predecessor passes are [Goto Functions Update] or
 This transformation removes skip instructions. Note that this transformation is
 called in many places and may be called as part of other transformations. This
 instance here is part of the mandatory transformation to reach core goto format.
+If there is a use case where it is desirable to preserve a "no operation"
+instruction, a `LOCATION` type instruction may be used in place of a `SKIP`
+instruction. The `LOCATION` instruction has the same semantics as the `SKIP`
+instruction, but is not removed by the remove skip instructions pass.
 
 _Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions]._
 
