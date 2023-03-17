@@ -167,8 +167,11 @@ _Predecessor passes are [Adjust Float Expressions] or [String Abstraction]._
 
 ### Add Failed Symbols
 
-This pass adds failed symbols to the symbol table only. See
-`src/pointer-analysis/add_failed_symbols.h` for details.
+This pass adds failed symbols to the symbol table. See
+`src/pointer-analysis/add_failed_symbols.h` for details. The implementation of
+this pass is called via \ref add_failed_symbols(symbol_table_baset &) . The
+purpose of failed symbols is explained in the documentation of the function \ref
+goto_symext::dereference(exprt &, statet &, bool)
 
 _Predecessor passes are [Goto Functions Update] or
 [Add Non-Deterministic Initialisation of Global Scoped Variables]._
