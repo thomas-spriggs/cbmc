@@ -2,7 +2,7 @@
 
 \page goto-program-transformations Goto Program Transformations
 
-## Core Transformation Passes
+\section required-transforms Core Transformation Passes
 
 This section lists the transformation passes that must have been applied for the
 goto model to be in core goto format.
@@ -11,7 +11,7 @@ Note that the passes are listed below in the order they are currently called in
 CBMC. While all dependencies on the ordering are not fully documented, the
 following order should be used.
 
-### Removal/Lowering of Assembly
+\subsection assembly-transform Removal/Lowering of Assembly
 
 This pass goes through the goto model and removes or lowers instances of
 assembly intructions. Assembly instructions are stored in instances of the
@@ -30,7 +30,7 @@ models to the current goto model.
 The implementation of this pass is called via the \ref
 link_to_library(goto_modelt &, message_handlert &, const std::function<void(const std::set<irep_idt> &, const symbol_tablet &, symbol_tablet &, message_handlert &)> &) "link_to_library function."
 
-_Predecessor pass is [Removal/Lowering of Assembly]._
+_Predecessor pass is \ref assembly-transform ._
 
 ### Removal/Lowering of Function Pointers
 
