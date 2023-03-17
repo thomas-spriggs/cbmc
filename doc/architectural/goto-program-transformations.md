@@ -80,7 +80,7 @@ The implementation of this is called via \ref
 instrument_preconditions(goto_modelt &goto_model) . Documentation of this pass
 belongs in \ref instrument_preconditions.h
 
-<em>Predecessor pass is [Memory Mapped IO Instrumentation].</em>
+<em>Predecessor pass is \ref mmio-transform.</em>
 
 
 \subsection returns-transform Removal/Lowering of Return Statements
@@ -90,7 +90,8 @@ This pass replaces returns of values with writes and reads to global variables.
 The implementation of this is called via \ref remove_returns(goto_modelt &) .
 Detailed documentation of this pass can be found in \ref remove_returns.h
 
-<em>Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining].</em>
+<em>The predecessor passes is the \ref precondition-transform or the optional
+\ref inlining-transform if is being used.</em>
 
 
 \subsection vector-transform Remove/Lower Vector Typed Expressions
@@ -100,7 +101,7 @@ as MMX, SSE and AVX. For more details on how this is done see vector_typet and
 remove_vector.cpp. The implementation of this is called via \ref
 remove_vector(goto_modelt &goto_model)
 
-<em>Predecessor pass is [Removal/Lowering of Return Statements].</em>
+<em>Predecessor pass is \ref returns-transform.</em>
 
 
 \subsection complex-transform Remove/Lower Complex Typed Expressions
@@ -111,7 +112,7 @@ in this pass. The implementation of this is called via \ref
 remove_complex(goto_modelt &) . Documentation for this pass belongs in \ref
 remove_complex.h
 
-<em>Predecessor pass is [Remove/Lower Vector Typed Expressions].</em>
+<em>Predecessor pass is \ref vector-transform.</em>
 
 
 \subsection unions-transform Rewrite Unions
@@ -121,7 +122,7 @@ operations.
 
 The implementation of this pass is called via \ref rewrite_union(goto_modelt &)
 
-<em>Predecessor pass is [Remove/Lower Complex Typed Expressions].</em>
+<em>Predecessor pass is \ref complex-transform.</em>
 
 
 \subsection check-c-transform goto_check_c
@@ -134,7 +135,7 @@ on the command line options specified.
 The implementation of this pass is called via \ref
 goto_check_c(const optionst &, goto_modelt &, message_handlert &)
 
-<em>Predecessor pass is [Rewrite Unions].</em>
+<em>Predecessor pass is \ref unions-transform.</em>
 
 
 \subsection floats-transform Adjust Float Expressions
@@ -147,7 +148,8 @@ The implementation of this pass is called via \ref
 adjust_float_expressions(goto_modelt &) . Documentation of this pass can be
 found in \ref adjust_float_expressions.h
 
-<em>Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions].</em>
+<em>Predecessor pass is \ref check-c-transform or the optional \ref
+assertions-transform if it is being used.</em>
 
 
 \subsection update-transform Goto Functions Update
@@ -236,7 +238,7 @@ is inlining of functions either: marked as inline, or smaller than a specified
 limit. For further detail see the implementation function \ref
 goto_partial_inline(goto_modelt &, message_handlert &, unsigned, bool)
 
-<em>Predecessor pass is [Instrument/Remove Preconditions].</em>
+<em>Predecessor pass is \ref precondition-transform.</em>
 
 
 \subsection assertions-transform Transform Assertions Assumptions
@@ -246,7 +248,7 @@ to do so. Note that this pass removes skip instructions if any other changes
 are made. The implementation of this pass is called via the \ref
 transform_assertions_assumptions(const optionst &, goto_modelt &) function.
 
-<em>Predecessor pass is [goto_check_c].</em>
+<em>Predecessor pass is \ref check-c-transform.</em>
 
 
 \subsection string-abstraction-transform String Abstraction
