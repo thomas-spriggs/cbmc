@@ -51,8 +51,8 @@ remove_function_pointers(message_handlert &, goto_modelt &, bool)
 "remove_function_pointers" function. Detailed documentation of this pass belongs
 in \ref remove_function_pointers.h
 
-_Predecessor pass is the \ref linking-transform or the optional
-\ref string-instrument-transform if it is being used._
+<em>Predecessor pass is the \ref linking-transform or the optional
+\ref string-instrument-transform if it is being used.</em>
 
 \subsection mmio-transform Memory Mapped IO Instrumentation
 
@@ -66,7 +66,7 @@ The implementation of this pass is called via the \ref mm_io(goto_modelt &)
 "mm_io" function. Further documentation of this pass can be found in \ref
 mm_io.h
 
-_Predecessor pass is \ref function-pointer-transform ._
+<em>Predecessor pass is \ref function-pointer-transform .</em>
 
 
 \subsection precondition-transform Instrument/Remove Preconditions
@@ -80,7 +80,7 @@ The implementation of this is called via \ref
 instrument_preconditions(goto_modelt &goto_model) . Documentation of this pass
 belongs in \ref instrument_preconditions.h
 
-_Predecessor pass is [Memory Mapped IO Instrumentation]._
+<em>Predecessor pass is [Memory Mapped IO Instrumentation].</em>
 
 
 \subsection returns-transform Removal/Lowering of Return Statements
@@ -90,7 +90,7 @@ This pass replaces returns of values with writes and reads to global variables.
 The implementation of this is called via \ref remove_returns(goto_modelt &) .
 Detailed documentation of this pass can be found in \ref remove_returns.h
 
-_Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining]._
+<em>Predecessor passes are [Instrument/Remove Preconditions] or [Partial Inlining].</em>
 
 
 \subsection vector-transform Remove/Lower Vector Typed Expressions
@@ -100,7 +100,7 @@ as MMX, SSE and AVX. For more details on how this is done see vector_typet and
 remove_vector.cpp. The implementation of this is called via \ref
 remove_vector(goto_modelt &goto_model)
 
-_Predecessor pass is [Removal/Lowering of Return Statements]._
+<em>Predecessor pass is [Removal/Lowering of Return Statements].</em>
 
 
 \subsection complex-transform Remove/Lower Complex Typed Expressions
@@ -111,7 +111,7 @@ in this pass. The implementation of this is called via \ref
 remove_complex(goto_modelt &) . Documentation for this pass belongs in \ref
 remove_complex.h
 
-_Predecessor pass is [Remove/Lower Vector Typed Expressions]._
+<em>Predecessor pass is [Remove/Lower Vector Typed Expressions].</em>
 
 
 \subsection unions-transform Rewrite Unions
@@ -121,7 +121,7 @@ operations.
 
 The implementation of this pass is called via \ref rewrite_union(goto_modelt &)
 
-_Predecessor pass is [Remove/Lower Complex Typed Expressions]._
+<em>Predecessor pass is [Remove/Lower Complex Typed Expressions].</em>
 
 
 \subsection check-c-transform goto_check_c
@@ -134,7 +134,7 @@ on the command line options specified.
 The implementation of this pass is called via \ref
 goto_check_c(const optionst &, goto_modelt &, message_handlert &)
 
-_Predecessor pass is [Rewrite Unions]._
+<em>Predecessor pass is [Rewrite Unions].</em>
 
 
 \subsection floats-transform Adjust Float Expressions
@@ -147,7 +147,7 @@ The implementation of this pass is called via \ref
 adjust_float_expressions(goto_modelt &) . Documentation of this pass can be
 found in \ref adjust_float_expressions.h
 
-_Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions]._
+<em>Predecessor passes are [goto_check_c] or [Transform Assertions Assumptions].</em>
 
 
 \subsection update-transform Goto Functions Update
@@ -162,7 +162,7 @@ by this pass:
 
 The implementation of this pass is called via \ref goto_functionst::update()
 
-_Predecessor passes are [Adjust Float Expressions] or [String Abstraction]._
+<em>Predecessor passes are [Adjust Float Expressions] or [String Abstraction].</em>
 
 
 \subsection failed-symbols-transform Add Failed Symbols
@@ -173,8 +173,8 @@ this pass is called via \ref add_failed_symbols(symbol_table_baset &) . The
 purpose of failed symbols is explained in the documentation of the function \ref
 goto_symext::dereference(exprt &, statet &, bool)
 
-_Predecessor passes are [Goto Functions Update] or
-[Add Non-Deterministic Initialisation of Global Scoped Variables]._
+<em>Predecessor passes are [Goto Functions Update] or
+[Add Non-Deterministic Initialisation of Global Scoped Variables].</em>
 
 
 \subsection remove-skip-transform Remove Skip Instructions
@@ -189,7 +189,7 @@ instruction, but is not removed by the remove skip instructions pass.
 
 The implementation of this pass is called via \ref remove_skip(goto_modelt &)
 
-_Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions]._
+<em>Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions].</em>
 
 
 
@@ -202,7 +202,7 @@ This transformation adds information to assert instructions. This includes
 The implementation of this pass is called via \ref
 label_properties(goto_modelt &)
 
-_Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals]._
+<em>Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals].</em>
 
 
 
@@ -227,7 +227,7 @@ The implementation of this pass is called via the
 \ref string_instrumentation(goto_modelt &goto_model) function. Detailed
 documentation of this pass belongs in \ref string_instrumentation.h
 
-_The predecessor pass is \ref linking-transform ._
+<em>The predecessor pass is \ref linking-transform .</em>
 
 \subsection inlining-transform Partial Inlining
 
@@ -236,7 +236,7 @@ is inlining of functions either: marked as inline, or smaller than a specified
 limit. For further detail see the implementation function \ref
 goto_partial_inline(goto_modelt &, message_handlert &, unsigned, bool)
 
-_Predecessor pass is [Instrument/Remove Preconditions]._
+<em>Predecessor pass is [Instrument/Remove Preconditions].</em>
 
 
 \subsection assertions-transform Transform Assertions Assumptions
@@ -246,7 +246,7 @@ to do so. Note that this pass removes skip instructions if any other changes
 are made. The implementation of this pass is called via the \ref
 transform_assertions_assumptions(const optionst &, goto_modelt &) function.
 
-_Predecessor pass is [goto_check_c]._
+<em>Predecessor pass is [goto_check_c].</em>
 
 
 \subsection string-abstraction-transform String Abstraction
@@ -257,7 +257,7 @@ by this pass are documented as part of the documentation for the \ref
 string_abstractiont class. The implementation of this pass is called via the
 \ref string_abstraction(goto_modelt &, message_handlert &) function.
 
-_Predecessor pass is [Adjust Float Expressions]._
+<em>Predecessor pass is [Adjust Float Expressions].</em>
 
 
 \subsection nondet-transform Add Non-Deterministic Initialisation of Global Scoped Variables
@@ -268,7 +268,7 @@ variables including static variables. For details see
 `CPROVER_initialize` function in the goto model. The implementation of this pass
 is called via the \ref nondet_static(goto_modelt &) function.
 
-_Predecessor pass is [Goto Functions Update]._
+<em>Predecessor pass is [Goto Functions Update].</em>
 
 
 \subsection unused-functions-transform Remove Unused Functions
@@ -280,7 +280,7 @@ any function not in this collection.
 The implementation of this pass is called via the \ref
 remove_unused_functions(goto_modelt &, message_handlert &) function.
 
-_Predecessor pass is [Add Failed Symbols]._
+<em>Predecessor pass is [Add Failed Symbols].</em>
 
 
 \subsection coverage-transform Add Coverage Goals
@@ -290,7 +290,7 @@ the `--cover` option has been specified. The implementation of this pass is
 called via the \ref instrument_cover_goals(const cover_configt &, goto_modelt &, message_handlert &)
 function.
 
-_Predecessor pass is [Remove Skip Instructions]._
+<em>Predecessor pass is [Remove Skip Instructions].</em>
 
 
 \subsection slicing-transforms Slicing
@@ -302,4 +302,4 @@ reachability_slicer(goto_modelt &, message_handlert &) function. The full slicer
 is enabled by the `--full-slice` command line option. The implementation of this
 pass is called via the \ref full_slicer(goto_modelt &) function.
 
-_Predecessor pass is [Label Properties]._
+<em>Predecessor pass is [Label Properties].</em>
