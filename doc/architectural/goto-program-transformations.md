@@ -51,8 +51,8 @@ remove_function_pointers(message_handlert &, goto_modelt &, bool)
 "remove_function_pointers" function. Detailed documentation of this pass belongs
 in \ref remove_function_pointers.h
 
-_Predecessor passes are [String Instrumentation] /
-[Removal/Lowering of Assembly](#Removal/Lowering-of-Assembly)._
+_Predecessor pass is the \ref linking-transform or the optional
+\ref string-instrument-transform if it is being used._
 
 \subsection mmio-transform Memory Mapped IO Instrumentation
 
@@ -66,7 +66,7 @@ The implementation of this pass is called via the \ref mm_io(goto_modelt &)
 "mm_io" function. Further documentation of this pass can be found in \ref
 mm_io.h
 
-_Predecessor pass is [Removal/Lowering of Function Pointers]._
+_Predecessor pass is \ref function-pointer-transform ._
 
 
 \subsection precondition-transform Instrument/Remove Preconditions
@@ -220,15 +220,14 @@ fully documented, this should be followed.
 
 This (optional) pass adds checks on calls to some of the C standard library
 string functions. It uses the tracking information added by the
-[string-abstraction](#String Abstraction) pass. It is switched on by the
+\ref string-abstraction-transform pass. It is switched on by the
 `--string-abstraction` command line option.
 
 The implementation of this pass is called via the
 \ref string_instrumentation(goto_modelt &goto_model) function. Detailed
 documentation of this pass belongs in \ref string_instrumentation.h
 
-_The predecessor pass is
-[Linking of Standard Libraries](#Linking-of-Standard-Libraries)._
+_The predecessor pass is \ref linking-transform ._
 
 \subsection inlining-transform Partial Inlining
 
