@@ -20,7 +20,7 @@ assembly intructions. Assembly instructions are stored in instances of the
 The implementation of this pass is called via the \ref remove_asm(goto_modelt &)
 function. For full documentation of this pass see \ref remove_asm.h
 
-<em>This pass has no predeccesor.</em>
+<em>This pass has no predecessor.</em>
 
 \subsection linking-transform Linking of Standard Libraries
 
