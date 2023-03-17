@@ -187,6 +187,8 @@ instruction, a `LOCATION` type instruction may be used in place of a `SKIP`
 instruction. The `LOCATION` instruction has the same semantics as the `SKIP`
 instruction, but is not removed by the remove skip instructions pass.
 
+The implementation of this pass is called via \ref remove_skip(goto_modelt &)
+
 _Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions]._
 
 
