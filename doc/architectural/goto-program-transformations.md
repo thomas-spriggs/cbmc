@@ -234,7 +234,8 @@ _The predecessor pass is
 
 This pass does partial inlining when this option is switched on. Partal inlining
 is inlining of functions either: marked as inline, or smaller than a specified
-limit. For further detail see the implementation XXXXXXX
+limit. For further detail see the implementation function \ref
+goto_partial_inline(goto_modelt &, message_handlert &, unsigned, bool)
 
 _Predecessor pass is [Instrument/Remove Preconditions]._
 
