@@ -20,7 +20,7 @@ assembly intructions. Assembly instructions are stored in instances of the
 The implementation of this pass is called via the \ref remove_asm(goto_modelt &)
 function. For full documentation of this pass see \ref remove_asm.h
 
-_This pass has no predeccesor._
+<em>This pass has no predeccesor.</em>
 
 \subsection linking-transform Linking of Standard Libraries
 
@@ -30,7 +30,7 @@ models to the current goto model.
 The implementation of this pass is called via the \ref
 link_to_library(goto_modelt &, message_handlert &, const std::function<void(const std::set<irep_idt> &, const symbol_tablet &, symbol_tablet &, message_handlert &)> &) "link_to_library function."
 
-_Predecessor pass is \ref assembly-transform ._
+<em>Predecessor pass is \ref assembly-transform .</em>
 
 \subsection function-pointer-transform Removal/Lowering of Function Pointers
 
