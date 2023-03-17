@@ -199,6 +199,9 @@ This transformation adds information to assert instructions. This includes
 - Adding source locations to asserts where they are missing
 - Populating the locations's property ID
 
+The implementation of this pass is called via \ref
+label_properties(goto_modelt &)
+
 _Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals]._
 
 
