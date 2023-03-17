@@ -253,7 +253,10 @@ _Predecessor pass is [goto_check_c]._
 ### String Abstraction
 
 This (optional) transformation pass adds tracking of length of C strings. It is
-switched on by the `--string-abstraction` command line option.
+switched on by the `--string-abstraction` command line option. This changes made
+by this pass are documented as part of the documentation for the \ref
+string_abstractiont class. The implementation of this pass is called via the
+\ref string_abstraction(goto_modelt &, message_handlert &) function.
 
 _Predecessor pass is [Adjust Float Expressions]._
 
