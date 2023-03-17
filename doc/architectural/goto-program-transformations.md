@@ -164,7 +164,8 @@ by this pass:
 
 The implementation of this pass is called via \ref goto_functionst::update()
 
-<em>Predecessor passes are [Adjust Float Expressions] or [String Abstraction].</em>
+<em>Predecessor pass is \ref floats-transform or the optional \ref
+string-abstraction-transform if it is being used.</em>
 
 
 \subsection failed-symbols-transform Add Failed Symbols
@@ -175,8 +176,8 @@ this pass is called via \ref add_failed_symbols(symbol_table_baset &) . The
 purpose of failed symbols is explained in the documentation of the function \ref
 goto_symext::dereference(exprt &, statet &, bool)
 
-<em>Predecessor passes are [Goto Functions Update] or
-[Add Non-Deterministic Initialisation of Global Scoped Variables].</em>
+<em>Predecessor pass is \ref update-transform or the optional \ref
+nondet-transform if it is being used.</em>
 
 
 \subsection remove-skip-transform Remove Skip Instructions
@@ -191,7 +192,8 @@ instruction, but is not removed by the remove skip instructions pass.
 
 The implementation of this pass is called via \ref remove_skip(goto_modelt &)
 
-<em>Predecessor passes are [Add Failed Symbols] or [Remove Unused Functions].</em>
+<em>Predecessor pass is \ref failed-symbols-transform or the optional \ref
+unused-functions-transform if it is being used.</em>
 
 
 
@@ -204,7 +206,8 @@ This transformation adds information to assert instructions. This includes
 The implementation of this pass is called via \ref
 label_properties(goto_modelt &)
 
-<em>Predecessor passes are [Remove Skip Instructions] or [Add Coverage Goals].</em>
+<em>Predecessor pass is \ref remove-skip-transform or the optional \ref
+coverage-transform if it is being used.</em>
 
 
 
@@ -259,7 +262,7 @@ by this pass are documented as part of the documentation for the \ref
 string_abstractiont class. The implementation of this pass is called via the
 \ref string_abstraction(goto_modelt &, message_handlert &) function.
 
-<em>Predecessor pass is [Adjust Float Expressions].</em>
+<em>Predecessor pass is \ref floats-transform.</em>
 
 
 \subsection nondet-transform Add Non-Deterministic Initialisation of Global Scoped Variables
@@ -270,7 +273,7 @@ variables including static variables. For details see
 `CPROVER_initialize` function in the goto model. The implementation of this pass
 is called via the \ref nondet_static(goto_modelt &) function.
 
-<em>Predecessor pass is [Goto Functions Update].</em>
+<em>Predecessor pass is \ref update-transform.</em>
 
 
 \subsection unused-functions-transform Remove Unused Functions
@@ -282,7 +285,7 @@ any function not in this collection.
 The implementation of this pass is called via the \ref
 remove_unused_functions(goto_modelt &, message_handlert &) function.
 
-<em>Predecessor pass is [Add Failed Symbols].</em>
+<em>Predecessor pass is \ref failed-symbols-transform.</em>
 
 
 \subsection coverage-transform Add Coverage Goals
@@ -292,7 +295,7 @@ the `--cover` option has been specified. The implementation of this pass is
 called via the \ref instrument_cover_goals(const cover_configt &, goto_modelt &, message_handlert &)
 function.
 
-<em>Predecessor pass is [Remove Skip Instructions].</em>
+<em>Predecessor pass is \ref remove-skip-transform .</em>
 
 
 \subsection slicing-transforms Slicing
@@ -304,4 +307,4 @@ reachability_slicer(goto_modelt &, message_handlert &) function. The full slicer
 is enabled by the `--full-slice` command line option. The implementation of this
 pass is called via the \ref full_slicer(goto_modelt &) function.
 
-<em>Predecessor pass is [Label Properties].</em>
+<em>Predecessor pass is \ref properties-transform .</em>
