@@ -275,6 +275,9 @@ This pass removes unused functions from the goto model. In practice this builds
 a collection of all the functions that are potentially called, and then removes
 any function not in this collection.
 
+The implementation of this pass is called via the \ref
+remove_unused_functions(goto_modelt &, message_handlert &) function.
+
 _Predecessor pass is [Add Failed Symbols]._
 
 
