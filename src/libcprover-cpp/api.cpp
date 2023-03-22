@@ -54,7 +54,6 @@ api_sessiont::api_sessiont(const api_optionst &options)
   implementation->message_handler =
     util_make_unique<null_message_handlert>(null_message_handlert{});
   implementation->options = options.to_engine_options();
-  implementation->options->set_option("trace", true);
   // Needed to initialise the language options correctly
   cmdlinet cmdline;
   // config is global in config.cpp
@@ -153,9 +152,7 @@ void api_sessiont::verify_model() const
   if(::process_goto_program(
        *implementation->model, *implementation->options, log))
   {
-    // TODO: Make more robust.
-    // return;
-    INVARIANT(false, "process_goto_program failed");
+    return;
   }
 
   // add failed symbols

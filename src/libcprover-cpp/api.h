@@ -81,7 +81,7 @@ struct api_sessiont
   // A simple API version information function.
   std::unique_ptr<std::string> get_api_version() const;
 
-  // Run the verification engine and return results.
+  /// Run the verification engine and return results.
   verification_resultt produce_results();
 
 private:

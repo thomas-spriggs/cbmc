@@ -7,6 +7,7 @@
 #include "verification_result.h"
 
 #include <util/make_unique.h>
+#include <util/invariant.h>
 
 #include <goto-checker/properties.h>
 
@@ -104,6 +105,8 @@ verifier_resultt verification_resultt::final_result() const
   case resultt::UNKNOWN:
     return verifier_resultt::UNKNOWN;
   }
+  // Required to silence compiler warnings that are promoted as errors!
+  UNREACHABLE;
 }
 
 std::vector<std::string> verification_resultt::get_property_ids() const

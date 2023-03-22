@@ -10,6 +10,7 @@
 
 #include <util/config.h>
 #include <util/options.h>
+#include <util/ui_message.h>
 
 #include <goto-programs/goto_model.h>
 #include <goto-programs/link_to_library.h>
@@ -53,7 +54,7 @@ verification_resultt run_verification_engine(goto_modelt &model)
   // Initialise null message handler (acts like a drain, removing noisy
   // output from test output stream).
   std::ostringstream out;
-  test_null_ui_message_handler null_ui_message_handler(out);
+  ui_message_handlert null_ui_message_handler{null_message_handler};
   messaget log{null_ui_message_handler};
 
   // Initialise options

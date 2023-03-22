@@ -93,18 +93,6 @@ SCENARIO(
       {
         REQUIRE(results.final_result() == verifier_resultt::FAIL);
       }
-
-      // THEN(
-      //   "We should have access to the properties and the property status after "
-      //   "the solver has run")
-      // {
-      //   REQUIRE(results.properties.size() == 1);
-      //   for(const auto &prop : results.properties)
-      //   {
-      //     REQUIRE(prop.first == "main.assertion.1");
-      //     REQUIRE(prop.second.status == property_statust::FAIL);
-      //   }
-      // }
     }
   }
 }

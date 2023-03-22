@@ -22,14 +22,7 @@ class goto_trace_storaget
 {
 public:
   explicit goto_trace_storaget(const namespacet &);
-  /// @brief Copy constructor for the goto_trace_storaget class.
-  /// \warning Be advised that goto_traces can be large objects, so
-  ///          copying is not recommended, unless you know what you're doing.
-  goto_trace_storaget(const goto_trace_storaget &) = default;
-  /// @brief Move constructor for the goto_trace_storaget class.
-  /// \details Exists so that moving of traces into API consumers who
-  ///          then peruse the traces is facilitated.
-  goto_trace_storaget(goto_trace_storaget &&o) = default;
+  goto_trace_storaget(const goto_trace_storaget &) = delete;
 
   /// Store trace that ends in a violated assertion
   const goto_tracet &insert(goto_tracet &&);

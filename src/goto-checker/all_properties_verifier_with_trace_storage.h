@@ -85,15 +85,6 @@ public:
     return traces;
   }
 
-  /// @brief Allow moving of the traces out to the client.
-  /// \details This method exists to allow moving out the goto_trace_storaget
-  ///     private member, so that consumers of our various APIs can then introspect
-  ///     these results freely.
-  goto_trace_storaget &move_traces()
-  {
-    return traces;
-  }
-
 protected:
   abstract_goto_modelt &goto_model;
   incremental_goto_checkerT incremental_goto_checker;
