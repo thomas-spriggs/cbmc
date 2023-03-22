@@ -4,6 +4,7 @@
 ///       produced by various verification engines (classes downstream of
 ///       goto_verifiert).
 
+#include <libcprover-cpp/api.h>
 #include <libcprover-cpp/verification_result.h>
 
 #include <iostream>
@@ -11,9 +12,6 @@
 #include <string>
 
 #include "../catch/catch.hpp"
-#include "../testing-utils/get_goto_model_from_c.h"
-#include "../testing-utils/message.h"
-#include "../testing-utils/run_verification_engine.h"
 
 SCENARIO(
   "When we analyse a model produced from some C code we get back verification "
@@ -22,20 +20,12 @@ SCENARIO(
 {
   GIVEN("A model with a passing property from C source code")
   {
-    const std::string input = R"END(
-            int main(int argc, char *argv[]) {
-                int arr[] = {0, 1, 2, 3, 4};
-                __CPROVER_assert(arr[3] == 3, "success expected: arr[3] is 3");
-                return 0;
-            })END";
-
-    auto model = get_goto_model_from_c(input);
-
-    REQUIRE(model.get_goto_functions().function_map.size() == 11);
+    api_sessiont api(api_optionst::create());
+    api.load_model_from_files({"test2.c"});
 
     WHEN("We run that model past the verification engine")
     {
-      const verification_resultt &results = run_verification_engine(model);
+      const verification_resultt &results = api.produce_results();
 
       THEN("The verification result should be success")
       {
@@ -55,7 +45,7 @@ SCENARIO(
           "description in the model")
         {
           const std::string assertion_description{
-            "success expected: arr[3] is 3"};
+            "expected success: arr[3] to be 3"};
           const std::string results_description =
             results.get_property_description(properties.at(0));
           REQUIRE(assertion_description == results_description);
@@ -73,21 +63,12 @@ SCENARIO(
 
   GIVEN("A model with a failing property from C source code")
   {
-    const std::string input = R"END(
-            int main(int argc, char *argv[]) {
-                int i;
-                int arr[] = {0, 1, 2, 3, 4};
-                __CPROVER_assert(arr[i] != 3, "failure expected: arr[3] is 3");
-                return 0;
-            })END";
-
-    auto model = get_goto_model_from_c(input);
-
-    REQUIRE(model.get_goto_functions().function_map.size() == 11);
+    api_sessiont api(api_optionst::create());
+    api.load_model_from_files({"test.c"});
 
     WHEN("We run that model past the verification engine")
     {
-      const auto &results = run_verification_engine(model);
+      const auto &results = api.produce_results();
 
       THEN("The verification result should be failure")
       {

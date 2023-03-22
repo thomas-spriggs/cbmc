@@ -12,9 +12,10 @@ Author: Daniel Kroening, Peter Schrammel
 #ifndef CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
 #define CPROVER_GOTO_CHECKER_ALL_PROPERTIES_VERIFIER_WITH_TRACE_STORAGE_H
 
+#include "goto_verifier.h"
+
 #include "bmc_util.h"
 #include "goto_trace_storage.h"
-#include "goto_verifier.h"
 #include "incremental_goto_checker.h"
 #include "properties.h"
 #include "report_util.h"

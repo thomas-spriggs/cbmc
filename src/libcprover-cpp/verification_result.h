@@ -55,14 +55,6 @@ struct verification_resultt
   verification_resultt &operator=(verification_resultt &&);
   verification_resultt &operator=(const verification_resultt &&other);
 
-  // explicit verification_resultt(
-  //   propertiest &_properties,
-  //   resultt _verifier_result)
-  //   : properties(_properties),
-  //     verifier_result(_verifier_result)
-  // {
-  // }
-
   void set_result(resultt &result);
   void set_properties(propertiest &properties);
 

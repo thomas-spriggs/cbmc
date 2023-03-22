@@ -1,3 +1,2 @@
 ../catch
 libcprover-cpp
-testing-utils

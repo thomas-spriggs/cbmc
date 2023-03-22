@@ -6,8 +6,8 @@
 
 #include "verification_result.h"
 
-#include <util/make_unique.h>
 #include <util/invariant.h>
+#include <util/make_unique.h>
 
 #include <goto-checker/properties.h>
 
@@ -147,4 +147,5 @@ verification_resultt::get_property_status(const std::string &property_id) const
   case property_statust::UNKNOWN:
     return prop_statust::UNKNOWN;
   }
+  UNREACHABLE;
 }

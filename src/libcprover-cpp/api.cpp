@@ -201,8 +201,7 @@ verification_resultt api_sessiont::produce_results()
   if(::process_goto_program(
        *implementation->model, *implementation->options, log))
   {
-    // TODO: Make more robust.
-    INVARIANT(false, "process_goto_program failed");
+    return {};
   }
 
   // add failed symbols
