@@ -33,6 +33,8 @@ if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
     endif()
 endif()
 
+add_definitions(-DUSE_STD_STRING)
+
 # Grab the current CBMC version from config.inc
 # We do this so we have a matching cbmc version between the Makefile build and
 # the CMake build. This version info is useful for things like generating
