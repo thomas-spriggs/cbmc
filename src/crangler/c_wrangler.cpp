@@ -26,6 +26,7 @@ Author: Daniel Kroening, dkr@amazon.com
 #include <map>
 #include <regex>
 #include <sstream>
+#include <list>
 
 struct c_wranglert
 {

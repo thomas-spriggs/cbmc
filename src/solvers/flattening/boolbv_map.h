@@ -16,6 +16,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <functional>
 #include <iosfwd>
+#include <unordered_map>
 
 class propt;
 

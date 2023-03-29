@@ -22,6 +22,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <util/format_expr.h>
 #include <util/invariant.h>
 #include <util/make_unique.h>
+#include <util/magic.h>
 #include <util/mathematical_expr.h>
 #include <util/replace_symbol.h>
 #include <util/std_expr.h>

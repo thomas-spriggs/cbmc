@@ -18,6 +18,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <set>
 #include <limits>
 #include <string>
+#include <list>
 
 #include <util/invariant.h>
 #include <util/source_location.h>

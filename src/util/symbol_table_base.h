@@ -10,6 +10,7 @@
 
 #include <map>
 #include <unordered_map>
+#include <list>
 
 typedef std::multimap<irep_idt, irep_idt> symbol_base_mapt;
 typedef std::multimap<irep_idt, irep_idt> symbol_module_mapt;

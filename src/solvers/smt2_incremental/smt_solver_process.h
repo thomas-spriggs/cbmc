@@ -13,6 +13,7 @@ class smt_commandt;
 #include <memory>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 class smt_base_solver_processt
 {

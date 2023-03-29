@@ -8,6 +8,8 @@
 #include <solvers/smt2_incremental/ast/smt_responses.h> // IWYU pragma: keep
 #include <solvers/smt2_incremental/response_or_error.h>
 
+#include <unordered_map>
+
 NODISCARD response_or_errort<smt_responset> validate_smt_response(
   const irept &parse_tree,
   const std::unordered_map<irep_idt, smt_identifier_termt> &identifier_table);

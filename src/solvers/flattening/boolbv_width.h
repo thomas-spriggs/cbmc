@@ -12,6 +12,8 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <util/type.h> // IWYU pragma: keep
 
+#include <unordered_map>
+
 class namespacet;
 class struct_typet;
 

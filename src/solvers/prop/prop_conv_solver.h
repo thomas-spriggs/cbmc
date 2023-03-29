@@ -11,6 +11,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <map>
 #include <string>
+#include <unordered_map>
 
 #include <util/expr.h>
 #include <util/message.h>
