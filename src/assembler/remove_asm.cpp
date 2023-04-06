@@ -38,7 +38,12 @@ public:
   void operator()()
   {
     for(auto &f : goto_functions.function_map)
-      process_function(f.first, f.second);
+    {
+      const auto &name = f.first;
+      auto &goto_function = f.second;
+      process_function(name, goto_function);
+      add_history_transform(goto_transform_kindt::remove_asm, goto_function);
+    }
   }
 
 protected:
