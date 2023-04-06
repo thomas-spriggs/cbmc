@@ -45,7 +45,8 @@ private:
 ///  * remove_unused_functions \ref goto-programs/remove_unused_functions.h
 ///  * remove_skip \ref goto-programs/remove_skip.h
 ///  * label_properties \ref goto-programs/set_properties.h
-///  * remove_asm \ref src/assembler/remove_asm.h
+///  * remove_asm \ref assembler/remove_asm.h
+///  * goto_check_c \ref ansi-c/goto_check_c.h
 enum class goto_transform_kindt
 {
   // Warning! The numeric values in this enumeration are used for serialisation

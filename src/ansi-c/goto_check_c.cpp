@@ -2456,7 +2456,10 @@ void goto_check_c(
 
   for(auto &gf_entry : goto_functions.function_map)
   {
-    goto_check.goto_check(gf_entry.first, gf_entry.second);
+    const auto &name = gf_entry.first;
+    auto &function = gf_entry.second;
+    goto_check.goto_check(name, function);
+    add_history_transform(goto_transform_kindt::goto_check_c, function);
   }
 }
 
