@@ -66,7 +66,15 @@ enum class goto_transform_kindt
   string_abstraction = 13,
   remove_unused_functions = 14,
   remove_skip = 15,
-  label_properties = 16
+  label_properties = 16,
+  remove_asm = 17,
+  goto_check_c = 18,
+  nondet_static = 19,
+  add_failed_symbols = 20,
+  instrument_cover_goals = 21,
+  reachability_slicer = 22,
+  property_slicer = 23,
+  full_slicer = 24
 };
 
 /// Returns true if \param transform is one of the values in the definition of
