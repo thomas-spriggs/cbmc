@@ -41,6 +41,14 @@ bool is_valid_transform_kind(const goto_transform_kindt transform)
   case goto_transform_kindt::remove_unused_functions:
   case goto_transform_kindt::remove_skip:
   case goto_transform_kindt::label_properties:
+  case goto_transform_kindt::remove_asm:
+  case goto_transform_kindt::goto_check_c:
+  case goto_transform_kindt::nondet_static:
+  case goto_transform_kindt::add_failed_symbols:
+  case goto_transform_kindt::instrument_cover_goals:
+  case goto_transform_kindt::reachability_slicer:
+  case goto_transform_kindt::property_slicer:
+  case goto_transform_kindt::full_slicer:
     return true;
     // Note: There is deliberately no `default:` case here in order to ensure
     // that there is a compilation error if the enum is updated without
