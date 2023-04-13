@@ -4,6 +4,8 @@
 #define CPROVER_GOTO_PROGRAMS_GOTO_TRANSFORM_HISTORY_H
 
 #include <vector>
+#include <iosfwd>
+#include <string>
 
 class goto_functiont;
 class goto_functionst;
@@ -80,5 +82,9 @@ void add_history_transform(
 void add_history_transform(
   goto_transform_kindt transform_kind,
   goto_functionst &functions);
+
+std::ostream &operator<<(std::ostream &os, const goto_transform_kindt &transform);
+
+std::string to_string(const goto_transform_kindt &transform);
 
 #endif // CPROVER_GOTO_PROGRAMS_GOTO_TRANSFORM_HISTORY_H

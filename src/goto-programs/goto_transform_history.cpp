@@ -7,6 +7,9 @@
 #include "goto_function.h"
 #include "goto_functions.h"
 
+#include <iostream>
+#include <sstream> // IWYU pragma: keep
+
 void goto_transform_historyt::add(goto_transform_kindt transform)
 {
   INVARIANT(
@@ -64,4 +67,70 @@ void add_history_transform(
   {
     add_history_transform(transform_kind, function_pair.second);
   }
+}
+
+std::ostream &operator<<(std::ostream &os, const goto_transform_kindt &transform)
+{
+  switch(transform)
+  {
+    // Note: There is deliberately no `default:` case here in order to ensure
+    // that there is a compilation error if the enum is updated without
+    // updating the printing.
+  case goto_transform_kindt::link_to_library:
+    os << "link_to_library";
+    break;
+  case goto_transform_kindt::string_instrumentation:
+    os << "string_instrumentation";
+    break;
+  case goto_transform_kindt::remove_function_pointers:
+    os << "remove_function_pointers";
+    break;
+  case goto_transform_kindt::mm_io:
+    os << "mm_io";
+    break;
+  case goto_transform_kindt::instrument_preconditions:
+    os << "instrument_preconditions";
+    break;
+  case goto_transform_kindt::goto_partial_inline:
+    os << "goto_partial_inline";
+    break;
+  case goto_transform_kindt::remove_returns:
+    os << "remove_returns";
+    break;
+  case goto_transform_kindt::remove_vector:
+    os << "remove_vector";
+    break;
+  case goto_transform_kindt::remove_complex:
+    os << "remove_complex";
+    break;
+  case goto_transform_kindt::rewrite_union:
+    os << "rewrite_union";
+    break;
+  case goto_transform_kindt::transform_assertions_assumptions:
+    os << "transform_assertions_assumptions";
+    break;
+  case goto_transform_kindt::adjust_float_expressions:
+    os << "adjust_float_expressions";
+    break;
+  case goto_transform_kindt::string_abstraction:
+    os << "string_abstraction";
+    break;
+  case goto_transform_kindt::remove_unused_functions:
+    os << "remove_unused_functions";
+    break;
+  case goto_transform_kindt::remove_skip:
+    os << "remove_skip";
+    break;
+  case goto_transform_kindt::label_properties:
+    os << "label_properties";
+    break;
+  }
+  return os;
+}
+
+std::string to_string(const goto_transform_kindt &transform)
+{
+  std::stringstream ss;
+  ss << transform;
+  return ss.str();
 }
