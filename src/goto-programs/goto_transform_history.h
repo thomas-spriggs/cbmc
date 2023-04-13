@@ -22,7 +22,9 @@ class goto_transform_historyt
 public:
   using transformst = std::vector<goto_transform_kindt>;
 
+  /// Adds a transform to the history
   void add(goto_transform_kindt transform);
+  /// Get read only access to the transforms in the history.
   const transformst &transforms() const;
 
 private:
