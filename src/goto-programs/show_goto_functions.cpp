@@ -65,7 +65,9 @@ void show_goto_functions(
           msg.status() << messaget::bold << symbol.display_name()
                        << messaget::reset << " /* " << symbol.name << " */\n";
           fun->second.body.output(msg.status());
-          fun->second.history.output(msg.status());
+          msg.conditional_output(msg.debug(), [&](messaget::mstreamt &debug) {
+            fun->second.history.output(msg.status());
+          });
           msg.status() << messaget::eom;
         }
       }
