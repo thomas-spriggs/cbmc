@@ -24,6 +24,15 @@ goto_transform_historyt::transforms() const
   return _transforms;
 }
 
+void goto_transform_historyt::output(messaget::mstreamt &os) const
+{
+  os << messaget::bold << "    Transform history -\n" << messaget::reset;
+  for(const auto& transform : this->transforms())
+  {
+    os << "        " << transform << '\n';
+  }
+}
+
 bool is_valid_transform_kind(const goto_transform_kindt transform)
 {
   switch(transform)

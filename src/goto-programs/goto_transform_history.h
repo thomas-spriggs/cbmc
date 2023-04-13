@@ -7,6 +7,8 @@
 #include <iosfwd>
 #include <string>
 
+#include <util/message.h>
+
 class goto_functiont;
 class goto_functionst;
 
@@ -26,6 +28,8 @@ public:
   void add(goto_transform_kindt transform);
   /// Get read only access to the transforms in the history.
   const transformst &transforms() const;
+  /// Outputs the history as plain text.
+  void output(messaget::mstreamt &os) const;
 
 private:
   std::vector<goto_transform_kindt> _transforms;
