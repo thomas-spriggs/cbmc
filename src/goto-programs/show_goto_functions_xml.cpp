@@ -25,6 +25,18 @@ show_goto_functions_xmlt::show_goto_functions_xmlt(bool _list_only)
   : list_only(_list_only)
 {}
 
+void goto_function_history_as_xml(
+  xmlt &xml_transformations,
+  const goto_transform_historyt &history)
+{
+  for(const auto &transform : history.transforms())
+  {
+    xmlt &transformation_entry =
+      xml_transformations.new_element("transformation");
+    transformation_entry.data = to_string(transform);
+  }
+}
+
 /// Walks through all of the functions in the program and returns an xml object
 /// representing all their functions. Produces output like this: \code{.xml}
 /// <functions>
@@ -85,6 +97,9 @@ xmlt show_goto_functions_xmlt::convert(
         instruction_value.data=instruction_builder.str();
         instruction_value.elements.clear();
       }
+      xmlt &xml_transform_history =
+        xml_function.new_element("transformation_history");
+      goto_function_history_as_xml(xml_transform_history, function.history);
     }
   }
   return xml_functions;
