@@ -25,6 +25,17 @@ show_goto_functions_jsont::show_goto_functions_jsont(bool _list_only)
   : list_only(_list_only)
 {}
 
+static json_arrayt goto_function_history_as_json
+  (const goto_transform_historyt& history)
+{
+  const auto transforms =
+    make_range(history.transforms())
+      .map([](goto_transform_kindt transform){
+             return json_stringt{to_string(transform)};
+             });
+  return json_arrayt{transforms.begin(), transforms.end()};
+}
+
 /// Walks through all of the functions in the program and returns a JSON object
 /// representing all their functions
 /// \param goto_functions: the goto functions that make up the program
@@ -104,6 +115,9 @@ json_objectt show_goto_functions_jsont::convert(
       }
 
       json_function["instructions"] = std::move(json_instruction_array);
+      json_function["transform_history"] = goto_function_history_as_json(
+        function.history
+        );
     }
   }
 
