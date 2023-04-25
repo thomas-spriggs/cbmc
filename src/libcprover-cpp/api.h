@@ -9,8 +9,6 @@
 
 // Forward declaration of API dependencies
 struct api_session_implementationt;
-struct api_options_implementationt;
-class api_optionst;
 
 // There has been a design decision to allow users to include all of
 // the API headers by just including `api.h`, so we want to have an
@@ -19,6 +17,7 @@ class api_optionst;
 // a pragma like below to silence the warning (at least as long
 // as the design principle is to be followed.)
 
+#include "api_options.h" // IWYU pragma: keep
 #include "verification_result.h" // IWYU pragma: keep
 
 /// Opaque message type. Properties of messages to be fetched through further
@@ -85,42 +84,6 @@ struct api_sessiont
 
 private:
   std::unique_ptr<api_session_implementationt> implementation;
-};
-
-class api_optionst final
-{
-private:
- std::unique_ptr<const api_options_implementationt> implementation;
-  // Construction is allowed only through the builder.
-  explicit api_optionst(std::unique_ptr<const api_options_implementationt> implementation);
-
-public:
-
-  class buildert final
-  {
-  private:
-    std::unique_ptr<api_options_implementationt> implementation;
-
-  public:
-    buildert();
-    buildert(buildert && builder) noexcept;
-    ~buildert();
-
-    // Options
-    buildert &simplify(bool on);
-    buildert &drop_unused_functions(bool on);
-    buildert &validate_goto_model(bool on);
-
-    /// For doing the building when options have been specified.
-    api_optionst build();
-  };
-
-  bool simplify() const;
-  bool drop_unused_functions() const;
-  bool validate_goto_model() const;
-
-  api_optionst(api_optionst && api_options) noexcept;
-  ~api_optionst();
 };
 
 #endif

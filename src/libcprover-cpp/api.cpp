@@ -216,43 +216,6 @@ void api_sessiont::validate_goto_model() const
   implementation->model->validate();
 }
 
-
-struct api_options_implementationt
-{
-  // Options for the verification engine
-  bool simplify_enabled;
-
-  // Option for dropping unused function
-  bool drop_unused_functions_enabled;
-
-  // Option for validating the goto model
-  bool validate_goto_model_enabled;
-};
-
-api_optionst::api_optionst(
-  std::unique_ptr<const api_options_implementationt> implementation)
-: implementation{std::move(implementation)}
-{
-}
-
-bool api_optionst::simplify() const
-{
-  return implementation->simplify_enabled;
-}
-
-bool api_optionst::drop_unused_functions() const
-{
-  return implementation->drop_unused_functions_enabled;
-}
-
-bool api_optionst::validate_goto_model() const
-{
-  return implementation->validate_goto_model_enabled;
-}
-
-api_optionst::api_optionst(api_optionst &&api_options) noexcept = default;
-api_optionst::~api_optionst() = default;
-
 static std::unique_ptr<optionst> make_internal_default_options()
 {
   std::unique_ptr<optionst> options = util_make_unique<optionst>();
@@ -265,35 +228,6 @@ static std::unique_ptr<optionst> make_internal_default_options()
   options->set_option("sat-preprocessor", true);
   return options;
 }
-
-api_optionst::buildert &api_optionst::buildert::simplify(bool on)
-{
-  implementation->simplify_enabled = on;
-  return *this;
-}
-
-api_optionst::buildert &api_optionst::buildert::drop_unused_functions(bool on)
-{
-  implementation->drop_unused_functions_enabled = on;
-  return *this;
-}
-
-api_optionst::buildert &api_optionst::buildert::validate_goto_model(bool on)
-{
-  implementation->validate_goto_model_enabled = on;
-  return *this;
-}
-
-api_optionst api_optionst::buildert::build()
-{
-  auto impl = util_make_unique<api_options_implementationt>(*implementation);
-  api_optionst api_options{std::move(impl)};
-  return api_options;
-}
-
-api_optionst::buildert::buildert() = default;
-api_optionst::buildert::buildert(api_optionst::buildert &&builder) noexcept = default;
-api_optionst::buildert::~buildert() = default;
 
 static std::unique_ptr<optionst> to_engine_options(const api_optionst &api_options)
 {
