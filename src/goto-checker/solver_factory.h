@@ -23,6 +23,12 @@ class namespacet;
 class optionst;
 class stack_decision_proceduret;
 
+class solver_factory_optionst
+{
+public:
+  virtual std::unique_ptr<std::string> incremental_smt2_solver() = 0;
+};
+
 class solver_factoryt final
 {
 public:
@@ -87,6 +93,12 @@ protected:
   // consistency checks during solver creation
   void no_beautification();
   void no_incremental_check();
+};
+
+class solver_factory_options_buildert
+{
+public:
+  virtual void incremental_smt2_solver(std::string) = 0;
 };
 
 /// Parse solver-related command-line parameters in \p cmdline and set
