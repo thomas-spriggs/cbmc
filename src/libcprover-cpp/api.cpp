@@ -34,6 +34,7 @@
 #include <vector>
 
 extern configt config;
+static std::unique_ptr<optionst> to_engine_options(const api_optionst &api_options);
 
 std::unique_ptr<std::string> api_sessiont::get_api_version() const
 {
@@ -56,7 +57,7 @@ api_sessiont::api_sessiont(const api_optionst &options)
 {
   implementation->message_handler =
     util_make_unique<null_message_handlert>(null_message_handlert{});
-  implementation->options = options.to_engine_options();
+  implementation->options = to_engine_options(options);
   // Needed to initialise the language options correctly
   cmdlinet cmdline;
   // config is global in config.cpp
@@ -234,6 +235,24 @@ api_optionst::api_optionst(
 {
 }
 
+bool api_optionst::simplify() const
+{
+  return implementation->simplify_enabled;
+}
+
+bool api_optionst::drop_unused_functions() const
+{
+  return implementation->drop_unused_functions_enabled;
+}
+
+bool api_optionst::validate_goto_model() const
+{
+  return implementation->validate_goto_model_enabled;
+}
+
+api_optionst::api_optionst(api_optionst &&api_options) = default;
+api_optionst::~api_optionst() = default;
+
 static std::unique_ptr<optionst> make_internal_default_options()
 {
   std::unique_ptr<optionst> options = util_make_unique<optionst>();
@@ -267,12 +286,17 @@ api_optionst::buildert &api_optionst::buildert::validate_goto_model(bool on)
 
 api_optionst api_optionst::buildert::build()
 {
-  return api_optionst{util_make_unique<api_options_implementationt>(*implementation)};
+  auto impl = util_make_unique<api_options_implementationt>(*implementation);
+  api_optionst api_options{std::move(impl)};
+  return api_options;
 }
 
-std::unique_ptr<optionst> api_optionst::to_engine_options() const
+api_optionst::buildert::buildert() = default;
+api_optionst::buildert::~buildert() = default;
+
+static std::unique_ptr<optionst> to_engine_options(const api_optionst &api_options)
 {
   auto engine_options = make_internal_default_options();
-  engine_options->set_option("simplify", implementation->simplify_enabled);
+  engine_options->set_option("simplify", api_options.simplify());
   return engine_options;
 }

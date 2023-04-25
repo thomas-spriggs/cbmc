@@ -11,7 +11,6 @@
 struct api_session_implementationt;
 struct api_options_implementationt;
 class api_optionst;
-class optionst;
 
 // There has been a design decision to allow users to include all of
 // the API headers by just including `api.h`, so we want to have an
@@ -88,20 +87,24 @@ private:
   std::unique_ptr<api_session_implementationt> implementation;
 };
 
-class api_optionst
+class api_optionst final
 {
-  std::unique_ptr<const api_options_implementationt> implementation;
-
+private:
+ std::unique_ptr<const api_options_implementationt> implementation;
   // Construction is allowed only through the builder.
-  api_optionst(std::unique_ptr<const api_options_implementationt> implementation);
+  explicit api_optionst(std::unique_ptr<const api_options_implementationt> implementation);
 
 public:
-  class buildert
+
+  class buildert final
   {
   private:
     std::unique_ptr<api_options_implementationt> implementation;
 
   public:
+    buildert();
+    ~buildert();
+
     // Options
     buildert &simplify(bool on);
     buildert &drop_unused_functions(bool on);
@@ -111,7 +114,12 @@ public:
     api_optionst build();
   };
 
-  std::unique_ptr<optionst> to_engine_options() const;
+  bool simplify() const;
+  bool drop_unused_functions() const;
+  bool validate_goto_model() const;
+
+  api_optionst(api_optionst && api_options);
+  ~api_optionst();
 };
 
 #endif
