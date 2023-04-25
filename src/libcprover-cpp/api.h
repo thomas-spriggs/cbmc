@@ -103,6 +103,7 @@ public:
 
   public:
     buildert();
+    buildert(buildert && builder) noexcept;
     ~buildert();
 
     // Options
@@ -118,7 +119,7 @@ public:
   bool drop_unused_functions() const;
   bool validate_goto_model() const;
 
-  api_optionst(api_optionst && api_options);
+  api_optionst(api_optionst && api_options) noexcept;
   ~api_optionst();
 };
 

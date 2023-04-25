@@ -250,7 +250,7 @@ bool api_optionst::validate_goto_model() const
   return implementation->validate_goto_model_enabled;
 }
 
-api_optionst::api_optionst(api_optionst &&api_options) = default;
+api_optionst::api_optionst(api_optionst &&api_options) noexcept = default;
 api_optionst::~api_optionst() = default;
 
 static std::unique_ptr<optionst> make_internal_default_options()
@@ -292,6 +292,7 @@ api_optionst api_optionst::buildert::build()
 }
 
 api_optionst::buildert::buildert() = default;
+api_optionst::buildert::buildert(api_optionst::buildert &&builder) noexcept = default;
 api_optionst::buildert::~buildert() = default;
 
 static std::unique_ptr<optionst> to_engine_options(const api_optionst &api_options)
