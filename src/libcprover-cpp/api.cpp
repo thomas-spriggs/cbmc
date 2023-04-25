@@ -27,6 +27,8 @@
 #include <langapi/mode.h>
 #include <pointer-analysis/add_failed_symbols.h>
 
+#include "goto_check_c.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -45,7 +47,7 @@ struct api_session_implementationt
   std::unique_ptr<optionst> options;
 };
 
-api_sessiont::api_sessiont() : api_sessiont{api_optionst::create()}
+api_sessiont::api_sessiont() : api_sessiont{api_optionst::buildert{}.build()}
 {
 }
 
@@ -211,4 +213,66 @@ void api_sessiont::validate_goto_model() const
                << messaget::eom;
 
   implementation->model->validate();
+}
+
+
+struct api_options_implementationt
+{
+  // Options for the verification engine
+  bool simplify_enabled;
+
+  // Option for dropping unused function
+  bool drop_unused_functions_enabled;
+
+  // Option for validating the goto model
+  bool validate_goto_model_enabled;
+};
+
+api_optionst::api_optionst(
+  std::unique_ptr<const api_options_implementationt> implementation)
+: implementation{std::move(implementation)}
+{
+}
+
+static std::unique_ptr<optionst> make_internal_default_options()
+{
+  std::unique_ptr<optionst> options = util_make_unique<optionst>();
+  cmdlinet command_line;
+  PARSE_OPTIONS_GOTO_CHECK(command_line, (*options));
+  parse_solver_options(command_line, *options);
+  options->set_option("built-in-assertions", true);
+  options->set_option("arrays-uf", "auto");
+  options->set_option("depth", UINT32_MAX);
+  options->set_option("sat-preprocessor", true);
+  return options;
+}
+
+api_optionst::buildert &api_optionst::buildert::simplify(bool on)
+{
+  implementation->simplify_enabled = on;
+  return *this;
+}
+
+api_optionst::buildert &api_optionst::buildert::drop_unused_functions(bool on)
+{
+  implementation->drop_unused_functions_enabled = on;
+  return *this;
+}
+
+api_optionst::buildert &api_optionst::buildert::validate_goto_model(bool on)
+{
+  implementation->validate_goto_model_enabled = on;
+  return *this;
+}
+
+api_optionst api_optionst::buildert::build()
+{
+  return api_optionst{util_make_unique<api_options_implementationt>(*implementation)};
+}
+
+std::unique_ptr<optionst> api_optionst::to_engine_options() const
+{
+  auto engine_options = make_internal_default_options();
+  engine_options->set_option("simplify", implementation->simplify_enabled);
+  return engine_options;
 }
