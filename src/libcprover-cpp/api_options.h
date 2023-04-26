@@ -97,4 +97,86 @@ public:
   ~api_sat_optionst();
 };
 
+class api_legacy_smt_optionst
+{
+private:
+  struct implementationt;
+
+ std::unique_ptr<const implementationt> implementation;
+  // Construction is allowed only through the builder.
+  explicit api_legacy_smt_optionst(std::unique_ptr<const implementationt> implementation);
+
+public:
+  enum class solvert
+  {
+    GENERIC,
+    BITWUZLA,
+    BOOLECTOR,
+    CPROVER_SMT2,
+    CVC3,
+    CVC4,
+    CVC5,
+    MATHSAT,
+    YICES,
+    Z3
+  };
+
+  class buildert final
+  {
+  private:
+    std::unique_ptr<implementationt> implementation;
+
+  public:
+    buildert();
+    buildert(buildert && builder) noexcept;
+    ~buildert();
+
+    // Options
+		void solver_specialisation(solvert solver);
+		void use_FPA_theory(bool use_enabled);
+
+    /// For doing the building when options have been specified.
+    api_legacy_smt_optionst build();
+  };
+
+  solvert solver_specialisation();
+  bool use_FPA_theory();
+
+  api_legacy_smt_optionst(api_legacy_smt_optionst && api_options) noexcept;
+  ~api_legacy_smt_optionst();
+};
+
+class api_incremental_smt_optionst
+{
+private:
+  struct implementationt;
+
+ std::unique_ptr<const implementationt> implementation;
+  // Construction is allowed only through the builder.
+  explicit api_incremental_smt_optionst(std::unique_ptr<const implementationt> implementation);
+
+public:
+  class buildert final
+  {
+  private:
+    std::unique_ptr<implementationt> implementation;
+
+  public:
+    buildert();
+    buildert(buildert && builder) noexcept;
+    ~buildert();
+
+    // Options
+    void solver_path(std::string path);
+
+    /// For doing the building when options have been specified.
+    api_incremental_smt_optionst build();
+  };
+
+  std::string solver_path();
+
+  api_incremental_smt_optionst(api_incremental_smt_optionst && api_options) noexcept;
+  ~api_incremental_smt_optionst();
+};
+
 #endif

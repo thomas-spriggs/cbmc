@@ -148,3 +148,89 @@ void api_sat_optionst::buildert::dimacs(bool dimacs)
 {
   implementation->dimacs = dimacs;
 }
+
+struct api_legacy_smt_optionst::implementationt
+{
+		solvert solver_specialisation;
+    /// Floating point arithmetic theory.
+		bool use_FPA_theory;
+};
+
+api_legacy_smt_optionst::api_legacy_smt_optionst(
+  std::unique_ptr<const implementationt> implementation)
+: implementation{std::move(implementation)}
+{
+}
+
+api_legacy_smt_optionst::solvert
+api_legacy_smt_optionst::solver_specialisation()
+{
+    return implementation->solver_specialisation;
+}
+
+bool api_legacy_smt_optionst::use_FPA_theory()
+{
+    return implementation->use_FPA_theory;
+}
+
+api_legacy_smt_optionst::api_legacy_smt_optionst(
+  api_legacy_smt_optionst &&api_options) noexcept = default;
+
+api_legacy_smt_optionst::buildert::buildert() = default;
+api_legacy_smt_optionst::buildert::buildert(
+  api_legacy_smt_optionst::buildert &&builder) noexcept = default;
+api_legacy_smt_optionst::buildert::~buildert() = default;
+
+api_legacy_smt_optionst::~api_legacy_smt_optionst() = default;
+
+api_legacy_smt_optionst api_legacy_smt_optionst::buildert::build()
+{
+  return api_legacy_smt_optionst(util_make_unique<implementationt>(*implementation));
+}
+
+void api_legacy_smt_optionst::buildert::solver_specialisation(
+  api_legacy_smt_optionst::solvert solver)
+{
+  implementation->solver_specialisation = solver;
+}
+
+void api_legacy_smt_optionst::buildert::use_FPA_theory(bool use_enabled)
+{
+  implementation->use_FPA_theory = use_enabled;
+}
+
+struct api_incremental_smt_optionst::implementationt
+{
+  std::string solver_path;
+};
+
+api_incremental_smt_optionst::api_incremental_smt_optionst(
+  std::unique_ptr<const implementationt> implementation)
+: implementation{std::move(implementation)}
+{
+}
+
+std::string api_incremental_smt_optionst::solver_path()
+{
+  return implementation->solver_path;
+}
+
+api_incremental_smt_optionst::~api_incremental_smt_optionst()= default;
+
+api_incremental_smt_optionst::api_incremental_smt_optionst(
+  api_incremental_smt_optionst &&api_options) noexcept = default;
+
+
+api_incremental_smt_optionst::buildert::buildert() = default;
+api_incremental_smt_optionst::buildert::buildert(
+  api_incremental_smt_optionst::buildert &&builder) noexcept = default;
+api_incremental_smt_optionst::buildert::~buildert() = default;
+api_incremental_smt_optionst api_incremental_smt_optionst::buildert::build()
+{
+  return api_incremental_smt_optionst{util_make_unique<implementationt>(*implementation)};
+}
+
+void api_incremental_smt_optionst::buildert::solver_path(std::string path)
+{
+  implementation->solver_path = std::move(path);
+}
