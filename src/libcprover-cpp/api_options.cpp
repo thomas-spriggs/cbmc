@@ -2,7 +2,10 @@
 
 #include "api_options.h"
 
+// The following includes must be header-only, in order to avoid introducing
+// linker dependencies.
 #include <util/make_unique.h>
+#include <util/optional.h>
 
 struct api_optionst::implementationt
 {
@@ -72,8 +75,7 @@ api_optionst::buildert::~buildert() = default;
 struct api_sat_optionst::implementationt
 {
   api_sat_solvert solver = api_sat_solvert::minisat2;
-  bool using_external_sat_solver = false;
-  std::string external_sat_solver;
+  optionalt<std::string> external_sat_solver;
   bool sat_preprocessor = true;
   bool dimacs = false;
 };
@@ -96,8 +98,8 @@ api_sat_solvert api_sat_optionst::solver()
 
 std::unique_ptr<std::string> api_sat_optionst::external_sat_solver()
 {
-  if(implementation->using_external_sat_solver)
-    return util_make_unique<std::string>(implementation->external_sat_solver);
+  if(implementation->external_sat_solver)
+    return util_make_unique<std::string>(*implementation->external_sat_solver);
   else
     return nullptr;
 }
@@ -129,13 +131,12 @@ api_sat_optionst api_sat_optionst::buildert::build()
 
 void api_sat_optionst::buildert::solver(api_sat_solvert solver)
 {
-  this->implementation->solver = solver;
+  implementation->solver = solver;
 }
 
 void api_sat_optionst::buildert::external_sat_solver(
   std::string external_sat_solver)
 {
-  implementation->using_external_sat_solver = true;
   implementation->external_sat_solver = std::move(external_sat_solver);
 }
 
@@ -237,13 +238,10 @@ void api_incremental_smt_optionst::buildert::solver_path(std::string path)
 
 struct api_solver_optionst::implementationt
 {
-	bool writing_output_file = false;
-  std::string outfile;
-  bool writing_solver_stats = false;
-  std::string write_solver_stats_to;
+  optionalt<std::string> outfile;
+  optionalt<std::string> write_solver_stats_to;
   bool beautify;
-  bool using_max_node_refinement = false;
-  unsigned int max_node_refinement;
+  optionalt<unsigned int> max_node_refinement;
   bool refine_arrays;
   bool refine_arthimetic;
 };
@@ -270,13 +268,11 @@ api_solver_optionst api_solver_optionst::buildert::build()
 
 void api_solver_optionst::buildert::outfile(std::string outfile)
 {
-  implementation->writing_output_file = true;
   implementation->outfile = std::move(outfile);
 }
 
 void api_solver_optionst::buildert::write_solver_stats_to(std::string filename)
 {
-  implementation->writing_solver_stats = true;
   implementation->write_solver_stats_to = std::move(filename);
 }
 
@@ -287,7 +283,6 @@ void api_solver_optionst::buildert::beautify(bool on)
 
 void api_solver_optionst::buildert::max_node_refinement(unsigned int max_node_refinement)
 {
-  implementation->using_max_node_refinement = true;
   implementation->max_node_refinement = max_node_refinement;
 }
 
