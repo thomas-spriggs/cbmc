@@ -73,3 +73,37 @@ api_optionst api_optionst::buildert::build()
 api_optionst::buildert::buildert() = default;
 api_optionst::buildert::buildert(api_optionst::buildert &&builder) noexcept = default;
 api_optionst::buildert::~buildert() = default;
+
+struct api_sat_optionst::implementationt
+{
+  api_sat_solvert solver;
+  bool using_external_sat_solver;
+  std::string external_sat_solver;
+  bool sat_preprocessor;
+  bool dimacs;
+};
+
+api_sat_optionst::api_sat_optionst(
+  std::unique_ptr<const implementationt> implementation)
+  : implementation{std::move(implementation)}
+{
+}
+
+api_sat_optionst::api_sat_optionst(api_sat_optionst &&api_options) noexcept
+  : implementation{std::move(api_options.implementation)}
+{
+}
+
+api_sat_optionst::~api_sat_optionst() = default;
+
+api_sat_optionst::buildert::buildert() = default;
+api_sat_optionst::buildert::buildert(
+  api_sat_optionst::buildert &&builder) noexcept = default;
+api_sat_optionst::buildert::~buildert() = default;
+
+api_sat_optionst api_sat_optionst::buildert::build()
+{
+  auto impl = util_make_unique<implementationt>(*implementation);
+  api_sat_optionst api_sat_options{std::move(impl)};
+  return api_sat_options;
+}
