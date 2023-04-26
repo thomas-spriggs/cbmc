@@ -4,6 +4,7 @@
 #define CPROVER_LIBCPROVER_CPP_OPTIONS_H
 
 #include <memory>
+#include <string>
 
 class api_optionst final
 {
