@@ -71,11 +71,11 @@ api_optionst::buildert::~buildert() = default;
 
 struct api_sat_optionst::implementationt
 {
-  api_sat_solvert solver;
-  bool using_external_sat_solver;
+  api_sat_solvert solver = api_sat_solvert::minisat2;
+  bool using_external_sat_solver = false;
   std::string external_sat_solver;
-  bool sat_preprocessor;
-  bool dimacs;
+  bool sat_preprocessor = true;
+  bool dimacs = false;
 };
 
 api_sat_optionst::api_sat_optionst(
@@ -89,9 +89,33 @@ api_sat_optionst::api_sat_optionst(api_sat_optionst &&api_options) noexcept
 {
 }
 
+api_sat_solvert api_sat_optionst::solver()
+{
+  return implementation->solver;
+}
+
+std::unique_ptr<std::string> api_sat_optionst::external_sat_solver()
+{
+  if(implementation->using_external_sat_solver)
+    return util_make_unique<std::string>(implementation->external_sat_solver);
+  else
+    return nullptr;
+}
+
+bool api_sat_optionst::sat_preprocessor()
+{
+  return implementation->sat_preprocessor;
+}
+
+bool api_sat_optionst::dimacs()
+{
+  return implementation->dimacs;
+}
+
 api_sat_optionst::~api_sat_optionst() = default;
 
 api_sat_optionst::buildert::buildert() = default;
+
 api_sat_optionst::buildert::buildert(
   api_sat_optionst::buildert &&builder) noexcept = default;
 api_sat_optionst::buildert::~buildert() = default;
@@ -101,4 +125,26 @@ api_sat_optionst api_sat_optionst::buildert::build()
   auto impl = util_make_unique<implementationt>(*implementation);
   api_sat_optionst api_sat_options{std::move(impl)};
   return api_sat_options;
+}
+
+void api_sat_optionst::buildert::solver(api_sat_solvert solver)
+{
+  this->implementation->solver = solver;
+}
+
+void api_sat_optionst::buildert::external_sat_solver(
+  std::string external_sat_solver)
+{
+  implementation->using_external_sat_solver = true;
+  implementation->external_sat_solver = std::move(external_sat_solver);
+}
+
+void api_sat_optionst::buildert::sat_preprocessor(bool sat_preprocessor)
+{
+  implementation->sat_preprocessor = sat_preprocessor;
+}
+
+void api_sat_optionst::buildert::dimacs(bool dimacs)
+{
+  implementation->dimacs = dimacs;
 }

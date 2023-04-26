@@ -79,12 +79,19 @@ public:
     ~buildert();
 
     // Options
-    //void solver(api_sat_solvert solver);
+    void solver(api_sat_solvert solver);
+    void external_sat_solver(std::string external_sat_solver);
+    void sat_preprocessor(bool sat_preprocessor);
+    void dimacs(bool dimacs);
 
     /// For doing the building when options have been specified.
     api_sat_optionst build();
   };
 
+  api_sat_solvert solver();
+  std::unique_ptr<std::string> external_sat_solver();
+  bool sat_preprocessor();
+  bool dimacs();
 
   api_sat_optionst(api_sat_optionst && api_options) noexcept;
   ~api_sat_optionst();
