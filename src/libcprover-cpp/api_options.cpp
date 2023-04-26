@@ -234,3 +234,70 @@ void api_incremental_smt_optionst::buildert::solver_path(std::string path)
 {
   implementation->solver_path = std::move(path);
 }
+
+struct api_solver_optionst::implementationt
+{
+	bool writing_output_file = false;
+  std::string outfile;
+  bool writing_solver_stats = false;
+  std::string write_solver_stats_to;
+  bool beautify;
+  bool using_max_node_refinement = false;
+  unsigned int max_node_refinement;
+  bool refine_arrays;
+  bool refine_arthimetic;
+};
+
+api_solver_optionst::api_solver_optionst(
+  std::unique_ptr<const implementationt> implementation)
+  : implementation{std::move(implementation)}
+{
+}
+
+api_solver_optionst::~api_solver_optionst() = default;
+api_solver_optionst::api_solver_optionst(
+  api_solver_optionst &&api_options) noexcept = default;
+
+api_solver_optionst::buildert::buildert() = default;
+api_solver_optionst::buildert::buildert(
+  api_solver_optionst::buildert &&builder) noexcept = default;
+api_solver_optionst::buildert::~buildert() = default;
+
+api_solver_optionst api_solver_optionst::buildert::build()
+{
+  return api_solver_optionst{util_make_unique<implementationt>(*implementation)};
+}
+
+void api_solver_optionst::buildert::outfile(std::string outfile)
+{
+  implementation->writing_output_file = true;
+  implementation->outfile = std::move(outfile);
+}
+
+void api_solver_optionst::buildert::write_solver_stats_to(std::string filename)
+{
+  implementation->writing_solver_stats = true;
+  implementation->write_solver_stats_to = std::move(filename);
+}
+
+void api_solver_optionst::buildert::beautify(bool on)
+{
+  implementation->beautify = on;
+}
+
+void api_solver_optionst::buildert::max_node_refinement(unsigned int max_node_refinement)
+{
+  implementation->using_max_node_refinement = true;
+  implementation->max_node_refinement = max_node_refinement;
+}
+
+void api_solver_optionst::buildert::refine_arrays(bool refine_arrays)
+{
+  implementation->refine_arrays = refine_arrays;
+}
+
+void api_solver_optionst::buildert::refine_arthimetic(bool refine_arthimetic)
+{
+  implementation->refine_arthimetic = refine_arthimetic;
+}
+

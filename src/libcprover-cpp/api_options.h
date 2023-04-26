@@ -179,4 +179,47 @@ public:
   ~api_incremental_smt_optionst();
 };
 
+class api_solver_optionst
+{
+private:
+  struct implementationt;
+
+ std::unique_ptr<const implementationt> implementation;
+  // Construction is allowed only through the builder.
+  explicit api_solver_optionst(std::unique_ptr<const implementationt> implementation);
+
+public:
+  class buildert final
+  {
+  private:
+    std::unique_ptr<implementationt> implementation;
+
+  public:
+    buildert();
+    buildert(buildert && builder) noexcept;
+    ~buildert();
+
+    // Options
+    void outfile(std::string outfile);
+    void write_solver_stats_to(std::string filename);
+    void beautify(bool on);
+    void max_node_refinement(unsigned int max_node_refinement);
+    void refine_arrays(bool refine_arrays);
+    void refine_arthimetic(bool refine_arthimetic);
+
+    /// For doing the building when options have been specified.
+    api_solver_optionst build();
+  };
+
+  std::string outfile;
+  std::string write_solver_stats_to;
+  bool beautify;
+  unsigned int max_node_refinement;
+  bool refine_arrays;
+  bool refine_arthimetic;
+
+  api_solver_optionst(api_solver_optionst && api_options) noexcept;
+  ~api_solver_optionst();
+};
+
 #endif
