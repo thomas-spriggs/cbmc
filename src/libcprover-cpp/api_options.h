@@ -5,21 +5,21 @@
 
 #include <memory>
 
-struct api_options_implementationt;
-
 class api_optionst final
 {
 private:
- std::unique_ptr<const api_options_implementationt> implementation;
+  struct implementationt;
+
+ std::unique_ptr<const implementationt> implementation;
   // Construction is allowed only through the builder.
-  explicit api_optionst(std::unique_ptr<const api_options_implementationt> implementation);
+  explicit api_optionst(std::unique_ptr<const implementationt> implementation);
 
 public:
 
   class buildert final
   {
   private:
-    std::unique_ptr<api_options_implementationt> implementation;
+    std::unique_ptr<implementationt> implementation;
 
   public:
     buildert();

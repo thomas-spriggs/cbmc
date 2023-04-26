@@ -9,7 +9,7 @@
 #include <ansi-c/goto_check_c.h>
 #include <goto-checker/solver_factory.h>
 
-struct api_options_implementationt
+struct api_optionst::implementationt
 {
   // Options for the verification engine
   bool simplify_enabled;
@@ -22,7 +22,7 @@ struct api_options_implementationt
 };
 
 api_optionst::api_optionst(
-  std::unique_ptr<const api_options_implementationt> implementation)
+  std::unique_ptr<const implementationt> implementation)
 : implementation{std::move(implementation)}
 {
 }
@@ -65,7 +65,7 @@ api_optionst::buildert &api_optionst::buildert::validate_goto_model(bool on)
 
 api_optionst api_optionst::buildert::build()
 {
-  auto impl = util_make_unique<api_options_implementationt>(*implementation);
+  auto impl = util_make_unique<implementationt>(*implementation);
   api_optionst api_options{std::move(impl)};
   return api_options;
 }
