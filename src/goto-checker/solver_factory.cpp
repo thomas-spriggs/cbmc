@@ -709,6 +709,10 @@ static void parse_smt2_options(const cmdlinet &cmdline, optionst &options)
       options.set_option("z3", true);
     }
   }
+
+  if(cmdline.isset("dump-smt-formula"))
+    options.set_option(
+      "dump-smt-formula", cmdline.get_value("dump-smt-formula"));
 }
 
 void parse_solver_options(const cmdlinet &cmdline, optionst &options)
@@ -718,10 +722,6 @@ void parse_solver_options(const cmdlinet &cmdline, optionst &options)
 
   if(cmdline.isset("outfile"))
     options.set_option("outfile", cmdline.get_value("outfile"));
-
-  if(cmdline.isset("dump-smt-formula"))
-    options.set_option(
-      "dump-smt-formula", cmdline.get_value("dump-smt-formula"));
 
   if(cmdline.isset("write-solver-stats-to"))
   {
