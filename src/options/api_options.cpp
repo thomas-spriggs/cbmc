@@ -4,8 +4,8 @@
 
 // The following includes must be header-only, in order to avoid introducing
 // linker dependencies.
-#include <util/make_unique.h>
-#include <util/optional.h>
+#include <make_unique.h>
+#include <optional.h>
 
 struct api_optionst::implementationt
 {
