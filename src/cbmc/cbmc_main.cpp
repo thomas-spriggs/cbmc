@@ -33,6 +33,8 @@ extern unsigned long long irep_cmp_cnt;
 extern unsigned long long irep_cmp_ne_cnt;
 #endif
 
+#include <options/api_options.h>
+
 #ifdef _MSC_VER
 int wmain(int argc, const wchar_t **argv_wide)
 {
@@ -44,6 +46,10 @@ int main(int argc, const char **argv)
 {
 #endif
   cbmc_parse_optionst parse_options(argc, argv);
+
+  auto builder = api_sat_optionst::buildert{};
+  builder.dimacs(false);
+  (void)builder;
 
   int res = parse_options.main();
 
