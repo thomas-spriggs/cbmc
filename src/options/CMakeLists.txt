@@ -3,7 +3,7 @@ file(GLOB_RECURSE sources "*.cpp")
 # Scan for all header files in the current or child directories (necessary to install them later)
 file(GLOB_RECURSE headers "*.h")
 
-add_library(options-lib
+add_library(options-lib OBJECT
     ${sources}
 )
 
@@ -23,6 +23,6 @@ set_target_properties(options-lib
 # Install only the headers `include` as the library is "squashed" into
 # `libcprover-cpp`.
 install(TARGETS         options-lib
-        PUBLIC_HEADER   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cprover/options"
+        RUNTIME   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cprover/options"
                         COMPONENT lib
         )

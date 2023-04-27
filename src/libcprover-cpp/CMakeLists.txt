@@ -27,7 +27,6 @@ get_target_property(LIBRARY_DEPENDENCIES solvers LINK_LIBRARIES)
 # Get all the dependency targets we know statically.
 list(APPEND
         LIBRARY_DEPENDENCIES
-        "options-lib"
         "goto-programs"
         "util"
         "langapi"
