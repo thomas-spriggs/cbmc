@@ -12,6 +12,7 @@ Author: Daniel Kroening, Peter Schrammel
 #ifndef CPROVER_GOTO_CHECKER_SOLVER_FACTORY_H
 #define CPROVER_GOTO_CHECKER_SOLVER_FACTORY_H
 
+#include <options/solver_options.h>
 #include <solvers/prop/prop.h>
 #include <solvers/smt2/smt2_dec.h>
 
@@ -92,6 +93,8 @@ protected:
 /// Parse solver-related command-line parameters in \p cmdline and set
 /// corresponding values in \p options.
 void parse_solver_options(const cmdlinet &cmdline, optionst &options);
+
+solver_optionst parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler);
 
 #define OPT_SOLVER                                                             \
   "(smt1)" /* rejected, will eventually disappear */                           \

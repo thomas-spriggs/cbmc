@@ -19,6 +19,8 @@ Author: Daniel Kroening, Peter Schrammel
 #include <util/options.h>
 #include <util/version.h>
 
+#include "string2int.h"
+
 #include <iostream>
 
 #ifdef _MSC_VER
@@ -756,4 +758,43 @@ void parse_solver_options(const cmdlinet &cmdline, optionst &options)
     options.set_option(
       "max-node-refinement", cmdline.get_value("max-node-refinement"));
   }
+}
+
+solver_optionst
+parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler)
+{
+  solver_optionst::buildert builder;
+
+  if(cmdline.isset("outfile"))
+    builder.outfile(cmdline.get_value("outfile"));
+
+  if(cmdline.isset("write-solver-stats-to"))
+    builder.write_solver_stats_to(cmdline.get_value("write-solver-stats-to"));
+
+  if(cmdline.isset("beautify"))
+    builder.beautify(true);
+
+  if(cmdline.isset("refine-arrays"))
+    builder.refine_arrays(true);
+
+  if(cmdline.isset("refine-arithmetic"))
+    builder.refine_arthimetic(true);
+
+  if(cmdline.isset("max-node-refinement"))
+  {
+    const std::string argument = cmdline.get_value("max-node-refinement");
+    const auto parsed_value =
+      string2optional<unsigned int>(cmdline.get_value("max-node-refinement"));
+    if(!parsed_value)
+    {
+      messaget log(message_handler);
+      log.error() << "Invalid value '" <<  argument
+                  << "' specified for max-node-refinement."
+                  << messaget::eom;
+      exit(CPROVER_EXIT_USAGE_ERROR);
+    }
+    builder.max_node_refinement(*parsed_value);
+  }
+
+  return builder.build();
 }
