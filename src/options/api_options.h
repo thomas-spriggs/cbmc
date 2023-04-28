@@ -193,9 +193,9 @@ private:
 
 public:
   enum class solver_typet {
-    api_sat_optionst,
-    api_legacy_smt_optionst,
-    api_incremental_smt_optionst
+    sat,
+    legacy_smt,
+    incremental_smt
   };
 
   class buildert final

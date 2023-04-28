@@ -265,7 +265,7 @@ struct api_solver_optionst::implementationt
 {
   // api_solver_optionst maintains the invariant that only one of the solver
   // types is specified.
-  solver_typet solver_type = solver_typet::api_sat_optionst;
+  solver_typet solver_type = solver_typet::sat;
   optionalt<api_sat_optionst> sat_options = api_sat_optionst::buildert{}.build();
   optionalt<api_legacy_smt_optionst> legacy_smt_options;
   optionalt<api_incremental_smt_optionst> incremental_smt_options;
@@ -302,7 +302,7 @@ api_solver_optionst::buildert &
 api_solver_optionst::buildert::api_sat_options(api_sat_optionst options)
 {
   implementation->sat_options.emplace(std::move(options));
-  implementation->solver_type = solver_typet::api_sat_optionst;
+  implementation->solver_type = solver_typet::sat;
   implementation->legacy_smt_options.reset();
   implementation->incremental_smt_options.reset();
   return *this;
@@ -312,7 +312,7 @@ api_solver_optionst::buildert &
 api_solver_optionst::buildert::api_legacy_smt_options(api_legacy_smt_optionst options)
 {
   implementation->legacy_smt_options.emplace(std::move(options));
-  implementation->solver_type = solver_typet::api_legacy_smt_optionst;
+  implementation->solver_type = solver_typet::legacy_smt;
   implementation->sat_options.reset();
   implementation->incremental_smt_options.reset();
   return *this;
@@ -322,7 +322,7 @@ api_solver_optionst::buildert &
 api_solver_optionst::buildert::api_incremental_smt_options(api_incremental_smt_optionst options)
 {
   implementation->incremental_smt_options.emplace(std::move(options));
-  implementation->solver_type = solver_typet::api_incremental_smt_optionst;
+  implementation->solver_type = solver_typet::incremental_smt;
   implementation->sat_options.reset();
   implementation->legacy_smt_options.reset();
   return *this;
