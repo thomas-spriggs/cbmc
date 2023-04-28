@@ -265,17 +265,17 @@ struct api_solver_optionst::implementationt
 {
   // api_solver_optionst maintains the invariant that only one of the solver
   // types is specified.
-  solver_typet solver_type;
-  optionalt<api_sat_optionst> sat_options;
+  solver_typet solver_type = solver_typet::api_sat_optionst;
+  optionalt<api_sat_optionst> sat_options = api_sat_optionst::buildert{}.build();
   optionalt<api_legacy_smt_optionst> legacy_smt_options;
   optionalt<api_incremental_smt_optionst> incremental_smt_options;
 
   optionalt<std::string> outfile;
   optionalt<std::string> write_solver_stats_to;
-  bool beautify;
+  bool beautify = false;
   optionalt<unsigned int> max_node_refinement;
-  bool refine_arrays;
-  bool refine_arthimetic;
+  bool refine_arrays = false;
+  bool refine_arthimetic = false;
 };
 
 api_solver_optionst::api_solver_optionst(
