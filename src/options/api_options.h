@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <functional>
 
 class api_optionst final
 {
@@ -230,6 +231,11 @@ public:
   std::unique_ptr<unsigned int> max_node_refinement();
   bool refine_arrays();
   bool refine_arthimetic();
+
+  void visit_solver_specific_options(
+    const std::function<void(api_sat_optionst)> &sat_visitor,
+    const std::function<void(api_legacy_smt_optionst)> &legacy_smt_visitor,
+    const std::function<void(api_incremental_smt_optionst)> &legacy_smt_vistor);
 
   api_solver_optionst(api_solver_optionst && api_options) noexcept;
   ~api_solver_optionst();

@@ -402,3 +402,22 @@ bool api_solver_optionst::refine_arthimetic()
 {
   return implementation->refine_arthimetic;
 }
+
+void api_solver_optionst::visit_solver_specific_options(
+    const std::function<void(api_sat_optionst)> &sat_visitor,
+    const std::function<void(api_legacy_smt_optionst)> &legacy_smt_visitor,
+    const std::function<void(api_incremental_smt_optionst)> &legacy_smt_vistor)
+{
+  switch(implementation->solver_type)
+  {
+  case solver_typet::sat:
+    sat_visitor(*implementation->sat_options);
+    return;
+  case solver_typet::legacy_smt:
+    legacy_smt_visitor(*implementation->legacy_smt_options);
+    return;
+  case solver_typet::incremental_smt:
+    legacy_smt_vistor(*implementation->incremental_smt_options);
+    return;
+  }
+}
