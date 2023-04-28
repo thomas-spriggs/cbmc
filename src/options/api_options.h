@@ -40,6 +40,7 @@ public:
   bool validate_goto_model() const;
 
   api_optionst(api_optionst && api_options) noexcept;
+  api_optionst& operator=(api_optionst &&) noexcept;
   ~api_optionst();
 };
 

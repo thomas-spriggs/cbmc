@@ -41,6 +41,7 @@ bool api_optionst::validate_goto_model() const
 }
 
 api_optionst::api_optionst(api_optionst &&api_options) noexcept = default;
+api_optionst &api_optionst::operator=(api_optionst &&) noexcept = default;
 api_optionst::~api_optionst() = default;
 
 api_optionst::buildert &api_optionst::buildert::simplify(bool on)
