@@ -39,6 +39,7 @@ public:
   public:
     buildert();
     buildert(buildert && builder) noexcept;
+    buildert &operator=(buildert && builder) noexcept;
     ~buildert();
 
     // Options
@@ -57,7 +58,9 @@ public:
   bool dimacs();
 
   sat_optionst(sat_optionst && options) noexcept;
+  sat_optionst &operator=(sat_optionst && options) noexcept;
   sat_optionst(const sat_optionst & options);
+  sat_optionst &operator=(const sat_optionst & options);
   ~sat_optionst();
 };
 
@@ -93,6 +96,7 @@ public:
   public:
     buildert();
     buildert(buildert && builder) noexcept;
+    buildert &operator=(buildert && builder) noexcept;
     ~buildert();
 
     // Options
@@ -107,7 +111,9 @@ public:
   bool use_FPA_theory();
 
   legacy_smt_optionst(legacy_smt_optionst && options) noexcept;
+  legacy_smt_optionst &operator=(legacy_smt_optionst && options) noexcept;
   legacy_smt_optionst(const legacy_smt_optionst & options);
+  legacy_smt_optionst &operator=(const legacy_smt_optionst & options);
   ~legacy_smt_optionst();
 };
 
@@ -129,6 +135,7 @@ public:
   public:
     buildert();
     buildert(buildert && builder) noexcept;
+    buildert &operator=(buildert && builder) noexcept;
     ~buildert();
 
     // Options
@@ -141,7 +148,9 @@ public:
   std::string solver_path();
 
   incremental_smt_optionst(incremental_smt_optionst && options) noexcept;
+  incremental_smt_optionst &operator=(incremental_smt_optionst &&) noexcept;
   incremental_smt_optionst(const incremental_smt_optionst & options);
+  incremental_smt_optionst &operator=(const incremental_smt_optionst &);
   ~incremental_smt_optionst();
 };
 
@@ -169,6 +178,7 @@ public:
   public:
     buildert();
     buildert(buildert && builder) noexcept;
+    buildert &operator=(buildert && builder) noexcept;
     ~buildert();
 
     // Options
@@ -200,6 +210,7 @@ public:
     const std::function<void(incremental_smt_optionst)> &legacy_smt_vistor);
 
   solver_optionst(solver_optionst && options) noexcept;
+  solver_optionst &operator=(solver_optionst &&) noexcept;
   ~solver_optionst();
 };
 

@@ -21,10 +21,8 @@ sat_optionst::sat_optionst(
 {
 }
 
-sat_optionst::sat_optionst(sat_optionst &&options) noexcept
-  : implementation{std::move(options.implementation)}
-{
-}
+sat_optionst::sat_optionst(sat_optionst &&options) noexcept = default;
+sat_optionst &sat_optionst::operator=(sat_optionst &&options) noexcept = default;
 
 sat_solver_typest sat_optionst::solver()
 {
@@ -54,12 +52,20 @@ sat_optionst::sat_optionst(const sat_optionst &options)
 {
 }
 
+sat_optionst &sat_optionst::operator=(const sat_optionst &options)
+{
+  implementation = util_make_unique<implementationt>(*options.implementation);
+  return *this;
+}
+
 sat_optionst::~sat_optionst() = default;
 
 sat_optionst::buildert::buildert() = default;
 
 sat_optionst::buildert::buildert(
   sat_optionst::buildert &&builder) noexcept = default;
+sat_optionst::buildert &
+sat_optionst::buildert::operator=(sat_optionst::buildert &&builder) noexcept = default;
 sat_optionst::buildert::~buildert() = default;
 
 sat_optionst sat_optionst::buildert::build()
@@ -124,11 +130,22 @@ legacy_smt_optionst::legacy_smt_optionst(
 {
 }
 
+legacy_smt_optionst &
+legacy_smt_optionst::operator=(const legacy_smt_optionst &options)
+{
+  implementation = util_make_unique<implementationt>(*options.implementation);
+  return *this;
+}
+
 legacy_smt_optionst::legacy_smt_optionst(
   legacy_smt_optionst &&options) noexcept = default;
+legacy_smt_optionst &
+legacy_smt_optionst::operator=(legacy_smt_optionst &&options) noexcept = default;
 
 legacy_smt_optionst::buildert::buildert() = default;
 legacy_smt_optionst::buildert::buildert(
+  legacy_smt_optionst::buildert &&builder) noexcept = default;
+legacy_smt_optionst::buildert &legacy_smt_optionst::buildert::operator=(
   legacy_smt_optionst::buildert &&builder) noexcept = default;
 legacy_smt_optionst::buildert::~buildert() = default;
 
@@ -173,15 +190,27 @@ incremental_smt_optionst::incremental_smt_optionst(
   : implementation{util_make_unique<implementationt>(*options.implementation)}
 {
 }
+incremental_smt_optionst &
+incremental_smt_optionst::operator=(const incremental_smt_optionst &)
+{
+  implementation = util_make_unique<implementationt>(*implementation);
+  return *this;
+}
 
 incremental_smt_optionst::~incremental_smt_optionst()= default;
 
 incremental_smt_optionst::incremental_smt_optionst(
   incremental_smt_optionst &&options) noexcept = default;
+incremental_smt_optionst &
+incremental_smt_optionst::operator=(incremental_smt_optionst &&) noexcept = default;
+
 
 
 incremental_smt_optionst::buildert::buildert() = default;
 incremental_smt_optionst::buildert::buildert(
+  incremental_smt_optionst::buildert &&builder) noexcept = default;
+incremental_smt_optionst::buildert &
+incremental_smt_optionst::buildert::operator=(
   incremental_smt_optionst::buildert &&builder) noexcept = default;
 incremental_smt_optionst::buildert::~buildert() = default;
 incremental_smt_optionst incremental_smt_optionst::buildert::build()
@@ -222,9 +251,13 @@ solver_optionst::solver_optionst(
 solver_optionst::~solver_optionst() = default;
 solver_optionst::solver_optionst(
   solver_optionst &&options) noexcept = default;
+solver_optionst &
+  solver_optionst::operator=(solver_optionst &&) noexcept = default;
 
 solver_optionst::buildert::buildert() = default;
 solver_optionst::buildert::buildert(
+  solver_optionst::buildert &&builder) noexcept = default;
+solver_optionst::buildert &solver_optionst::buildert::operator=(
   solver_optionst::buildert &&builder) noexcept = default;
 solver_optionst::buildert::~buildert() = default;
 
