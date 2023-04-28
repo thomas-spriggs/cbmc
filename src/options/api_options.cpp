@@ -129,25 +129,29 @@ api_sat_optionst api_sat_optionst::buildert::build()
   return api_sat_options;
 }
 
-void api_sat_optionst::buildert::solver(api_sat_solvert solver)
+api_sat_optionst::buildert &api_sat_optionst::buildert::solver(api_sat_solvert solver)
 {
   implementation->solver = solver;
+  return *this;
 }
 
-void api_sat_optionst::buildert::external_sat_solver(
+api_sat_optionst::buildert &api_sat_optionst::buildert::external_sat_solver(
   std::string external_sat_solver)
 {
   implementation->external_sat_solver = std::move(external_sat_solver);
+  return *this;
 }
 
-void api_sat_optionst::buildert::sat_preprocessor(bool sat_preprocessor)
+api_sat_optionst::buildert &api_sat_optionst::buildert::sat_preprocessor(bool sat_preprocessor)
 {
   implementation->sat_preprocessor = sat_preprocessor;
+  return *this;
 }
 
-void api_sat_optionst::buildert::dimacs(bool dimacs)
+api_sat_optionst::buildert &api_sat_optionst::buildert::dimacs(bool dimacs)
 {
   implementation->dimacs = dimacs;
+  return *this;
 }
 
 struct api_legacy_smt_optionst::implementationt
@@ -189,15 +193,17 @@ api_legacy_smt_optionst api_legacy_smt_optionst::buildert::build()
   return api_legacy_smt_optionst(util_make_unique<implementationt>(*implementation));
 }
 
-void api_legacy_smt_optionst::buildert::solver_specialisation(
+api_legacy_smt_optionst::buildert &api_legacy_smt_optionst::buildert::solver_specialisation(
   api_legacy_smt_optionst::solvert solver)
 {
   implementation->solver_specialisation = solver;
+  return *this;
 }
 
-void api_legacy_smt_optionst::buildert::use_FPA_theory(bool use_enabled)
+api_legacy_smt_optionst::buildert &api_legacy_smt_optionst::buildert::use_FPA_theory(bool use_enabled)
 {
   implementation->use_FPA_theory = use_enabled;
+  return *this;
 }
 
 struct api_incremental_smt_optionst::implementationt
@@ -231,9 +237,11 @@ api_incremental_smt_optionst api_incremental_smt_optionst::buildert::build()
   return api_incremental_smt_optionst{util_make_unique<implementationt>(*implementation)};
 }
 
-void api_incremental_smt_optionst::buildert::solver_path(std::string path)
+api_incremental_smt_optionst::buildert &
+api_incremental_smt_optionst::buildert::solver_path(std::string path)
 {
   implementation->solver_path = std::move(path);
+  return *this;
 }
 
 struct api_solver_optionst::implementationt
@@ -266,33 +274,39 @@ api_solver_optionst api_solver_optionst::buildert::build()
   return api_solver_optionst{util_make_unique<implementationt>(*implementation)};
 }
 
-void api_solver_optionst::buildert::outfile(std::string outfile)
+api_solver_optionst::buildert &api_solver_optionst::buildert::outfile(std::string outfile)
 {
   implementation->outfile = std::move(outfile);
+  return *this;
 }
 
-void api_solver_optionst::buildert::write_solver_stats_to(std::string filename)
+api_solver_optionst::buildert &api_solver_optionst::buildert::write_solver_stats_to(std::string filename)
 {
   implementation->write_solver_stats_to = std::move(filename);
+  return *this;
 }
 
-void api_solver_optionst::buildert::beautify(bool on)
+api_solver_optionst::buildert &api_solver_optionst::buildert::beautify(bool on)
 {
   implementation->beautify = on;
+  return *this;
 }
 
-void api_solver_optionst::buildert::max_node_refinement(unsigned int max_node_refinement)
+api_solver_optionst::buildert &api_solver_optionst::buildert::max_node_refinement(unsigned int max_node_refinement)
 {
   implementation->max_node_refinement = max_node_refinement;
+  return *this;
 }
 
-void api_solver_optionst::buildert::refine_arrays(bool refine_arrays)
+api_solver_optionst::buildert &api_solver_optionst::buildert::refine_arrays(bool refine_arrays)
 {
   implementation->refine_arrays = refine_arrays;
+  return *this;
 }
 
-void api_solver_optionst::buildert::refine_arthimetic(bool refine_arthimetic)
+api_solver_optionst::buildert &api_solver_optionst::buildert::refine_arthimetic(bool refine_arthimetic)
 {
   implementation->refine_arthimetic = refine_arthimetic;
+  return *this;
 }
 

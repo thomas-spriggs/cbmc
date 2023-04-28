@@ -79,10 +79,10 @@ public:
     ~buildert();
 
     // Options
-    void solver(api_sat_solvert solver);
-    void external_sat_solver(std::string external_sat_solver);
-    void sat_preprocessor(bool sat_preprocessor);
-    void dimacs(bool dimacs);
+    buildert &solver(api_sat_solvert solver);
+    buildert &external_sat_solver(std::string external_sat_solver);
+    buildert &sat_preprocessor(bool sat_preprocessor);
+    buildert &dimacs(bool dimacs);
 
     /// For doing the building when options have been specified.
     api_sat_optionst build();
@@ -132,8 +132,8 @@ public:
     ~buildert();
 
     // Options
-		void solver_specialisation(solvert solver);
-		void use_FPA_theory(bool use_enabled);
+		buildert & solver_specialisation(solvert solver);
+		buildert & use_FPA_theory(bool use_enabled);
 
     /// For doing the building when options have been specified.
     api_legacy_smt_optionst build();
@@ -167,7 +167,7 @@ public:
     ~buildert();
 
     // Options
-    void solver_path(std::string path);
+    buildert & solver_path(std::string path);
 
     /// For doing the building when options have been specified.
     api_incremental_smt_optionst build();
@@ -200,12 +200,12 @@ public:
     ~buildert();
 
     // Options
-    void outfile(std::string outfile);
-    void write_solver_stats_to(std::string filename);
-    void beautify(bool on);
-    void max_node_refinement(unsigned int max_node_refinement);
-    void refine_arrays(bool refine_arrays);
-    void refine_arthimetic(bool refine_arthimetic);
+    buildert &outfile(std::string outfile);
+    buildert &write_solver_stats_to(std::string filename);
+    buildert &beautify(bool on);
+    buildert &max_node_refinement(unsigned int max_node_refinement);
+    buildert &refine_arrays(bool refine_arrays);
+    buildert &refine_arthimetic(bool refine_arthimetic);
 
     /// For doing the building when options have been specified.
     api_solver_optionst build();
