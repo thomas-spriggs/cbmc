@@ -310,3 +310,41 @@ api_solver_optionst::buildert &api_solver_optionst::buildert::refine_arthimetic(
   return *this;
 }
 
+std::unique_ptr<std::string> api_solver_optionst::outfile()
+{
+  if(implementation->outfile)
+    return util_make_unique<std::string>(*implementation->outfile);
+  else
+    return nullptr;
+}
+
+std::unique_ptr<std::string> api_solver_optionst::write_solver_stats_to()
+{
+  if(implementation->write_solver_stats_to)
+    return util_make_unique<std::string>(*implementation->write_solver_stats_to);
+  else
+    return nullptr;
+}
+
+bool api_solver_optionst::beautify()
+{
+  return implementation->beautify;
+}
+
+std::unique_ptr<unsigned int> api_solver_optionst::max_node_refinement()
+{
+  if(implementation->max_node_refinement)
+    return util_make_unique<unsigned int>(*implementation->max_node_refinement);
+  else
+    return nullptr;
+}
+
+bool api_solver_optionst::refine_arrays()
+{
+  return implementation->refine_arrays;
+}
+
+bool api_solver_optionst::refine_arthimetic()
+{
+  return implementation->refine_arthimetic;
+}

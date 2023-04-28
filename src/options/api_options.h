@@ -211,12 +211,12 @@ public:
     api_solver_optionst build();
   };
 
-  std::string outfile;
-  std::string write_solver_stats_to;
-  bool beautify;
-  unsigned int max_node_refinement;
-  bool refine_arrays;
-  bool refine_arthimetic;
+  std::unique_ptr<std::string> outfile();
+  std::unique_ptr<std::string> write_solver_stats_to();
+  bool beautify();
+  std::unique_ptr<unsigned int> max_node_refinement();
+  bool refine_arrays();
+  bool refine_arthimetic();
 
   api_solver_optionst(api_solver_optionst && api_options) noexcept;
   ~api_solver_optionst();
