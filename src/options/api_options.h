@@ -94,6 +94,7 @@ public:
   bool dimacs();
 
   api_sat_optionst(api_sat_optionst && api_options) noexcept;
+  api_sat_optionst(const api_sat_optionst & api_options);
   ~api_sat_optionst();
 };
 
@@ -143,6 +144,7 @@ public:
   bool use_FPA_theory();
 
   api_legacy_smt_optionst(api_legacy_smt_optionst && api_options) noexcept;
+  api_legacy_smt_optionst(const api_legacy_smt_optionst & api_options);
   ~api_legacy_smt_optionst();
 };
 
@@ -176,6 +178,7 @@ public:
   std::string solver_path();
 
   api_incremental_smt_optionst(api_incremental_smt_optionst && api_options) noexcept;
+  api_incremental_smt_optionst(const api_incremental_smt_optionst & api_options);
   ~api_incremental_smt_optionst();
 };
 
@@ -189,6 +192,12 @@ private:
   explicit api_solver_optionst(std::unique_ptr<const implementationt> implementation);
 
 public:
+  enum class solver_typet {
+    api_sat_optionst,
+    api_legacy_smt_optionst,
+    api_incremental_smt_optionst
+  };
+
   class buildert final
   {
   private:
@@ -200,6 +209,10 @@ public:
     ~buildert();
 
     // Options
+    buildert &api_sat_options(api_sat_optionst options);
+    buildert &api_legacy_smt_options(api_legacy_smt_optionst options);
+    buildert &api_incremental_smt_options(api_incremental_smt_optionst options);
+
     buildert &outfile(std::string outfile);
     buildert &write_solver_stats_to(std::string filename);
     buildert &beautify(bool on);

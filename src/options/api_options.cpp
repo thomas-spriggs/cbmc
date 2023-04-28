@@ -114,6 +114,11 @@ bool api_sat_optionst::dimacs()
   return implementation->dimacs;
 }
 
+api_sat_optionst::api_sat_optionst(const api_sat_optionst &api_options)
+  : implementation{util_make_unique<implementationt>(*api_options.implementation)}
+{
+}
+
 api_sat_optionst::~api_sat_optionst() = default;
 
 api_sat_optionst::buildert::buildert() = default;
@@ -179,6 +184,12 @@ bool api_legacy_smt_optionst::use_FPA_theory()
 }
 
 api_legacy_smt_optionst::api_legacy_smt_optionst(
+  const api_legacy_smt_optionst &api_options)
+: implementation{util_make_unique<implementationt>(*api_options.implementation)}
+{
+}
+
+api_legacy_smt_optionst::api_legacy_smt_optionst(
   api_legacy_smt_optionst &&api_options) noexcept = default;
 
 api_legacy_smt_optionst::buildert::buildert() = default;
@@ -222,6 +233,12 @@ std::string api_incremental_smt_optionst::solver_path()
   return implementation->solver_path;
 }
 
+api_incremental_smt_optionst::api_incremental_smt_optionst(
+  const api_incremental_smt_optionst &api_options)
+  : implementation{util_make_unique<implementationt>(*api_options.implementation)}
+{
+}
+
 api_incremental_smt_optionst::~api_incremental_smt_optionst()= default;
 
 api_incremental_smt_optionst::api_incremental_smt_optionst(
@@ -246,6 +263,13 @@ api_incremental_smt_optionst::buildert::solver_path(std::string path)
 
 struct api_solver_optionst::implementationt
 {
+  // api_solver_optionst maintains the invariant that only one of the solver
+  // types is specified.
+  solver_typet solver_type;
+  optionalt<api_sat_optionst> sat_options;
+  optionalt<api_legacy_smt_optionst> legacy_smt_options;
+  optionalt<api_incremental_smt_optionst> incremental_smt_options;
+
   optionalt<std::string> outfile;
   optionalt<std::string> write_solver_stats_to;
   bool beautify;
@@ -272,6 +296,36 @@ api_solver_optionst::buildert::~buildert() = default;
 api_solver_optionst api_solver_optionst::buildert::build()
 {
   return api_solver_optionst{util_make_unique<implementationt>(*implementation)};
+}
+
+api_solver_optionst::buildert &
+api_solver_optionst::buildert::api_sat_options(api_sat_optionst options)
+{
+  implementation->sat_options.emplace(std::move(options));
+  implementation->solver_type = solver_typet::api_sat_optionst;
+  implementation->legacy_smt_options.reset();
+  implementation->incremental_smt_options.reset();
+  return *this;
+}
+
+api_solver_optionst::buildert &
+api_solver_optionst::buildert::api_legacy_smt_options(api_legacy_smt_optionst options)
+{
+  implementation->legacy_smt_options.emplace(std::move(options));
+  implementation->solver_type = solver_typet::api_legacy_smt_optionst;
+  implementation->sat_options.reset();
+  implementation->incremental_smt_options.reset();
+  return *this;
+}
+
+api_solver_optionst::buildert &
+api_solver_optionst::buildert::api_incremental_smt_options(api_incremental_smt_optionst options)
+{
+  implementation->incremental_smt_options.emplace(std::move(options));
+  implementation->solver_type = solver_typet::api_incremental_smt_optionst;
+  implementation->sat_options.reset();
+  implementation->legacy_smt_options.reset();
+  return *this;
 }
 
 api_solver_optionst::buildert &api_solver_optionst::buildert::outfile(std::string outfile)
