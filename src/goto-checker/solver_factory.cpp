@@ -633,6 +633,52 @@ static void parse_sat_options(const cmdlinet &cmdline, optionst &options)
     options.set_option("sat-solver", cmdline.get_value("sat-solver"));
 }
 
+static sat_optionst
+parse_sat_options(const cmdlinet &cmdline, message_handlert &message_handler)
+{
+  sat_optionst::buildert builder;
+  if(cmdline.isset("external-sat-solver"))
+  {
+    builder.external_sat_solver(cmdline.get_value("external-sat-solver"));
+  }
+
+  builder.sat_preprocessor(!cmdline.isset("no-sat-preprocessor"));
+
+  if(cmdline.isset("dimacs"))
+    builder.dimacs(true);
+
+  if(cmdline.isset("sat-solver"))
+  {
+    const std::string &solver_option = cmdline.get_value("sat-solver");
+    if(solver_option == "zchaff")
+      builder.solver(sat_solver_typest::zchaff);
+    else if(solver_option == "booleforce")
+      builder.solver(sat_solver_typest::booleforce);
+    else if(solver_option == "minisat1")
+      builder.solver(sat_solver_typest::minisat1);
+    else if(solver_option == "minisat2")
+      builder.solver(sat_solver_typest::minisat2);
+    else if(solver_option == "ipasir")
+      builder.solver(sat_solver_typest::ipasir);
+    else if(solver_option == "picosat")
+      builder.solver(sat_solver_typest::picosat);
+    else if(solver_option == "lingeling")
+      builder.solver(sat_solver_typest::lingeling);
+    else if(solver_option == "glucose")
+      builder.solver(sat_solver_typest::glucose);
+    else if(solver_option == "cadical")
+      builder.solver(sat_solver_typest::cadical);
+    else
+    {
+      messaget log(message_handler);
+      log.error() << "unknown solver '" << solver_option << "'"
+                  << messaget::eom;
+      exit(CPROVER_EXIT_USAGE_ERROR);
+    }
+  }
+  return builder.build();
+}
+
 static void parse_smt2_options(const cmdlinet &cmdline, optionst &options)
 {
   if(cmdline.isset("smt2"))
@@ -764,6 +810,7 @@ solver_optionst
 parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler)
 {
   solver_optionst::buildert builder;
+  builder.sat_options(parse_sat_options(cmdline, message_handler));
 
   if(cmdline.isset("outfile"))
     builder.outfile(cmdline.get_value("outfile"));
