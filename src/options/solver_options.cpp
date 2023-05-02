@@ -172,6 +172,7 @@ legacy_smt_optionst::buildert &legacy_smt_optionst::buildert::use_FPA_theory(boo
 struct incremental_smt_optionst::implementationt
 {
   std::string solver_path;
+  optionalt<std::string> formula_dump_path;
 };
 
 incremental_smt_optionst::incremental_smt_optionst(
@@ -183,6 +184,14 @@ incremental_smt_optionst::incremental_smt_optionst(
 std::string incremental_smt_optionst::solver_path()
 {
   return implementation->solver_path;
+}
+
+std::unique_ptr<std::string> incremental_smt_optionst::formula_dump_path()
+{
+  if(implementation->formula_dump_path)
+    return util_make_unique<std::string>(*implementation->formula_dump_path);
+  else
+    return nullptr;
 }
 
 incremental_smt_optionst::incremental_smt_optionst(
@@ -222,6 +231,13 @@ incremental_smt_optionst::buildert &
 incremental_smt_optionst::buildert::solver_path(std::string path)
 {
   implementation->solver_path = std::move(path);
+  return *this;
+}
+
+incremental_smt_optionst::buildert &
+incremental_smt_optionst::buildert::formula_dump_path(std::string path)
+{
+  implementation->formula_dump_path = std::move(path);
   return *this;
 }
 

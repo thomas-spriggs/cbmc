@@ -140,12 +140,14 @@ public:
 
     // Options
     buildert & solver_path(std::string path);
+    buildert & formula_dump_path(std::string path);
 
     /// For doing the building when options have been specified.
     incremental_smt_optionst build();
   };
 
   std::string solver_path();
+  std::unique_ptr<std::string> formula_dump_path();
 
   incremental_smt_optionst(incremental_smt_optionst && options) noexcept;
   incremental_smt_optionst &operator=(incremental_smt_optionst &&) noexcept;
