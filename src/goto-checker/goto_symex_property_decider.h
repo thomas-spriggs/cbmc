@@ -66,7 +66,6 @@ public:
     decision_proceduret::resultt dec_result,
     bool set_pass = true) const;
 protected:
-  const optionst &options;
   ui_message_handlert &ui_message_handler;
   symex_target_equationt &equation;
   std::unique_ptr<solver_factoryt::solvert> solver;

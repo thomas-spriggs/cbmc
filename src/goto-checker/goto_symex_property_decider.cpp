@@ -21,7 +21,7 @@ goto_symex_property_decidert::goto_symex_property_decidert(
   ui_message_handlert &ui_message_handler,
   symex_target_equationt &equation,
   const namespacet &ns)
-  : options(options), ui_message_handler(ui_message_handler), equation(equation)
+  : ui_message_handler(ui_message_handler), equation(equation)
 {
   solver_factoryt solvers(
     options,
