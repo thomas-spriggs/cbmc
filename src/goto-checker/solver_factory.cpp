@@ -821,10 +821,10 @@ parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler)
   if(cmdline.isset("beautify"))
     builder.beautify(true);
 
-  if(cmdline.isset("refine-arrays"))
+  if(cmdline.isset("refine-arrays") || cmdline.isset("refine"))
     builder.refine_arrays(true);
 
-  if(cmdline.isset("refine-arithmetic"))
+  if(cmdline.isset("refine-arithmetic") || cmdline.isset("refine"))
     builder.refine_arthimetic(true);
 
   if(cmdline.isset("max-node-refinement"))
