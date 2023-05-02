@@ -763,6 +763,66 @@ static void parse_smt2_options(const cmdlinet &cmdline, optionst &options)
       "dump-smt-formula", cmdline.get_value("dump-smt-formula"));
 }
 
+static optionalt<legacy_smt_optionst>
+  parse_legacy_smt2_options(const cmdlinet &cmdline)
+{
+  legacy_smt_optionst::buildert builder;
+
+  if(cmdline.isset("fpa"))
+    builder.use_FPA_theory(true);
+
+  optionalt<legacy_smt_optionst::solvert> solver_specified;
+  const auto parse_solver =
+    [&](const char * const argument, const legacy_smt_optionst::solvert solver)
+  {
+    if(!cmdline.isset(argument))
+      return;
+    if(solver_specified)
+      throw invalid_command_line_argument_exceptiont(
+      "Multiple smt2 solvers were specified but only a single solver may be "
+      "used at a time.", argument);
+    solver_specified = solver;
+  };
+  parse_solver("bitwuzla", legacy_smt_optionst::solvert::BITWUZLA);
+  parse_solver("boolector", legacy_smt_optionst::solvert::BOOLECTOR);
+  parse_solver("cprover-smt2", legacy_smt_optionst::solvert::CPROVER_SMT2);
+  parse_solver("mathsat", legacy_smt_optionst::solvert::MATHSAT);
+  parse_solver("cvc4", legacy_smt_optionst::solvert::CVC4);
+  parse_solver("cvc5", legacy_smt_optionst::solvert::CVC5);
+  parse_solver("yices", legacy_smt_optionst::solvert::YICES);
+  parse_solver("z3", legacy_smt_optionst::solvert::Z3);
+
+  if(!cmdline.isset("smt2") && !solver_specified)
+    return {};
+
+  if(solver_specified)
+  {
+    builder.solver_specialisation(*solver_specified);
+  }
+  else if(cmdline.isset("outfile"))
+  {
+    // outfile and no solver should give standard compliant SMT-LIB
+    builder.solver_specialisation(legacy_smt_optionst::solvert::GENERIC);
+  }
+
+  return {builder.build()};
+}
+
+static optionalt<incremental_smt_optionst>
+  parse_incremental_smt2_options(const cmdlinet &cmdline)
+{
+  incremental_smt_optionst::buildert builder;
+
+  if(!cmdline.isset("incremental-smt2-solver"))
+    return {};
+  builder.solver_path(cmdline.get_value("incremental-smt2-solver"));
+
+  if(cmdline.isset("dump-smt-formula"))
+    builder.formula_dump_path(cmdline.get_value("dump-smt-formula"));
+
+  return {builder.build()};
+}
+
 void parse_solver_options(const cmdlinet &cmdline, optionst &options)
 {
   parse_sat_options(cmdline, options);
@@ -811,6 +871,10 @@ parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler)
 {
   solver_optionst::buildert builder;
   builder.sat_options(parse_sat_options(cmdline, message_handler));
+  if(const auto legacy_smt2 = parse_legacy_smt2_options(cmdline))
+    builder.legacy_smt_options(*legacy_smt2);
+  if(const auto incremental_smt2 = parse_incremental_smt2_options(cmdline))
+    builder.incremental_smt_options(*incremental_smt2);
 
   if(cmdline.isset("outfile"))
     builder.outfile(cmdline.get_value("outfile"));
