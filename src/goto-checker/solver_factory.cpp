@@ -44,10 +44,12 @@ Author: Daniel Kroening, Peter Schrammel
 
 solver_factoryt::solver_factoryt(
   const optionst &_options,
+  solver_optionst _solver_options,
   const namespacet &_ns,
   message_handlert &_message_handler,
   bool _output_xml_in_refinement)
   : options(_options),
+    solver_options(std::move(_solver_options)),
     ns(_ns),
     message_handler(_message_handler),
     output_xml_in_refinement(_output_xml_in_refinement)
@@ -130,10 +132,34 @@ void solver_factoryt::solvert::set_ofstream(std::unique_ptr<std::ofstream> p)
 
 std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
 {
-  if(options.get_bool_option("dimacs"))
-    return get_dimacs();
-  if(options.is_set("external-sat-solver"))
-    return get_external_sat();
+  std::unique_ptr<solver_factoryt::solvert> result;
+  solver_options.visit_solver_specific_options(
+    [&](sat_optionst sat_options)
+    {
+      if(sat_options.dimacs())
+      {
+        result = get_dimacs();
+        return;
+      }
+      if(const auto external_sat_solver = sat_options.external_sat_solver())
+      {
+        result = get_external_sat(*external_sat_solver);
+        return;
+      }
+      //if(solver_options.r
+    },
+    [&](legacy_smt_optionst legacy_smt_options)
+    {
+    },
+    [&](incremental_smt_optionst incremental_smt_options)
+    {
+    }
+    );
+
+//  if(options.get_bool_option("dimacs"))
+//    return get_dimacs();
+//  if(options.is_set("external-sat-solver"))
+//    return get_external_sat();
   if(
     options.get_bool_option("refine") &&
     !options.get_bool_option("refine-strings"))
@@ -149,6 +175,8 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
   if(options.get_bool_option("smt2"))
     return get_smt2(get_smt2_solver_type());
   return get_default();
+
+  return result;
 }
 
 /// Uses the options to pick an SMT 2.0 solver
@@ -373,7 +401,8 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_dimacs()
 
   auto prop = util_make_unique<dimacs_cnft>(message_handler);
 
-  std::string filename = options.get_option("outfile");
+  const auto filename_option = solver_options.outfile();
+  const std::string filename = filename_option ? *filename_option : "";
 
   auto bv_dimacs =
     util_make_unique<bv_dimacst>(ns, *prop, message_handler, filename);
@@ -381,12 +410,12 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_dimacs()
   return util_make_unique<solvert>(std::move(bv_dimacs), std::move(prop));
 }
 
-std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_external_sat()
+std::unique_ptr<solver_factoryt::solvert>
+  solver_factoryt::get_external_sat(const std::string &external_sat_solver)
 {
   no_beautification();
   no_incremental_check();
 
-  std::string external_sat_solver = options.get_option("external-sat-solver");
   auto prop =
     util_make_unique<external_satt>(message_handler, external_sat_solver);
 
@@ -478,7 +507,7 @@ solver_factoryt::get_incremental_smt2(std::string solver_command)
   const std::string outfile_arg = options.get_option("outfile");
   const std::string dump_smt_formula = options.get_option("dump-smt-formula");
 
-  if(!outfile_arg.empty() && !dump_smt_formula.empty())
+  //if(solver_options.outfile() && solver_options.dump)
   {
     throw invalid_command_line_argument_exceptiont(
       "Argument --outfile is incompatible with --dump-smt-formula. ",
@@ -520,9 +549,9 @@ solver_factoryt::get_smt2(smt2_dect::solvert solver)
 {
   no_beautification();
 
-  const std::string &filename = options.get_option("outfile");
+  const auto filename = solver_options.outfile();
 
-  if(filename.empty())
+  if(!filename)
   {
     if(solver == smt2_dect::solvert::GENERIC)
     {
@@ -546,7 +575,7 @@ solver_factoryt::get_smt2(smt2_dect::solvert solver)
     set_decision_procedure_time_limit(*smt2_dec);
     return util_make_unique<solvert>(std::move(smt2_dec));
   }
-  else if(filename == "-")
+  else if(*filename == "-")
   {
     auto smt2_conv = util_make_unique<smt2_convt>(
       ns,
@@ -564,7 +593,7 @@ solver_factoryt::get_smt2(smt2_dect::solvert solver)
   }
   else
   {
-    auto out = open_outfile_and_check(filename, message_handler, "--outfile");
+    auto out = open_outfile_and_check(*filename, message_handler, "--outfile");
 
     auto smt2_conv = util_make_unique<smt2_convt>(
       ns,
@@ -584,7 +613,7 @@ solver_factoryt::get_smt2(smt2_dect::solvert solver)
 
 void solver_factoryt::no_beautification()
 {
-  if(options.get_bool_option("beautify"))
+  if(solver_options.beautify())
   {
     throw invalid_command_line_argument_exceptiont(
       "the chosen solver does not support beautification", "--beautify");
