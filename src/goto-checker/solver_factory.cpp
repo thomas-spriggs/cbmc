@@ -44,12 +44,11 @@ Author: Daniel Kroening, Peter Schrammel
 
 solver_factoryt::solver_factoryt(
   const optionst &_options,
-  solver_optionst _solver_options,
   const namespacet &_ns,
   message_handlert &_message_handler,
   bool _output_xml_in_refinement)
   : options(_options),
-    solver_options(std::move(_solver_options)),
+    solver_options(*options.solver_options),
     ns(_ns),
     message_handler(_message_handler),
     output_xml_in_refinement(_output_xml_in_refinement)
@@ -854,6 +853,8 @@ static optionalt<incremental_smt_optionst>
 
 void parse_solver_options(const cmdlinet &cmdline, optionst &options, message_handlert &message_handler)
 {
+  options.solver_options = parse_solver_options(cmdline, message_handler);
+
   parse_sat_options(cmdline, options);
   parse_smt2_options(cmdline, options);
 

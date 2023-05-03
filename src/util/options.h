@@ -12,9 +12,12 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CPROVER_UTIL_OPTIONS_H
 #define CPROVER_UTIL_OPTIONS_H
 
-#include <string>
-#include <map>
 #include <list>
+#include <map>
+#include <string>
+
+#include <options/solver_options.h>
+#include <util/optional.h>
 
 class json_objectt;
 class xmlt;
@@ -61,6 +64,7 @@ public:
   json_objectt to_json() const;
   xmlt to_xml() const;
   void output(std::ostream &out) const;
+  optionalt<solver_optionst> solver_options;
 
 protected:
   option_mapt option_map;

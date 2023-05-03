@@ -30,7 +30,6 @@ public:
   /// Note: The solver returned will hold a reference to the namespace `ns`.
   solver_factoryt(
     const optionst &_options,
-    solver_optionst _solver_options,
     const namespacet &_ns,
     message_handlert &_message_handler,
     bool _output_xml_in_refinement);
@@ -66,7 +65,7 @@ public:
 
 protected:
   const optionst &options;
-  solver_optionst solver_options;
+  const solver_optionst &solver_options;
   const namespacet &ns;
   message_handlert &message_handler;
   const bool output_xml_in_refinement;
