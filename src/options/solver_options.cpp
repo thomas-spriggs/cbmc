@@ -24,12 +24,12 @@ sat_optionst::sat_optionst(
 sat_optionst::sat_optionst(sat_optionst &&options) noexcept = default;
 sat_optionst &sat_optionst::operator=(sat_optionst &&options) noexcept = default;
 
-sat_solver_typest sat_optionst::solver()
+sat_solver_typest sat_optionst::solver() const
 {
   return implementation->solver;
 }
 
-std::unique_ptr<std::string> sat_optionst::external_sat_solver()
+std::unique_ptr<std::string> sat_optionst::external_sat_solver() const
 {
   if(implementation->external_sat_solver)
     return util_make_unique<std::string>(*implementation->external_sat_solver);
@@ -37,12 +37,12 @@ std::unique_ptr<std::string> sat_optionst::external_sat_solver()
     return nullptr;
 }
 
-bool sat_optionst::sat_preprocessor()
+bool sat_optionst::sat_preprocessor() const
 {
   return implementation->sat_preprocessor;
 }
 
-bool sat_optionst::dimacs()
+bool sat_optionst::dimacs() const
 {
   return implementation->dimacs;
 }
@@ -114,12 +114,12 @@ legacy_smt_optionst::legacy_smt_optionst(
 }
 
 legacy_smt_optionst::solvert
-legacy_smt_optionst::solver_specialisation()
+legacy_smt_optionst::solver_specialisation() const
 {
     return implementation->solver_specialisation;
 }
 
-bool legacy_smt_optionst::use_FPA_theory()
+bool legacy_smt_optionst::use_FPA_theory() const
 {
     return implementation->use_FPA_theory;
 }
@@ -181,12 +181,12 @@ incremental_smt_optionst::incremental_smt_optionst(
 {
 }
 
-std::string incremental_smt_optionst::solver_path()
+std::string incremental_smt_optionst::solver_path() const
 {
   return implementation->solver_path;
 }
 
-std::unique_ptr<std::string> incremental_smt_optionst::formula_dump_path()
+std::unique_ptr<std::string> incremental_smt_optionst::formula_dump_path() const
 {
   if(implementation->formula_dump_path)
     return util_make_unique<std::string>(*implementation->formula_dump_path);
@@ -357,7 +357,7 @@ solver_optionst::buildert &solver_optionst::buildert::refine_arthimetic(bool ref
   return *this;
 }
 
-std::unique_ptr<std::string> solver_optionst::outfile()
+std::unique_ptr<std::string> solver_optionst::outfile() const
 {
   if(implementation->outfile)
     return util_make_unique<std::string>(*implementation->outfile);
@@ -365,7 +365,7 @@ std::unique_ptr<std::string> solver_optionst::outfile()
     return nullptr;
 }
 
-std::unique_ptr<std::string> solver_optionst::write_solver_stats_to()
+std::unique_ptr<std::string> solver_optionst::write_solver_stats_to() const
 {
   if(implementation->write_solver_stats_to)
     return util_make_unique<std::string>(*implementation->write_solver_stats_to);
@@ -373,12 +373,12 @@ std::unique_ptr<std::string> solver_optionst::write_solver_stats_to()
     return nullptr;
 }
 
-bool solver_optionst::beautify()
+bool solver_optionst::beautify() const
 {
   return implementation->beautify;
 }
 
-std::unique_ptr<unsigned int> solver_optionst::max_node_refinement()
+std::unique_ptr<unsigned int> solver_optionst::max_node_refinement() const
 {
   if(implementation->max_node_refinement)
     return util_make_unique<unsigned int>(*implementation->max_node_refinement);
@@ -386,12 +386,12 @@ std::unique_ptr<unsigned int> solver_optionst::max_node_refinement()
     return nullptr;
 }
 
-bool solver_optionst::refine_arrays()
+bool solver_optionst::refine_arrays() const
 {
   return implementation->refine_arrays;
 }
 
-bool solver_optionst::refine_arthimetic()
+bool solver_optionst::refine_arthimetic() const
 {
   return implementation->refine_arthimetic;
 }
@@ -399,7 +399,7 @@ bool solver_optionst::refine_arthimetic()
 void solver_optionst::visit_solver_specific_options(
     const std::function<void(sat_optionst)> &sat_visitor,
     const std::function<void(legacy_smt_optionst)> &legacy_smt_visitor,
-    const std::function<void(incremental_smt_optionst)> &legacy_smt_vistor)
+    const std::function<void(incremental_smt_optionst)> &legacy_smt_vistor) const
 {
   switch(implementation->solver_type)
   {

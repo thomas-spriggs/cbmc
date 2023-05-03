@@ -52,10 +52,10 @@ public:
     sat_optionst build();
   };
 
-  sat_solver_typest solver();
-  std::unique_ptr<std::string> external_sat_solver();
-  bool sat_preprocessor();
-  bool dimacs();
+  sat_solver_typest solver() const;
+  std::unique_ptr<std::string> external_sat_solver() const;
+  bool sat_preprocessor() const;
+  bool dimacs() const;
 
   sat_optionst(sat_optionst && options) noexcept;
   sat_optionst &operator=(sat_optionst && options) noexcept;
@@ -107,8 +107,8 @@ public:
     legacy_smt_optionst build();
   };
 
-  solvert solver_specialisation();
-  bool use_FPA_theory();
+  solvert solver_specialisation() const;
+  bool use_FPA_theory() const;
 
   legacy_smt_optionst(legacy_smt_optionst && options) noexcept;
   legacy_smt_optionst &operator=(legacy_smt_optionst && options) noexcept;
@@ -146,8 +146,8 @@ public:
     incremental_smt_optionst build();
   };
 
-  std::string solver_path();
-  std::unique_ptr<std::string> formula_dump_path();
+  std::string solver_path() const;
+  std::unique_ptr<std::string> formula_dump_path() const;
 
   incremental_smt_optionst(incremental_smt_optionst && options) noexcept;
   incremental_smt_optionst &operator=(incremental_smt_optionst &&) noexcept;
@@ -199,17 +199,17 @@ public:
     solver_optionst build();
   };
 
-  std::unique_ptr<std::string> outfile();
-  std::unique_ptr<std::string> write_solver_stats_to();
-  bool beautify();
-  std::unique_ptr<unsigned int> max_node_refinement();
-  bool refine_arrays();
-  bool refine_arthimetic();
+  std::unique_ptr<std::string> outfile() const;
+  std::unique_ptr<std::string> write_solver_stats_to() const;
+  bool beautify() const;
+  std::unique_ptr<unsigned int> max_node_refinement() const;
+  bool refine_arrays() const;
+  bool refine_arthimetic() const;
 
   void visit_solver_specific_options(
     const std::function<void(sat_optionst)> &sat_visitor,
     const std::function<void(legacy_smt_optionst)> &legacy_smt_visitor,
-    const std::function<void(incremental_smt_optionst)> &incremental_smt_vistor);
+    const std::function<void(incremental_smt_optionst)> &incremental_smt_vistor) const;
 
   solver_optionst(solver_optionst && options) noexcept;
   solver_optionst(const solver_optionst & options);
