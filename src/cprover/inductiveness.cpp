@@ -98,7 +98,7 @@ std::size_t count_frame(const workt::patht &path, frame_reft f)
 inductiveness_resultt inductiveness_check(
   std::vector<framet> &frames,
   const std::unordered_set<symbol_exprt, irep_hash> &address_taken,
-  const solver_optionst &solver_options,
+  const chc_solver_optionst &solver_options,
   const namespacet &ns,
   std::vector<propertyt> &properties,
   std::size_t property_index)

@@ -24,7 +24,7 @@ enum class solver_resultt
   ERROR
 };
 
-class solver_optionst
+class chc_solver_optionst
 {
 public:
   bool trace;
@@ -33,6 +33,6 @@ public:
 };
 
 solver_resultt
-solver(const std::vector<exprt> &, const solver_optionst &, const namespacet &);
+solver(const std::vector<exprt> &, const chc_solver_optionst &, const namespacet &);
 
 #endif // CPROVER_CPROVER_SOLVER_H

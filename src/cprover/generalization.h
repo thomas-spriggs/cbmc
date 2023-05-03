@@ -14,12 +14,12 @@ Author: Daniel Kroening, dkr@amazon.com
 
 #include "solver_types.h" // IWYU pragma: keep
 
-class solver_optionst;
+class chc_solver_optionst;
 
 void generalization(
   std::vector<framet> &frames,
   const workt &dropped,
   const propertyt &,
-  const solver_optionst &);
+  const chc_solver_optionst &);
 
 #endif // CPROVER_CPROVER_GENERALIZATION_H

@@ -84,7 +84,7 @@ void generalization(
   std::vector<framet> &frames,
   const workt &dropped,
   const propertyt &property,
-  const solver_optionst &solver_options)
+  const chc_solver_optionst &solver_options)
 {
   // Look at the frame where we've given up
   auto &frame = frames[dropped.frame.index];

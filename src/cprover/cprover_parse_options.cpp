@@ -267,7 +267,7 @@ int cprover_parse_optionst::main()
         return CPROVER_EXIT_SUCCESS;
     }
 
-    solver_optionst solver_options;
+    chc_solver_optionst solver_options;
 
     if(cmdline.isset("unwind"))
     {

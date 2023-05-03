@@ -38,7 +38,7 @@ solver_resultt state_encoding_solver(
   const goto_modelt &,
   bool program_is_inlined,
   optionalt<irep_idt> contract,
-  const solver_optionst &);
+  const chc_solver_optionst &);
 
 void variable_encoding(
   const goto_modelt &,

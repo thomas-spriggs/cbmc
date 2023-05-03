@@ -1236,7 +1236,7 @@ solver_resultt state_encoding_solver(
   const goto_modelt &goto_model,
   bool program_is_inlined,
   optionalt<irep_idt> contract,
-  const solver_optionst &solver_options)
+  const chc_solver_optionst &solver_options)
 {
   const namespacet ns(goto_model.symbol_table);
 

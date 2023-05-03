@@ -14,7 +14,7 @@ Author: Daniel Kroening, dkr@amazon.com
 
 #include "solver_types.h"
 
-class solver_optionst;
+class chc_solver_optionst;
 
 class inductiveness_resultt
 {
@@ -56,7 +56,7 @@ private:
 inductiveness_resultt inductiveness_check(
   std::vector<framet> &frames,
   const std::unordered_set<symbol_exprt, irep_hash> &address_taken,
-  const solver_optionst &,
+  const chc_solver_optionst &,
   const namespacet &,
   std::vector<propertyt> &properties,
   std::size_t property_index);
