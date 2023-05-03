@@ -131,7 +131,7 @@ void solver_factoryt::solvert::set_ofstream(std::unique_ptr<std::ofstream> p)
 
 std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
 {
-  std::unique_ptr<solver_factoryt::solvert> result;
+  std::unique_ptr<solver_factoryt::solvert> result = nullptr;
   solver_options.visit_solver_specific_options(
     [&](sat_optionst sat_options)
     {
@@ -145,36 +145,24 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
         result = get_external_sat(*external_sat_solver);
         return;
       }
-      //if(solver_options.r
+      if(options.get_bool_option("refine-strings"))
+        result = get_string_refinement(sat_options);
+      else if(solver_options.refine_arrays() || solver_options.refine_arthimetic())
+      {
+        result = get_bv_refinement(sat_options);
+      }
     },
     [&](legacy_smt_optionst legacy_smt_options)
     {
+      result = get_smt2(legacy_smt_options);
     },
     [&](incremental_smt_optionst incremental_smt_options)
     {
+      result = get_incremental_smt2(incremental_smt_options);
     }
-    );
+  );
 
-//  if(options.get_bool_option("dimacs"))
-//    return get_dimacs();
-//  if(options.is_set("external-sat-solver"))
-//    return get_external_sat();
-  if(
-    options.get_bool_option("refine") &&
-    !options.get_bool_option("refine-strings"))
-  {
-    return get_bv_refinement();
-  }
-  else if(options.get_bool_option("refine-strings"))
-    return get_string_refinement();
-  const auto incremental_smt2_solver =
-    options.get_option("incremental-smt2-solver");
-  if(!incremental_smt2_solver.empty())
-    return get_incremental_smt2(incremental_smt2_solver);
-  if(options.get_bool_option("smt2"))
-    return get_smt2(get_smt2_solver_type());
-  return get_default();
-
+  INVARIANT(result, "Implementation of get_solver should construct a solver.");
   return result;
 }
 
@@ -249,11 +237,13 @@ make_satcheck_prop(message_handlert &message_handler, const optionst &options)
 }
 
 static std::unique_ptr<propt>
-get_sat_solver(message_handlert &message_handler, const optionst &options)
+get_sat_solver(message_handlert &message_handler, const optionst &options,
+               const sat_optionst &sat_options)
 {
-  const bool no_simplifier = options.get_bool_option("beautify") ||
-                             !options.get_bool_option("sat-preprocessor") ||
-                             options.get_bool_option("refine") ||
+  const bool no_simplifier = options.solver_options->beautify() ||
+                             sat_options.sat_preprocessor() ||
+                             options.solver_options->refine_arthimetic() ||
+                             options.solver_options->refine_arrays() ||
                              options.get_bool_option("refine-strings");
 
   if(options.is_set("sat-solver"))
@@ -373,25 +363,25 @@ get_sat_solver(message_handlert &message_handler, const optionst &options)
   }
 }
 
-std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_default()
-{
-  auto sat_solver = get_sat_solver(message_handler, options);
-
-  bool get_array_constraints =
-    options.get_bool_option("show-array-constraints");
-  auto bv_pointers = util_make_unique<bv_pointerst>(
-    ns, *sat_solver, message_handler, get_array_constraints);
-
-  if(options.get_option("arrays-uf") == "never")
-    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_NONE;
-  else if(options.get_option("arrays-uf") == "always")
-    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_ALL;
-
-  set_decision_procedure_time_limit(*bv_pointers);
-
-  return util_make_unique<solvert>(
-    std::move(bv_pointers), std::move(sat_solver));
-}
+//std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_default()
+//{
+//  auto sat_solver = get_sat_solver(message_handler, options);
+//
+//  bool get_array_constraints =
+//    options.get_bool_option("show-array-constraints");
+//  auto bv_pointers = util_make_unique<bv_pointerst>(
+//    ns, *sat_solver, message_handler, get_array_constraints);
+//
+//  if(options.get_option("arrays-uf") == "never")
+//    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_NONE;
+//  else if(options.get_option("arrays-uf") == "always")
+//    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_ALL;
+//
+//  set_decision_procedure_time_limit(*bv_pointers);
+//
+//  return util_make_unique<solvert>(
+//    std::move(bv_pointers), std::move(sat_solver));
+//}
 
 std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_dimacs()
 {
@@ -423,9 +413,10 @@ std::unique_ptr<solver_factoryt::solvert>
   return util_make_unique<solvert>(std::move(bv_pointers), std::move(prop));
 }
 
-std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_bv_refinement()
+std::unique_ptr<solver_factoryt::solvert>
+  solver_factoryt::get_bv_refinement(const sat_optionst &sat_options)
 {
-  std::unique_ptr<propt> prop = get_sat_solver(message_handler, options);
+  std::unique_ptr<propt> prop = get_sat_solver(message_handler, options, sat_options);
 
   bv_refinementt::infot info;
   info.ns = &ns;
@@ -437,8 +428,8 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_bv_refinement()
     info.max_node_refinement =
       options.get_unsigned_int_option("max-node-refinement");
 
-  info.refine_arrays = options.get_bool_option("refine-arrays");
-  info.refine_arithmetic = options.get_bool_option("refine-arithmetic");
+  info.refine_arrays = solver_options.refine_arrays();
+  info.refine_arithmetic = solver_options.refine_arthimetic();
   info.message_handler = &message_handler;
 
   auto decision_procedure = util_make_unique<bv_refinementt>(info);
@@ -451,19 +442,18 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_bv_refinement()
 /// functions from the Java string library
 /// \return a solver for cbmc
 std::unique_ptr<solver_factoryt::solvert>
-solver_factoryt::get_string_refinement()
+solver_factoryt::get_string_refinement(const sat_optionst &sat_options)
 {
   string_refinementt::infot info;
   info.ns = &ns;
-  auto prop = get_sat_solver(message_handler, options);
+  auto prop = get_sat_solver(message_handler, options, sat_options);
   info.prop = prop.get();
   info.refinement_bound = DEFAULT_MAX_NB_REFINEMENT;
   info.output_xml = output_xml_in_refinement;
-  if(options.get_bool_option("max-node-refinement"))
-    info.max_node_refinement =
-      options.get_unsigned_int_option("max-node-refinement");
-  info.refine_arrays = options.get_bool_option("refine-arrays");
-  info.refine_arithmetic = options.get_bool_option("refine-arithmetic");
+  if(const auto max_node_refinement = solver_options.max_node_refinement())
+    info.max_node_refinement = *max_node_refinement;
+  info.refine_arrays = solver_options.refine_arrays();
+  info.refine_arithmetic = solver_options.refine_arthimetic();
   info.message_handler = &message_handler;
 
   auto decision_procedure = util_make_unique<string_refinementt>(info);
@@ -499,14 +489,14 @@ std::unique_ptr<std::ofstream> open_outfile_and_check(
 }
 
 std::unique_ptr<solver_factoryt::solvert>
-solver_factoryt::get_incremental_smt2(std::string solver_command)
+solver_factoryt::get_incremental_smt2(const incremental_smt_optionst &incremental_smt_options)
 {
   no_beautification();
 
-  const std::string outfile_arg = options.get_option("outfile");
-  const std::string dump_smt_formula = options.get_option("dump-smt-formula");
+  const auto outfile_name = solver_options.outfile();
+  const auto dump_smt_formula = incremental_smt_options.formula_dump_path();
 
-  //if(solver_options.outfile() && solver_options.dump)
+  if(solver_options.outfile() && incremental_smt_options.formula_dump_path())
   {
     throw invalid_command_line_argument_exceptiont(
       "Argument --outfile is incompatible with --dump-smt-formula. ",
@@ -515,13 +505,13 @@ solver_factoryt::get_incremental_smt2(std::string solver_command)
 
   std::unique_ptr<smt_base_solver_processt> solver_process = nullptr;
 
-  if(!outfile_arg.empty())
+  if(outfile_name)
   {
-    bool on_std_out = outfile_arg == "-";
+    bool on_std_out = *outfile_name == "-";
     std::unique_ptr<std::ostream> outfile =
       on_std_out
         ? nullptr
-        : open_outfile_and_check(outfile_arg, message_handler, "--outfile");
+        : open_outfile_and_check(*outfile_name, message_handler, "--outfile");
     solver_process = util_make_unique<smt_incremental_dry_run_solvert>(
       message_handler, on_std_out ? std::cout : *outfile, std::move(outfile));
   }
@@ -532,7 +522,7 @@ solver_factoryt::get_incremental_smt2(std::string solver_command)
     // If no out_filename is provided `open_outfile_and_check` will return
     // `nullptr`, and the solver will work normally without any logging.
     solver_process = util_make_unique<smt_piped_solver_processt>(
-      std::move(solver_command),
+      incremental_smt_options.solver_path(),
       message_handler,
       open_outfile_and_check(
         out_filename, message_handler, "--dump-smt-formula"));
@@ -544,7 +534,7 @@ solver_factoryt::get_incremental_smt2(std::string solver_command)
 }
 
 std::unique_ptr<solver_factoryt::solvert>
-solver_factoryt::get_smt2(smt2_dect::solvert solver)
+solver_factoryt::get_smt2(const legacy_smt_optionst &legacy_smt_options)
 {
   no_beautification();
 
@@ -552,7 +542,7 @@ solver_factoryt::get_smt2(smt2_dect::solvert solver)
 
   if(!filename)
   {
-    if(solver == smt2_dect::solvert::GENERIC)
+    if(legacy_smt_options.solver_specialisation() == legacy_smt_optionst::solvert::GENERIC)
     {
       throw invalid_command_line_argument_exceptiont(
         "required filename not provided",

@@ -70,13 +70,13 @@ protected:
   message_handlert &message_handler;
   const bool output_xml_in_refinement;
 
-  std::unique_ptr<solvert> get_default();
+  //std::unique_ptr<solvert> get_default();
   std::unique_ptr<solvert> get_dimacs();
   std::unique_ptr<solvert> get_external_sat(const std::string &external_sat_solver);
-  std::unique_ptr<solvert> get_bv_refinement();
-  std::unique_ptr<solvert> get_string_refinement();
-  std::unique_ptr<solvert> get_incremental_smt2(std::string solver_command);
-  std::unique_ptr<solvert> get_smt2(smt2_dect::solvert solver);
+  std::unique_ptr<solvert> get_bv_refinement(const sat_optionst &sat_options);
+  std::unique_ptr<solvert> get_string_refinement(const sat_optionst &sat_options);
+  std::unique_ptr<solvert> get_incremental_smt2(const incremental_smt_optionst &incremental_smt_options);
+  std::unique_ptr<solvert> get_smt2(const legacy_smt_optionst &legacy_smt_options);
 
   smt2_dect::solvert get_smt2_solver_type() const;
 
