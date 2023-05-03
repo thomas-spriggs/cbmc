@@ -212,7 +212,9 @@ public:
     const std::function<void(incremental_smt_optionst)> &incremental_smt_vistor);
 
   solver_optionst(solver_optionst && options) noexcept;
+  solver_optionst(const solver_optionst & options);
   solver_optionst &operator=(solver_optionst &&) noexcept;
+  solver_optionst &operator=(const solver_optionst & options);
   ~solver_optionst();
 };
 

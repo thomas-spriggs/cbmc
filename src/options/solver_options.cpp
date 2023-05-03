@@ -267,8 +267,17 @@ solver_optionst::solver_optionst(
 solver_optionst::~solver_optionst() = default;
 solver_optionst::solver_optionst(
   solver_optionst &&options) noexcept = default;
+solver_optionst::solver_optionst(const solver_optionst &options)
+: implementation{util_make_unique<implementationt>(*options.implementation)}
+{
+}
 solver_optionst &
   solver_optionst::operator=(solver_optionst &&) noexcept = default;
+solver_optionst &solver_optionst::operator=(const solver_optionst &options)
+{
+  implementation = util_make_unique<implementationt>(*options.implementation);
+  return *this;
+}
 
 solver_optionst::buildert::buildert() = default;
 solver_optionst::buildert::buildert(
