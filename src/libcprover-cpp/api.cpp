@@ -221,7 +221,8 @@ static std::unique_ptr<optionst> make_internal_default_options()
   std::unique_ptr<optionst> options = util_make_unique<optionst>();
   cmdlinet command_line;
   PARSE_OPTIONS_GOTO_CHECK(command_line, (*options));
-  parse_solver_options(command_line, *options);
+  null_message_handlert message_handler;
+  parse_solver_options(command_line, *options, message_handler);
   options->set_option("built-in-assertions", true);
   options->set_option("arrays-uf", "auto");
   options->set_option("depth", UINT32_MAX);

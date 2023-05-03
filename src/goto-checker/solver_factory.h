@@ -94,7 +94,7 @@ protected:
 
 /// Parse solver-related command-line parameters in \p cmdline and set
 /// corresponding values in \p options.
-void parse_solver_options(const cmdlinet &cmdline, optionst &options);
+void parse_solver_options(const cmdlinet &cmdline, optionst &options, message_handlert &message_handler);
 
 solver_optionst parse_solver_options(const cmdlinet &cmdline, message_handlert &message_handler);
 

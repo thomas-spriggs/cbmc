@@ -368,7 +368,7 @@ void jbmc_parse_optionst::get_command_line_options(optionst &options)
     exit(CPROVER_EXIT_USAGE_ERROR);
   }
 
-  parse_solver_options(cmdline, options);
+  parse_solver_options(cmdline, options, ui_message_handler);
 }
 
 /// invoke main modules

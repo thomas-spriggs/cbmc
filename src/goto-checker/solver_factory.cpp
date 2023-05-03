@@ -852,7 +852,7 @@ static optionalt<incremental_smt_optionst>
   return {builder.build()};
 }
 
-void parse_solver_options(const cmdlinet &cmdline, optionst &options)
+void parse_solver_options(const cmdlinet &cmdline, optionst &options, message_handlert &message_handler)
 {
   parse_sat_options(cmdline, options);
   parse_smt2_options(cmdline, options);

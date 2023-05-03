@@ -205,7 +205,7 @@ optionst goto_synthesizer_parse_optionst::get_options()
   // Generating trace for counterexamples.
   options.set_option("trace", true);
 
-  parse_solver_options(cmdline, options);
+  parse_solver_options(cmdline, options, ui_message_handler);
 
   return options;
 }
