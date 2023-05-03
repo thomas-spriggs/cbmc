@@ -209,7 +209,7 @@ public:
   void visit_solver_specific_options(
     const std::function<void(sat_optionst)> &sat_visitor,
     const std::function<void(legacy_smt_optionst)> &legacy_smt_visitor,
-    const std::function<void(incremental_smt_optionst)> &legacy_smt_vistor);
+    const std::function<void(incremental_smt_optionst)> &incremental_smt_vistor);
 
   solver_optionst(solver_optionst && options) noexcept;
   solver_optionst &operator=(solver_optionst &&) noexcept;
