@@ -42,6 +42,10 @@ Author: Daniel Kroening, Peter Schrammel
 
 #include <goto-symex/solver_hardness.h>
 
+static std::unique_ptr<propt>
+get_sat_solver(message_handlert &message_handler, const optionst &options,
+               const sat_optionst &sat_options);
+
 solver_factoryt::solver_factoryt(
   const optionst &_options,
   const namespacet &_ns,
@@ -150,6 +154,12 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
       else if(solver_options.refine_arrays() || solver_options.refine_arthimetic())
       {
         result = get_bv_refinement(sat_options);
+        return;
+      }
+      else
+      {
+        result = get_default(sat_options);
+        return;
       }
     },
     [&](legacy_smt_optionst legacy_smt_options)
@@ -362,25 +372,25 @@ get_sat_solver(message_handlert &message_handler, const optionst &options,
   }
 }
 
-//std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_default()
-//{
-//  auto sat_solver = get_sat_solver(message_handler, options);
-//
-//  bool get_array_constraints =
-//    options.get_bool_option("show-array-constraints");
-//  auto bv_pointers = util_make_unique<bv_pointerst>(
-//    ns, *sat_solver, message_handler, get_array_constraints);
-//
-//  if(options.get_option("arrays-uf") == "never")
-//    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_NONE;
-//  else if(options.get_option("arrays-uf") == "always")
-//    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_ALL;
-//
-//  set_decision_procedure_time_limit(*bv_pointers);
-//
-//  return util_make_unique<solvert>(
-//    std::move(bv_pointers), std::move(sat_solver));
-//}
+std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_default(const sat_optionst &sat_options)
+{
+  auto sat_solver = get_sat_solver(message_handler, options, sat_options);
+
+  bool get_array_constraints =
+    options.get_bool_option("show-array-constraints");
+  auto bv_pointers = util_make_unique<bv_pointerst>(
+    ns, *sat_solver, message_handler, get_array_constraints);
+
+  if(options.get_option("arrays-uf") == "never")
+    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_NONE;
+  else if(options.get_option("arrays-uf") == "always")
+    bv_pointers->unbounded_array = bv_pointerst::unbounded_arrayt::U_ALL;
+
+  set_decision_procedure_time_limit(*bv_pointers);
+
+  return util_make_unique<solvert>(
+    std::move(bv_pointers), std::move(sat_solver));
+}
 
 std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_dimacs()
 {

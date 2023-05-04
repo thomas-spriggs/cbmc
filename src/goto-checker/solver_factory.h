@@ -70,7 +70,7 @@ protected:
   message_handlert &message_handler;
   const bool output_xml_in_refinement;
 
-  //std::unique_ptr<solvert> get_default();
+  std::unique_ptr<solvert> get_default(const sat_optionst &sat_options);
   std::unique_ptr<solvert> get_dimacs();
   std::unique_ptr<solvert> get_external_sat(const std::string &external_sat_solver);
   std::unique_ptr<solvert> get_bv_refinement(const sat_optionst &sat_options);
