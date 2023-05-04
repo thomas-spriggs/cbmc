@@ -168,35 +168,34 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_solver()
 
 /// Uses the options to pick an SMT 2.0 solver
 /// \return An smt2_dect::solvert giving the solver to use.
-smt2_dect::solvert solver_factoryt::get_smt2_solver_type() const
+static smt2_dect::solvert
+get_smt2_solver_type(legacy_smt_optionst::solvert solver)
 {
-  // we shouldn't get here if this option isn't set
-  PRECONDITION(options.get_bool_option("smt2"));
-
-  smt2_dect::solvert s = smt2_dect::solvert::GENERIC;
-
-  if(options.get_bool_option("bitwuzla"))
-    s = smt2_dect::solvert::BITWUZLA;
-  else if(options.get_bool_option("boolector"))
-    s = smt2_dect::solvert::BOOLECTOR;
-  else if(options.get_bool_option("cprover-smt2"))
-    s = smt2_dect::solvert::CPROVER_SMT2;
-  else if(options.get_bool_option("mathsat"))
-    s = smt2_dect::solvert::MATHSAT;
-  else if(options.get_bool_option("cvc3"))
-    s = smt2_dect::solvert::CVC3;
-  else if(options.get_bool_option("cvc4"))
-    s = smt2_dect::solvert::CVC4;
-  else if(options.get_bool_option("cvc5"))
-    s = smt2_dect::solvert::CVC5;
-  else if(options.get_bool_option("yices"))
-    s = smt2_dect::solvert::YICES;
-  else if(options.get_bool_option("z3"))
-    s = smt2_dect::solvert::Z3;
-  else if(options.get_bool_option("generic"))
-    s = smt2_dect::solvert::GENERIC;
-
-  return s;
+  switch(solver)
+  {
+    case legacy_smt_optionst::solvert::BITWUZLA:
+      return smt2_dect::solvert::BITWUZLA;
+    case legacy_smt_optionst::solvert::BOOLECTOR:
+      return smt2_dect::solvert::BOOLECTOR;
+    case legacy_smt_optionst::solvert::CPROVER_SMT2:
+      return smt2_dect::solvert::CPROVER_SMT2;
+    case legacy_smt_optionst::solvert::MATHSAT:
+      return smt2_dect::solvert::MATHSAT;
+    case legacy_smt_optionst::solvert::CVC3:
+      return smt2_dect::solvert::CVC3;
+    case legacy_smt_optionst::solvert::CVC4:
+      return smt2_dect::solvert::CVC4;
+    case legacy_smt_optionst::solvert::CVC5:
+      return smt2_dect::solvert::CVC5;
+    case legacy_smt_optionst::solvert::YICES:
+      return smt2_dect::solvert::YICES;
+    case legacy_smt_optionst::solvert::Z3:
+      return smt2_dect::solvert::Z3;
+    case legacy_smt_optionst::solvert::GENERIC:
+      return smt2_dect::solvert::GENERIC;
+    default:
+      UNREACHABLE;
+  }
 }
 
 /// Emit a warning for non-existent solver \p solver via \p message_handler.
@@ -539,6 +538,8 @@ solver_factoryt::get_smt2(const legacy_smt_optionst &legacy_smt_options)
   no_beautification();
 
   const auto filename = solver_options.outfile();
+  const auto solver =
+    get_smt2_solver_type(legacy_smt_options.solver_specialisation());
 
   if(!filename)
   {

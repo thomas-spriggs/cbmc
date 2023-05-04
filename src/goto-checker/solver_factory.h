@@ -78,8 +78,6 @@ protected:
   std::unique_ptr<solvert> get_incremental_smt2(const incremental_smt_optionst &incremental_smt_options);
   std::unique_ptr<solvert> get_smt2(const legacy_smt_optionst &legacy_smt_options);
 
-  smt2_dect::solvert get_smt2_solver_type() const;
-
   /// Sets the timeout of \p decision_procedure if the `solver-time-limit`
   /// option has a positive value (in seconds).
   /// \note Most solvers silently ignore the time limit at the moment.
