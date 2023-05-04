@@ -9,6 +9,7 @@
 
 struct sat_optionst::implementationt
 {
+  /// TODO FIX HARDCODED SAT SOLVER!
   sat_solver_typest solver = sat_solver_typest::minisat2;
   optionalt<std::string> external_sat_solver;
   bool sat_preprocessor = true;
