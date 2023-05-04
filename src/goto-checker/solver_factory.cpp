@@ -254,7 +254,95 @@ get_sat_solver(message_handlert &message_handler, const optionst &options,
                              options.solver_options->refine_arthimetic() ||
                              options.solver_options->refine_arrays() ||
                              options.get_bool_option("refine-strings");
+  
+  const auto sat_solver_type = sat_options.solver();
 
+  switch(sat_solver_type)
+  {
+  case sat_solver_typest::zchaff:
+#if defined SATCHECK_ZCHAFF
+      return make_satcheck_prop<satcheck_zchafft>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "zchaff");
+#endif
+      break;
+    case sat_solver_typest::booleforce:
+#if defined SATCHECK_BOOLERFORCE
+      return make_satcheck_prop<satcheck_booleforcet>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "booleforce");
+#endif
+      break;
+    case sat_solver_typest::minisat1:
+#if defined SATCHECK_MINISAT1
+      return make_satcheck_prop<satcheck_minisat1t>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "minisat1");
+#endif
+      break;
+    case sat_solver_typest::minisat2:
+#if defined SATCHECK_MINISAT2
+      if(no_simplifier)
+      {
+        // simplifier won't work with beautification
+        return make_satcheck_prop<satcheck_minisat_no_simplifiert>(
+          message_handler, options);
+      }
+      else // with simplifier
+      {
+        return make_satcheck_prop<satcheck_minisat_simplifiert>(
+          message_handler, options);
+      }
+#else
+      emit_solver_warning(message_handler, "minisat2");
+#endif
+      break;
+    case sat_solver_typest::ipasir:
+#if defined SATCHECK_IPASIR
+      return make_satcheck_prop<satcheck_ipasirt>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "ipasir");
+#endif
+      break;
+    case sat_solver_typest::picosat:
+#if defined SATCHECK_PICOSAT
+      return make_satcheck_prop<satcheck_picosatt>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "picosat");
+#endif
+      break;
+    case sat_solver_typest::lingeling:
+#if defined SATCHECK_LINGELING
+      return make_satcheck_prop<satcheck_lingelingt>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "lingeling");
+#endif
+      break;
+    case sat_solver_typest::glucose:
+#if defined SATCHECK_GLUCOSE
+      if(no_simplifier)
+      {
+        // simplifier won't work with beautification
+        return make_satcheck_prop<satcheck_glucose_no_simplifiert>(
+          message_handler, options);
+      }
+      else // with simplifier
+      {
+        return make_satcheck_prop<satcheck_glucose_simplifiert>(
+          message_handler, options);
+      }
+#else
+      emit_solver_warning(message_handler, "glucose");
+#endif
+      break;
+    case sat_solver_typest::cadical:
+#if defined SATCHECK_CADICAL
+      return make_satcheck_prop<satcheck_cadicalt>(message_handler, options);
+#else
+      emit_solver_warning(message_handler, "cadical");
+#endif
+  }
+  
   if(options.is_set("sat-solver"))
   {
     const std::string &solver_option = options.get_option("sat-solver");
