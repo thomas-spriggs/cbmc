@@ -19,6 +19,7 @@ public:
   ~struct_encodingt();
 
   typet encode(typet type) const;
+  exprt encode(exprt expr) const;
 
 private:
   std::unique_ptr<boolbv_widtht> boolbv_width;
