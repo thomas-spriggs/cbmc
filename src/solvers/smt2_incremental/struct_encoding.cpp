@@ -5,7 +5,6 @@
 #include <solvers/flattening/boolbv_width.h>
 #include <util/make_unique.h>
 #include <util/bitvector_types.h>
-#include <util/pointer_expr.h>
 
 #include <queue>
 
