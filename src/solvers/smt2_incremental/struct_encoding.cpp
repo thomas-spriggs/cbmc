@@ -2,9 +2,11 @@
 
 #include "struct_encoding.h"
 
-#include <solvers/flattening/boolbv_width.h>
 #include <util/make_unique.h>
+#include <util/bitvector_expr.h>
 #include <util/bitvector_types.h>
+
+#include <solvers/flattening/boolbv_width.h>
 
 #include <queue>
 
@@ -40,6 +42,11 @@ typet struct_encodingt::encode(typet type) const
   return type;
 }
 
+static exprt encode(const struct_exprt &struct_expr)
+{
+  return concatenation_exprt{struct_expr.operands(), struct_expr.type()};
+}
+
 exprt struct_encodingt::encode(exprt expr) const
 {
   std::queue<exprt *> work_queue;
@@ -49,6 +56,8 @@ exprt struct_encodingt::encode(exprt expr) const
     exprt &current = *work_queue.front();
     work_queue.pop();
     current.type() = encode(current.type());
+    if(const auto struct_expr = expr_try_dynamic_cast<struct_exprt>(current))
+      current = ::encode(*struct_expr);
     for(auto &operand : current.operands())
       work_queue.push(&operand);
   }
