@@ -70,6 +70,11 @@ static std::vector<exprt> gather_dependent_expressions(const exprt &expr)
 {
   std::vector<exprt> dependent_expressions;
   expr.visit_pre([&](const exprt &expr_node) {
+    // code typed expressions can be found inside address_of expressions in the
+    // formation of function pointers. The decision procedure does not depend on
+    // the definition of this code expression in this case.
+    if(can_cast_type<code_typet>(expr_node.type()))
+       return;
     if(
       can_cast_expr<symbol_exprt>(expr_node) ||
       can_cast_expr<array_exprt>(expr_node) ||
