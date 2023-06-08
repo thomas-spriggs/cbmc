@@ -124,7 +124,7 @@ static std::size_t count_trailing_bit_width(
     member_component_rit != type.components().rend(),
     "Definition of struct type should include named component.");
   const auto trailing_widths =
-    make_range(type.components().rbegin(), type.components().rend())
+    make_range(type.components().rbegin(), member_component_rit)
       .map([&](const struct_union_typet::componentt &component) -> std::size_t {
         return boolbv_width(component.type());
       });
@@ -147,7 +147,7 @@ exprt struct_encodingt::encode_member(const member_exprt &member_expr) const
   const auto member_bits_width = (*boolbv_width)(member_expr.type());
   return extractbits_exprt{
     member_expr.compound(),
-    offset_bits + member_bits_width,
+    offset_bits + member_bits_width - 1,
     offset_bits,
     member_expr.type()};
 }
