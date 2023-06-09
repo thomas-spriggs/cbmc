@@ -40,7 +40,7 @@ public:
 
   // Implementation of public decision_proceduret member functions.
   exprt handle(const exprt &expr) override;
-  exprt get(const exprt &expr) const override;
+  exprt get(const exprt &lowered) const override;
   void print_assignment(std::ostream &out) const override;
   std::string decision_procedure_text() const override;
   std::size_t get_number_of_solver_calls() const override;
@@ -97,7 +97,7 @@ protected:
   /// Performs a combination of transformations which reduces the set of
   /// possible expression forms by expressing these in terms of the remaining
   /// language features.
-  exprt lower(exprt expression);
+  exprt lower(exprt expression) const;
 
   /// Namespace for looking up the expressions which symbol_exprts relate to.
   /// This includes the symbols defined outside of the decision procedure but

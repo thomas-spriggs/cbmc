@@ -24,6 +24,12 @@
 #include <stack>
 #include <unordered_set>
 
+    	#include <iostream>
+    	#define WATCHVAR( var ) \
+    	  std::cerr << "DBG: " << __FILE__ << "(" << __LINE__ << ") " << #var << \
+    	    " = [" << (var) << "]" << std::endl
+
+
 /// Issues a command to the solving process which is expected to optionally
 /// return a success status followed by the actual response of interest.
 static smt_responset get_response_to_command(
@@ -440,8 +446,17 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
   log.conditional_output(log.debug(), [&](messaget::mstreamt &debug) {
     debug << "`get` - \n  " + expr.pretty(2, 0) << messaget::eom;
   });
+  if(const auto member = expr_try_dynamic_cast<member_exprt>(expr))
+  {
+    const auto compound_term_identifier =
+      get_identifier(member->compound(),
+                     expression_handle_identifiers,
+                     expression_identifiers);
+  }
+
+  const exprt lowered = lower(expr);
   auto descriptor = [&]() -> optionalt<smt_termt> {
-    if(const auto index_expr = expr_try_dynamic_cast<index_exprt>(expr))
+    if(const auto index_expr = expr_try_dynamic_cast<index_exprt>(lowered))
     {
       const auto array = get_identifier(
         index_expr->array(),
@@ -457,40 +472,45 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
     }
     if(
       auto identifier_descriptor = get_identifier(
-        expr, expression_handle_identifiers, expression_identifiers))
+        lowered, expression_handle_identifiers, expression_identifiers))
     {
       return identifier_descriptor;
     }
-    if(gather_dependent_expressions(expr).empty())
+    if(gather_dependent_expressions(lowered).empty())
     {
       INVARIANT(
-        objects_are_already_tracked(expr, object_map),
+        objects_are_already_tracked(lowered, object_map),
         "Objects in expressions being read should already be tracked from "
         "point of being set/handled.");
       return ::convert_expr_to_smt(
-        expr,
+        lowered,
         object_map,
         pointer_sizes_map,
         object_size_function.make_application,
         is_dynamic_object_function.make_application);
+    }
+    const auto dependencies = gather_dependent_expressions(lowered);
+    for(const auto &dependency : dependencies)
+    {
+      WATCHVAR(dependency.pretty(0,0));
     }
     return {};
   }();
   if(!descriptor)
   {
     INVARIANT_WITH_DIAGNOSTICS(
-      !can_cast_expr<symbol_exprt>(expr),
+      !can_cast_expr<symbol_exprt>(lowered),
       "symbol expressions must have a known value",
-      irep_pretty_diagnosticst{expr});
-    return build_expr_based_on_getting_operands(expr, *this);
+      irep_pretty_diagnosticst{lowered});
+    return build_expr_based_on_getting_operands(lowered, *this);
   }
-  if(const auto array_type = type_try_dynamic_cast<array_typet>(expr.type()))
+  if(const auto array_type = type_try_dynamic_cast<array_typet>(lowered.type()))
   {
     if(array_type->is_incomplete())
-      return expr;
+      return lowered;
     return get_expr(*descriptor, *array_type);
   }
-  return get_expr(*descriptor, expr.type());
+  return get_expr(*descriptor, lowered.type());
 }
 
 void smt2_incremental_decision_proceduret::print_assignment(
@@ -588,7 +608,7 @@ void smt2_incremental_decision_proceduret::define_object_properties()
   }
 }
 
-exprt smt2_incremental_decision_proceduret::lower(exprt expression)
+exprt smt2_incremental_decision_proceduret::lower(exprt expression) const
 {
   const exprt lowered =
     struct_encoding.encode(lower_byte_operators(expression, ns));
