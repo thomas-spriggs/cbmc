@@ -499,18 +499,18 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
   if(!descriptor)
   {
     INVARIANT_WITH_DIAGNOSTICS(
-      !can_cast_expr<symbol_exprt>(lowered),
+      !can_cast_expr<symbol_exprt>(expr),
       "symbol expressions must have a known value",
-      irep_pretty_diagnosticst{lowered});
-    return build_expr_based_on_getting_operands(lowered, *this);
+      irep_pretty_diagnosticst{expr});
+    return build_expr_based_on_getting_operands(expr, *this);
   }
-  if(const auto array_type = type_try_dynamic_cast<array_typet>(lowered.type()))
+  if(const auto array_type = type_try_dynamic_cast<array_typet>(expr.type()))
   {
     if(array_type->is_incomplete())
-      return lowered;
+      return expr;
     return get_expr(*descriptor, *array_type);
   }
-  return get_expr(*descriptor, lowered.type());
+  return get_expr(*descriptor, expr.type());
 }
 
 void smt2_incremental_decision_proceduret::print_assignment(
