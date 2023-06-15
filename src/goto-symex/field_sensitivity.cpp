@@ -17,7 +17,7 @@ Author: Michael Tautschnig
 #include "goto_symex_state.h"
 #include "symex_target.h"
 
-#define ENABLE_ARRAY_FIELD_SENSITIVITY
+//#define ENABLE_ARRAY_FIELD_SENSITIVITY
 
 exprt field_sensitivityt::apply(
   const namespacet &ns,
@@ -25,10 +25,11 @@ exprt field_sensitivityt::apply(
   ssa_exprt ssa_expr,
   bool write) const
 {
-  if(write)
-    return std::move(ssa_expr);
-  else
-    return get_fields(ns, state, ssa_expr, true);
+  return ssa_expr;
+//  if(write)
+//    return std::move(ssa_expr);
+//  else
+//    return get_fields(ns, state, ssa_expr, true);
 }
 
 exprt field_sensitivityt::apply(
@@ -37,6 +38,7 @@ exprt field_sensitivityt::apply(
   exprt expr,
   bool write) const
 {
+  return expr;
   if(expr.id() != ID_address_of)
   {
     Forall_operands(it, expr)
