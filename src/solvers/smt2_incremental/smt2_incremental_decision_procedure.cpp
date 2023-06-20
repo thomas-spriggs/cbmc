@@ -532,6 +532,7 @@ void smt2_incremental_decision_proceduret::set_to(
     debug << "`set_to` (" << std::string{value ? "true" : "false"} << ") -\n  "
           << in_expr.pretty(2, 0) << messaget::eom;
   });
+  define_dependent_functions(in_expr);
   const exprt lowered_expr = lower(in_expr);
   PRECONDITION(can_cast_type<bool_typet>(lowered_expr.type()));
 
