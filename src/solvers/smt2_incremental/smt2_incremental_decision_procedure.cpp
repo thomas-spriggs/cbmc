@@ -361,10 +361,6 @@ static optionalt<smt_termt> get_identifier(
 
   // If that didn't yield any results, then try the lowered form.
   const exprt lowered_expr = lower_enum(expr, ns);
-  const auto lowered_handle_find_result =
-    expression_handle_identifiers.find(lowered_expr);
-  if(lowered_handle_find_result != expression_handle_identifiers.cend())
-    return lowered_handle_find_result->second;
   const auto lowered_expr_find_result =
     expression_identifiers.find(lowered_expr);
   if(lowered_expr_find_result != expression_identifiers.cend())
