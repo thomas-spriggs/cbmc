@@ -283,33 +283,44 @@ void smt2_incremental_decision_proceduret::ensure_handle_for_expr_defined(
   solver_process->send(function);
 }
 
-void smt2_incremental_decision_proceduret::define_index_identifiers(
-  const exprt &expr)
+/// Generates a collection of array index expressions found from the `with`
+/// array sub expressions of \p expr. The `with` array expressions express new
+/// arrays where the values at certain indexes have been updated.
+static std::vector<exprt> gather_index_expressions(const exprt &expr)
 {
+  std::vector<exprt> index_expressions;
   expr.visit_pre([&](const exprt &expr_node) {
     if(!can_cast_type<array_typet>(expr_node.type()))
       return;
-    if(const auto with_expr = expr_try_dynamic_cast<with_exprt>(expr_node))
+    const auto with_expr = expr_try_dynamic_cast<with_exprt>(expr_node);
+    if(!with_expr)
+      return;
+    for(auto operand_ite = ++with_expr->operands().begin();
+        operand_ite != with_expr->operands().end();
+        operand_ite += 2)
     {
-      for(auto operand_ite = ++with_expr->operands().begin();
-          operand_ite != with_expr->operands().end();
-          operand_ite += 2)
-      {
-        const auto index_expr = *operand_ite;
-        const auto index_term = convert_expr_to_smt(index_expr);
-        const auto index_identifier =
-          "index_" + std::to_string(index_sequence());
-        const auto index_definition =
-          smt_define_function_commandt{index_identifier, {}, index_term};
-        expression_identifiers.emplace(
-          index_expr, index_definition.identifier());
-        identifier_table.emplace(
-          index_identifier, index_definition.identifier());
-        solver_process->send(
-          smt_define_function_commandt{index_identifier, {}, index_term});
-      }
+      index_expressions.push_back(*operand_ite);
     }
   });
+  return index_expressions;
+}
+
+void smt2_incremental_decision_proceduret::define_index_identifiers(
+  const exprt &expr)
+{
+  for(const auto &index_expression : gather_index_expressions(expr))
+  {
+    const auto index_term = convert_expr_to_smt(index_expression);
+    const auto index_identifier = "index_" + std::to_string(index_sequence());
+    const auto index_definition =
+      smt_define_function_commandt{index_identifier, {}, index_term};
+    expression_identifiers.emplace(
+      index_expression, index_definition.identifier());
+    identifier_table.emplace(
+      index_identifier, index_definition.identifier());
+    solver_process->send(
+      smt_define_function_commandt{index_identifier, {}, index_term});
+  }
 }
 
 smt_termt
