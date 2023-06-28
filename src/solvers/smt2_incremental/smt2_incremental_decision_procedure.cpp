@@ -134,7 +134,7 @@ void smt2_incremental_decision_proceduret::define_array_function(
   expression_identifiers.emplace(array, array_identifier);
 }
 
-void send_function_definition(
+static void send_function_definition(
   const exprt &expr,
   const irep_idt &symbol_identifier,
   const std::unique_ptr<smt_base_solver_processt> &solver_process,
