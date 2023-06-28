@@ -375,6 +375,13 @@ static optionalt<smt_termt> get_identifier(
   return {};
 }
 
+smt_termt smt2_incremental_decision_proceduret::send_translation_get_root_term(
+  const exprt &expression)
+{
+
+  return smt_termt();
+}
+
 array_exprt smt2_incremental_decision_proceduret::get_expr(
   const smt_termt &array,
   const array_typet &type) const

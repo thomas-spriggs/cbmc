@@ -86,6 +86,22 @@ protected:
   /// \brief Defines any functions which \p expr depends on, which have not yet
   ///   been defined, along with their dependencies in turn.
   void define_dependent_functions(const exprt &expr);
+  /// \brief
+  /// A given \p expression may need to be translated into multiple commands for
+  /// the smt solver. This function builds and sends all commands which the
+  /// given expression depends on and then returns a root term which can be
+  /// considered to have the same meaning as the input.
+  /// \note
+  /// In the case where the commands the expression depends on have already been
+  /// sent to the solver as part of preceding translations, these will be reused
+  /// rather than re-sent. Relevant information about the previously sent
+  /// expressions is retained in the `expression_handle_identifiers` and
+  /// `expression_identifiers` maps. These are used for caching and working out
+  /// which function identifers to get from the solver when `get` member
+  /// function is building the value of a specified `exprt`. Records of what
+  /// identifiers have been sent to the solver and their corresponding sorts are
+  /// written to the `identifier_table` for sort checking solver responses.
+  smt_termt send_translation_get_root_term(const exprt &expression);
   void ensure_handle_for_expr_defined(const exprt &expr);
   /// \brief Add objects in \p expr to object_map if needed and convert to smt.
   /// \note This function is non-const because it mutates the object_map.
