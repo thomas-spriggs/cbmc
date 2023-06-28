@@ -90,6 +90,8 @@ protected:
   /// \brief Add objects in \p expr to object_map if needed and convert to smt.
   /// \note This function is non-const because it mutates the object_map.
   smt_termt convert_expr_to_smt(const exprt &expr);
+  /// Finds sub-expressions which are indexes into arrays in the \p expr.
+  /// Then defines separately named functions for these identifiers.
   void define_index_identifiers(const exprt &expr);
   /// Sends the solver the definitions of the object sizes and dynamic memory
   /// statuses.
