@@ -315,7 +315,7 @@ void smt2_incremental_decision_proceduret::define_index_identifiers(
     const auto definition = smt_define_function_commandt{identifier, {}, term};
     expression_identifiers.emplace(expression, definition.identifier());
     identifier_table.emplace(identifier, definition.identifier());
-    solver_process->send(smt_define_function_commandt{identifier, {}, term});
+    solver_process->send(definition);
   }
 }
 
