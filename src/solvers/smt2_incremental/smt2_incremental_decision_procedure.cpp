@@ -308,18 +308,14 @@ static std::vector<exprt> gather_index_expressions(const exprt &expr)
 void smt2_incremental_decision_proceduret::define_index_identifiers(
   const exprt &expr)
 {
-  for(const auto &index_expression : gather_index_expressions(expr))
+  for(const auto &expression : gather_index_expressions(expr))
   {
-    const auto index_term = convert_expr_to_smt(index_expression);
-    const auto index_identifier = "index_" + std::to_string(index_sequence());
-    const auto index_definition =
-      smt_define_function_commandt{index_identifier, {}, index_term};
-    expression_identifiers.emplace(
-      index_expression, index_definition.identifier());
-    identifier_table.emplace(
-      index_identifier, index_definition.identifier());
-    solver_process->send(
-      smt_define_function_commandt{index_identifier, {}, index_term});
+    const auto term = convert_expr_to_smt(expression);
+    const auto identifier = "index_" + std::to_string(index_sequence());
+    const auto definition = smt_define_function_commandt{identifier, {}, term};
+    expression_identifiers.emplace(expression, definition.identifier());
+    identifier_table.emplace(identifier, definition.identifier());
+    solver_process->send(smt_define_function_commandt{identifier, {}, term});
   }
 }
 
