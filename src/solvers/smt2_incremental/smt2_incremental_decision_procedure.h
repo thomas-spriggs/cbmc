@@ -130,6 +130,8 @@ protected:
   /// identifiers is stored in this map so that when there is as subsequent
   /// `get(exprt)` call for the same expression, the function identifier can be
   /// requested from the solver, rather than reconverting the expression.
+  /// The keys in this map are the non-lowered expressions as passed to the
+  /// `handle(exprt)` member function.
   std::unordered_map<exprt, smt_identifier_termt, irep_hash>
     expression_handle_identifiers;
   /// As part of the decision procedure's overall translation of CBMCs `exprt`s
@@ -140,6 +142,9 @@ protected:
   /// also to the expressions which define entire arrays. This includes
   /// `array_exprt` for example and will additionally include other similar
   /// array expressions when support for them is implemented.
+  /// The keys to this map are expressions in lowered form. This is necessarily
+  /// the case because we need to lower complete expressions before separating
+  /// sub expressions of interest.
   std::unordered_map<exprt, smt_identifier_termt, irep_hash>
     expression_identifiers;
   /// This maps from the unsorted/untyped string/symbol for the identifiers
