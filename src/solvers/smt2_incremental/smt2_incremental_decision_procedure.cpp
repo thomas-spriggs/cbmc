@@ -24,12 +24,6 @@
 #include <stack>
 #include <unordered_set>
 
-    	#include <iostream>
-    	#define WATCHVAR( var ) \
-    	  std::cerr << "DBG: " << __FILE__ << "(" << __LINE__ << ") " << #var << \
-    	    " = [" << (var) << "]" << std::endl
-
-
 /// Issues a command to the solving process which is expected to optionally
 /// return a success status followed by the actual response of interest.
 static smt_responset get_response_to_command(
@@ -510,11 +504,6 @@ exprt smt2_incremental_decision_proceduret::get(const exprt &expr) const
         pointer_sizes_map,
         object_size_function.make_application,
         is_dynamic_object_function.make_application);
-    }
-    const auto dependencies = gather_dependent_expressions(lowered);
-    for(const auto &dependency : dependencies)
-    {
-      WATCHVAR(dependency.pretty(0,0));
     }
     return {};
   }();
