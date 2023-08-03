@@ -456,6 +456,9 @@ optionalt<exprt> smt2_incremental_decision_proceduret::get_expr(
     get_value_response->pairs()[0].get().value(), type, ns);
 }
 
+#include <iostream>
+
+
 // This is a fall back which builds resulting expression based on getting the
 // values of its operands. It is used during trace building in the case where
 // certain kinds of expression appear on the left hand side of an
@@ -468,6 +471,8 @@ static exprt build_expr_based_on_getting_operands(
   const exprt &expr,
   const stack_decision_proceduret &decision_procedure)
 {
+  std::cout << "Using operands fallback for expression - " << expr.pretty(1,0)
+                                                              << std::endl;
   exprt copy = expr;
   for(auto &op : copy.operands())
   {
