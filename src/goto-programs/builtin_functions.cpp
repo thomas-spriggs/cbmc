@@ -1472,7 +1472,9 @@ void goto_convertt::do_function_call_symbol(
 
     copy(function_call, FUNCTION_CALL, dest);
   }
-  else if(identifier == "alloca" || identifier == "__builtin_alloca")
+  else if(
+    identifier == "alloca" || identifier == "__builtin_alloca" ||
+    identifier == "_alloca")
   {
     do_alloca(lhs, function, arguments, dest, mode);
   }
