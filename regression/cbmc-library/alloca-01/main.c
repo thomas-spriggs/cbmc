@@ -1,7 +1,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-void *alloca(size_t alloca_size);
+#  include <malloc.h>
+#else
+#  include <alloca.h>
 #endif
 
 int main()
