@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stddef.h>
 
 void *alloca(size_t alloca_size);
 
