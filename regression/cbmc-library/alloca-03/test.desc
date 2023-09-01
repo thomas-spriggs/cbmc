@@ -1,7 +1,7 @@
 CORE
 main.c
 --pointer-check
-^\[main.pointer_dereference.\d+\] line 31 dereference failure: dead object in \*global: FAILURE$
+^\[main.pointer_dereference.\d+\] line 33 dereference failure: dead object in \*global: FAILURE$
 ^\*\* 1 of \d+ failed
 ^VERIFICATION FAILED$
 ^EXIT=10$
