@@ -9,6 +9,7 @@
 #include <util/namespace.h>
 #include <util/range.h>
 #include <util/simplify_expr.h>
+#include <util/c_types.h>
 
 #include <solvers/flattening/boolbv_width.h>
 
@@ -37,17 +38,28 @@ typet struct_encodingt::encode(typet type) const
   {
     typet &current = *work_queue.front();
     work_queue.pop();
-    if(const auto struct_tag = type_try_dynamic_cast<struct_tag_typet>(current))
+    auto assigned_bit_width = [&]() -> optionalt<std::size_t>
     {
-      auto width = (*boolbv_width)(*struct_tag);
+      if(const auto struct_tag = type_try_dynamic_cast<struct_tag_typet>(current))
+      {
+        return (*boolbv_width)(*struct_tag);
+      }
+      if(const auto union_tag = type_try_dynamic_cast<union_tag_typet>(current))
+      {
+        return (*boolbv_width)(*union_tag);
+      }
+      return {};
+    }();
+    if(assigned_bit_width)
+    {
       // The bit vector theory of SMT disallows zero bit length length bit
       // vectors. C++ gives a minimum size for a struct (even an empty struct)
       // as being one byte; in order to ensure that structs have unique memory
       // locations. Therefore encoding empty structs as having 8 bits / 1 byte
       // is a reasonable solution in this case.
-      if(width == 0)
-        width = 8;
-      current = bv_typet{width};
+      if(*assigned_bit_width == 0)
+        assigned_bit_width = 8;
+      current = bv_typet{*assigned_bit_width};
     }
     if(const auto array = type_try_dynamic_cast<array_typet>(current))
     {
