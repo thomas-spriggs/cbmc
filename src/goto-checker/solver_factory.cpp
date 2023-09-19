@@ -351,7 +351,7 @@ std::unique_ptr<solver_factoryt::solvert> solver_factoryt::get_default()
 
   bool get_array_constraints =
     options.get_bool_option("show-array-constraints");
-  auto bv_pointers = util_make_unique<bv_pointerst>(
+  auto bv_pointers = util_make_unique<verbose_stack_decision_proceduret<bv_pointerst>>(
     ns, *sat_solver, message_handler, get_array_constraints);
 
   if(options.get_option("arrays-uf") == "never")
