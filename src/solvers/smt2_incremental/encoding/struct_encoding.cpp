@@ -12,6 +12,7 @@
 #include <util/c_types.h>
 
 #include <solvers/flattening/boolbv_width.h>
+#include <solvers/smt2_incremental/expressions.h>
 
 #include <algorithm>
 #include <numeric>
@@ -135,9 +136,19 @@ static exprt encode(const struct_exprt &struct_expr)
   return concatenation_exprt{struct_expr.operands(), struct_expr.type()};
 }
 
-static exprt encode(const union_exprt &struct_expr)
+static exprt encode(const union_exprt &union_expr, const boolbv_widtht &bit_width)
 {
-  UNIMPLEMENTED;
+  const std::size_t union_width = bit_width(union_expr.type());
+  const exprt &component = union_expr.op();
+  const std::size_t component_width = bit_width(union_expr.op().type());
+  if(union_width == component_width)
+    return component;
+  INVARIANT(
+    union_width >= component_width,
+    "Union must be at least as wide as its component.");
+  return concatenation_exprt{
+    {nondet_padding_exprt{bv_typet{union_width - component_width}}, component},
+      bv_typet{union_width}};
 }
 
 static std::size_t count_trailing_bit_width(
@@ -200,7 +211,7 @@ exprt struct_encodingt::encode(exprt expr) const
     if(const auto struct_expr = expr_try_dynamic_cast<struct_exprt>(current))
       current = ::encode(*struct_expr);
     if(const auto union_expr = expr_try_dynamic_cast<union_exprt>(current))
-      current = ::encode(*union_expr);
+      current = ::encode(*union_expr, *boolbv_width);
     if(const auto member_expr = expr_try_dynamic_cast<member_exprt>(current))
       current = encode_member(*member_expr);
     for(auto &operand : current.operands())
