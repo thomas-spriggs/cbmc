@@ -135,6 +135,11 @@ static exprt encode(const struct_exprt &struct_expr)
   return concatenation_exprt{struct_expr.operands(), struct_expr.type()};
 }
 
+static exprt encode(const union_exprt &struct_expr)
+{
+  UNIMPLEMENTED;
+}
+
 static std::size_t count_trailing_bit_width(
   const struct_typet &type,
   const irep_idt name,
@@ -194,6 +199,8 @@ exprt struct_encodingt::encode(exprt expr) const
     current.type() = encode(current.type());
     if(const auto struct_expr = expr_try_dynamic_cast<struct_exprt>(current))
       current = ::encode(*struct_expr);
+    if(const auto union_expr = expr_try_dynamic_cast<union_exprt>(current))
+      current = ::encode(*union_expr);
     if(const auto member_expr = expr_try_dynamic_cast<member_exprt>(current))
       current = encode_member(*member_expr);
     for(auto &operand : current.operands())
