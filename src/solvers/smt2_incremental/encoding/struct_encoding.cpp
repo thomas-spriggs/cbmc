@@ -182,8 +182,22 @@ static std::size_t count_trailing_bit_width(
 /// the combined width of the fields which follow the field being selected.
 exprt struct_encodingt::encode_member(const member_exprt &member_expr) const
 {
-  const auto &struct_type = type_checked_cast<struct_typet>(
-    ns.get().follow(member_expr.compound().type()));
+  const auto &type = ns.get().follow(member_expr.compound().type());
+  if(const auto &union_type = type_try_dynamic_cast<union_typet>(type))
+  {
+    std::size_t union_width = (*boolbv_width)(*union_type);
+    std::size_t member_width = (*boolbv_width)(member_expr.type());
+    if(union_width == member_width)
+      return typecast_exprt(member_expr.compound(), bv_typet{union_width});
+    INVARIANT(member_width < union_width,
+              "Member of a union may not be wider than the whole union");
+    return extractbits_exprt{
+      member_expr.compound(),
+      member_width - 1,
+      0,
+      member_expr.type()};
+  }
+  const auto &struct_type = type_checked_cast<struct_typet>(type);
   const std::size_t offset_bits = count_trailing_bit_width(
     struct_type, member_expr.get_component_name(), *boolbv_width);
   const auto member_bits_width = (*boolbv_width)(member_expr.type());
