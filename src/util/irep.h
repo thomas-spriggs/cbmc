@@ -307,9 +307,14 @@ public:
     return *data;
   }
 
-  const irep_idt id() const
+  const irep_idt id_value() const
   {
     return is_leaf_only() ? to_id(data) : read().data;
+  }
+
+  const irep_idt &id() const
+  {
+    return is_leaf_only() ? get_id_reference() : read().data;
   }
 
   void id(const irep_idt &_data)
@@ -406,11 +411,11 @@ public:
 
   bool is_nil() const
   {
-    return id() == ID_nil;
+    return id_value() == ID_nil;
   }
   bool is_not_nil() const
   {
-    return id() != ID_nil;
+    return id_value() != ID_nil;
   }
 
   explicit irept(const irep_idt &_id) : baset(_id)
@@ -565,13 +570,14 @@ void sharing_treet<derivedt, named_subtreest>::detach()
   std::cout << "DETACH1: " << data << '\n';
 #endif
 
-  if(data == empty_d)
+  if(is_leaf_only())
   {
-    data = new dt;
+    //data = new dt;
 
 #ifdef IREP_DEBUG
     std::cout << "ALLOCATED " << data << '\n';
 #endif
+    return;
   }
   else if(data->ref_count > 1)
   {
