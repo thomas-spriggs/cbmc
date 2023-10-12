@@ -263,7 +263,8 @@ public:
 
   ~sharing_treet()
   {
-    remove_ref(data);
+    if(!is_leaf_only())
+      remove_ref(data);
   }
 
 protected:
