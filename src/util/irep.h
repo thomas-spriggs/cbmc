@@ -138,8 +138,6 @@ public:
       sub(std::move(_sub))
   {
   }
-
-  ~tree_nodet();
 };
 
 /// Base class for tree-like data structures with sharing
@@ -408,9 +406,6 @@ class irept
 public:
   using baset = tree_implementationt;
 
-  static std::size_t total_destructions;
-  static std::size_t leaf_destructions;
-
   bool is_nil() const
   {
     return id() == ID_nil;
@@ -678,14 +673,6 @@ void sharing_treet<derivedt, named_subtreest>::nonrecursive_destructor(
       delete d;
     }
   }
-}
-
-template <typename treet, typename named_subtreest>
-tree_nodet<treet, named_subtreest>::~tree_nodet()
-{
-  ++irept::total_destructions;
-  if(this->named_sub.empty() && this->sub.empty())
-    ++irept::leaf_destructions;
 }
 
 #endif // CPROVER_UTIL_IREP_H
