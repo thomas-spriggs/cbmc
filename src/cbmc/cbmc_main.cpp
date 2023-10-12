@@ -33,11 +33,6 @@ extern unsigned long long irep_cmp_cnt;
 extern unsigned long long irep_cmp_ne_cnt;
 #endif
 
-#include <iostream>
-#define SHOW_SIZE_ALIGN(x) \
-  std::cout << "Size of \"" << #x << "\" is " << sizeof(x) << \
-  "\nAlign of \"" << #x << "\" is " << alignof(x) << std::endl;
-
 #ifdef _MSC_VER
 int wmain(int argc, const wchar_t **argv_wide)
 {
@@ -48,13 +43,6 @@ int wmain(int argc, const wchar_t **argv_wide)
 int main(int argc, const char **argv)
 {
 #endif
-  SHOW_SIZE_ALIGN(void *);
-  SHOW_SIZE_ALIGN(irep_idt);
-  SHOW_SIZE_ALIGN(irept);
-  SHOW_SIZE_ALIGN(irept::baset::dt);
-  SHOW_SIZE_ALIGN(irept::baset::named_subt);
-  SHOW_SIZE_ALIGN(irept::baset::subt);
-
   cbmc_parse_optionst parse_options(argc, argv);
 
   int res = parse_options.main();
