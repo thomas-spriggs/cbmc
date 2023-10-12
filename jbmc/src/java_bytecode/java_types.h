@@ -29,7 +29,7 @@ public:
       get_sub().push_back(value);
     }
 
-    const irep_idt &get_name() const
+    const irep_idt get_name() const
     {
       return id();
     }
