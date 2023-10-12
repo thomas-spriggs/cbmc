@@ -10,6 +10,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CPROVER_UTIL_IREP_H
 #define CPROVER_UTIL_IREP_H
 
+#define IREP_DEBUG
+
 #include <string>
 #include <vector>
 
@@ -60,20 +62,6 @@ inline const std::string &id2string(const irep_idt &d)
 class irept;
 const irept &get_nil_irep();
 
-/// Used in tree_nodet for activating or not reference counting.
-/// tree_nodet uses inheritance from ref_count_ift instead of a field, so that
-/// it gets deleted if empty ([[no_unique_address]] only appears in C++20).
-template <bool enabled>
-struct ref_count_ift
-{
-};
-
-template <>
-struct ref_count_ift<true>
-{
-  unsigned ref_count = 1;
-};
-
 /// A node with data in a tree, it contains:
 ///
 /// * \ref irept::dt::data : A string (Unless `USE_STD_STRING` is set, this is
@@ -94,7 +82,7 @@ struct ref_count_ift<true>
 /// * \c hash_code : if HASH_CODE is activated, this is used to cache the
 ///   result of the hash function.
 template <typename treet, typename named_subtreest, bool sharing = true>
-class tree_nodet : public ref_count_ift<sharing>
+class tree_nodet final
 {
 public:
   // These are not stable.
@@ -106,6 +94,8 @@ public:
   using named_subt = named_subtreest;
 
   friend treet;
+
+  unsigned ref_count = 1;
 
   /// This irep_idt is the only place to store data in an tree node
   irep_idt data;
@@ -265,46 +255,6 @@ template <typename derivedt, typename named_subtreest>
 typename sharing_treet<derivedt, named_subtreest>::dt
   sharing_treet<derivedt, named_subtreest>::empty_d;
 
-/// Base class for tree-like data structures without sharing
-template <typename derivedt, typename named_subtreest>
-class non_sharing_treet
-{
-public:
-  using dt = tree_nodet<derivedt, named_subtreest, false>;
-  using subt = typename dt::subt;
-  using named_subt = typename dt::named_subt;
-
-  /// Used to refer to this class from derived classes
-  using tree_implementationt = non_sharing_treet;
-
-  explicit non_sharing_treet(irep_idt _id) : data(std::move(_id))
-  {
-  }
-
-  non_sharing_treet(irep_idt _id, named_subt _named_sub, subt _sub)
-    : data(std::move(_id), std::move(_named_sub), std::move(_sub))
-  {
-  }
-
-  non_sharing_treet() = default;
-
-  const dt &read() const
-  {
-    return data;
-  }
-
-  dt &write()
-  {
-#if HASH_CODE
-    data.hash_code = 0;
-#endif
-    return data;
-  }
-
-protected:
-  dt data;
-};
-
 /// There are a large number of kinds of tree structured or tree-like data in
 /// CPROVER. \ref irept provides a single, unified representation for all of
 /// these, allowing structure sharing and reference counting of data. As
@@ -357,13 +307,8 @@ protected:
 /// \ref code_assignt so a common pattern is to cast the \ref codet to an
 /// assignment and then recurse on the expression on either side.
 class irept
-#ifdef SHARING
   : public sharing_treet<
       irept,
-#else
-  : public non_sharing_treet<
-      irept,
-#endif
 #if NAMED_SUB_IS_FORWARD_LIST
       forward_list_as_mapt<irep_idt, irept>>
 #else
