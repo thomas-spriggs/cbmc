@@ -532,3 +532,6 @@ irep_pretty_diagnosticst::irep_pretty_diagnosticst(const irept &irep)
   : irep(irep)
 {
 }
+
+std::size_t irept::total_destructions = 0;
+std::size_t irept::leaf_destructions = 0;

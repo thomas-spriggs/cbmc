@@ -65,5 +65,7 @@ int main(int argc, const char **argv)
   std::cout << "IREP_CMP_NE_CNT=" << irep_cmp_ne_cnt << '\n';
   #endif
 
+  std::cout << "Total detructions " << irept::total_destructions <<
+    " leaf destructions " << irept::leaf_destructions << std::endl;
   return res;
 }
