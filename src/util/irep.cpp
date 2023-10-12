@@ -102,6 +102,8 @@ void irept::remove(const irep_idt &name)
 
 const irept &irept::find(const irep_idt &name) const
 {
+  if(is_leaf_only())
+    return get_nil_irep();
   const named_subt &s = get_named_sub();
   auto it = s.find(name);
 
@@ -112,12 +114,16 @@ const irept &irept::find(const irep_idt &name) const
 
 irept &irept::add(const irep_idt &name)
 {
+  if(is_leaf_only())
+    promote_to_non_leaf();
   named_subt &s = get_named_sub();
   return s[name];
 }
 
 irept &irept::add(const irep_idt &name, irept irep)
 {
+  if(is_leaf_only())
+    promote_to_non_leaf();
   named_subt &s = get_named_sub();
 
 #if NAMED_SUB_IS_FORWARD_LIST
@@ -425,6 +431,9 @@ std::size_t irept::number_of_non_comments(const named_subt &named_sub)
 std::size_t irept::hash() const
 {
 #if HASH_CODE
+  if(is_leaf_only())
+    return hash_string(id());
+
   if(read().hash_code!=0)
     return read().hash_code;
   #endif

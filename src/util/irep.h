@@ -210,7 +210,7 @@ public:
   // copy constructor
   sharing_treet(const sharing_treet &irep) : data(irep.data)
   {
-    if(data!=empty_d)
+    if(!is_leaf_only())
     {
       PRECONDITION(data->ref_count != 0);
       data->ref_count++;
@@ -237,10 +237,18 @@ public:
     std::cout << "ASSIGN\n";
 #endif
 
+    if(this->is_leaf_only())
+    {
+      data = irep.data;
+      if(!is_leaf_only())
+        ++data->ref_count;
+      return *this;
+    }
+
     // Ordering is very important here!
     // Consider self-assignment, which may destroy 'irep'
     dt *irep_data=irep.data;
-    if(irep_data!=empty_d)
+    if(!irep.is_leaf_only())
       irep_data->ref_count++;
 
     remove_ref(data); // this may kill 'irep'
@@ -270,11 +278,18 @@ public:
 protected:
   dt *data;
   static dt * const empty_d;
+  static const subt empty_sub;
+  static const named_subt empty_named_sub;
 
   /// Checks out if data is actually a pointer or an id.
   bool is_leaf_only() const
   {
     return reinterpret_cast<uintptr_t>(data) & leaf_flag;
+  }
+
+  void promote_to_non_leaf()
+  {
+    data = new dt(to_id(data));
   }
 
   static void remove_ref(dt *old_data);
@@ -316,6 +331,14 @@ template <typename derivedt, typename named_subtreest>
 typename sharing_treet<derivedt, named_subtreest>::dt * const
   sharing_treet<derivedt, named_subtreest>::empty_d =
     sharing_treet<derivedt, named_subtreest>::to_masked_pointer(irep_idt{});
+
+template <typename derivedt, typename named_subtreest>
+  const typename sharing_treet<derivedt, named_subtreest>::subt
+    sharing_treet<derivedt, named_subtreest>::empty_sub = {};
+
+template <typename derivedt, typename named_subtreest>
+  const typename sharing_treet<derivedt, named_subtreest>::named_subt
+    sharing_treet<derivedt, named_subtreest>::empty_named_sub = {};
 
 /// There are a large number of kinds of tree structured or tree-like data in
 /// CPROVER. \ref irept provides a single, unified representation for all of
@@ -462,10 +485,29 @@ public:
 
   void make_nil() { *this=get_nil_irep(); }
 
-  subt &get_sub() { return write().sub; } // DANGEROUS
-  const subt &get_sub() const { return read().sub; }
-  named_subt &get_named_sub() { return write().named_sub; } // DANGEROUS
-  const named_subt &get_named_sub() const { return read().named_sub; }
+  subt &get_sub() {
+    if(is_leaf_only())
+      promote_to_non_leaf();
+    return write().sub;
+  } // DANGEROUS
+
+  const subt &get_sub() const {
+    if(is_leaf_only())
+      return empty_sub;
+    return read().sub;
+  }
+
+  named_subt &get_named_sub() {
+    if(is_leaf_only())
+      promote_to_non_leaf();
+    return write().named_sub;
+  } // DANGEROUS
+
+  const named_subt &get_named_sub() const {
+    if(is_leaf_only())
+      return empty_named_sub;
+    return read().named_sub;
+  }
 
   std::size_t hash() const;
   std::size_t full_hash() const;
