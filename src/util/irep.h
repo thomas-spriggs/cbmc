@@ -159,16 +159,14 @@ protected:
 
   static dt *to_masked_pointer(irep_idt id)
   {
-    return reinterpret_cast<dt *>((
-        static_cast<uintptr_t>(id.get_no()) << flag_bits) | leaf_flag);
+    dt* result = reinterpret_cast<dt *>(leaf_flag);
+    *(reinterpret_cast<irep_idt *>(&result) + 1) = id;
+    return result;
   }
 
   static irep_idt to_id(dt *data)
   {
-    return
-      irep_idt::make_from_table_index(
-      narrow<unsigned>((
-      (reinterpret_cast<uintptr_t>(data) & ~flag_mask) >> flag_bits)));
+    return *(reinterpret_cast<irep_idt *>(&data) + 1);
   }
 
   const irep_idt &get_id_reference() const
