@@ -156,7 +156,7 @@ public:
 
 protected:
   static constexpr uintptr_t leaf_flag = 1;
-  static constexpr uintptr_t flag_bits = 1;
+  static constexpr uintptr_t flag_bits = alignof(irep_idt) * 8;
   static constexpr uintptr_t flag_mask = 1;
 
   static dt *to_masked_pointer(irep_idt id)
@@ -171,6 +171,22 @@ protected:
       irep_idt::make_from_table_index(
       narrow<unsigned>((
       (reinterpret_cast<uintptr_t>(data) & ~flag_mask) >> flag_bits)));
+  }
+
+  const irep_idt &get_id_reference() const
+  {
+    if(is_leaf_only())
+      return *(reinterpret_cast<const irep_idt *>(&data) + 1);
+    else
+      return data->data;
+  }
+
+  irep_idt &get_id_reference()
+  {
+    if(is_leaf_only())
+      return *(reinterpret_cast<irep_idt *>(&data) + 1);
+    else
+      return data->data;
   }
 
 public:

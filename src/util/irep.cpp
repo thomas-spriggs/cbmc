@@ -53,9 +53,7 @@ const irep_idt &irept::get(const irep_idt &name) const
   {
     return empty;
   }
-  // Fix this evil hack!
-  static irep_idt temp_id = it->second.id();
-  return temp_id;
+  return it->second.get_id_reference();
 }
 
 bool irept::get_bool(const irep_idt &name) const
