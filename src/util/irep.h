@@ -12,6 +12,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <string>
 #include <vector>
+#include <cstdint>
 
 #include "invariant.h"
 #include "irep_ids.h"
@@ -153,24 +154,47 @@ public:
   /// Used to refer to this class from derived classes
   using tree_implementationt = sharing_treet;
 
-  explicit sharing_treet(irep_idt _id) : data(new dt(std::move(_id)))
+protected:
+  static constexpr uintptr_t leaf_flag = 1;
+  static constexpr uintptr_t flag_bits = 1;
+  static constexpr uintptr_t flag_mask = 1;
+
+  static dt *to_masked_pointer(irep_idt id)
+  {
+    return reinterpret_cast<dt *>((
+        static_cast<uintptr_t>(id.get_no()) << flag_bits) | leaf_flag);
+  }
+
+  static irep_idt to_id(dt *data)
+  {
+    return
+      irep_idt::make_from_table_index(
+      narrow<unsigned>((
+      (reinterpret_cast<uintptr_t>(data) & ~flag_mask) >> flag_bits)));
+  }
+
+public:
+
+  explicit sharing_treet(irep_idt _id) : data(to_masked_pointer(_id))
   {
   }
 
   sharing_treet(irep_idt _id, named_subt _named_sub, subt _sub)
-    : data(new dt(std::move(_id), std::move(_named_sub), std::move(_sub)))
+    : data(
+        _named_sub.empty() && _sub.empty() ? to_masked_pointer(_id)
+        : new dt(std::move(_id), std::move(_named_sub), std::move(_sub)))
   {
   }
 
   // constructor for blank irep
-  sharing_treet() : data(&empty_d)
+  sharing_treet() : data(empty_d)
   {
   }
 
   // copy constructor
   sharing_treet(const sharing_treet &irep) : data(irep.data)
   {
-    if(data!=&empty_d)
+    if(data!=empty_d)
     {
       PRECONDITION(data->ref_count != 0);
       data->ref_count++;
@@ -188,7 +212,7 @@ public:
 #ifdef IREP_DEBUG
     std::cout << "COPY MOVE\n";
 #endif
-    irep.data=&empty_d;
+    irep.data=empty_d;
   }
 
   sharing_treet &operator=(const sharing_treet &irep)
@@ -200,7 +224,7 @@ public:
     // Ordering is very important here!
     // Consider self-assignment, which may destroy 'irep'
     dt *irep_data=irep.data;
-    if(irep_data!=&empty_d)
+    if(irep_data!=empty_d)
       irep_data->ref_count++;
 
     remove_ref(data); // this may kill 'irep'
@@ -228,7 +252,13 @@ public:
 
 protected:
   dt *data;
-  static dt empty_d;
+  static dt * const empty_d;
+
+  /// Checks out if data is actually a pointer or an id.
+  bool is_leaf_only() const
+  {
+    return reinterpret_cast<uintptr_t>(data) & leaf_flag;
+  }
 
   static void remove_ref(dt *old_data);
   static void nonrecursive_destructor(dt *old_data);
@@ -248,12 +278,27 @@ public:
 #endif
     return *data;
   }
+
+  const irep_idt id() const
+  {
+    return is_leaf_only() ? to_id(data) : read().data;
+  }
+
+  void id(const irep_idt &_data)
+  {
+    if(is_leaf_only())
+      data = to_masked_pointer(_data);
+    else
+      write().data=_data;
+  }
+
 };
 
 // Static field initialization
 template <typename derivedt, typename named_subtreest>
-typename sharing_treet<derivedt, named_subtreest>::dt
-  sharing_treet<derivedt, named_subtreest>::empty_d;
+typename sharing_treet<derivedt, named_subtreest>::dt * const
+  sharing_treet<derivedt, named_subtreest>::empty_d =
+    sharing_treet<derivedt, named_subtreest>::to_masked_pointer(irep_idt{});
 
 /// There are a large number of kinds of tree structured or tree-like data in
 /// CPROVER. \ref irept provides a single, unified representation for all of
@@ -346,14 +391,8 @@ public:
 
   irept() = default;
 
-  const irep_idt &id() const
-  { return read().data; }
-
   const std::string &id_string() const
-  { return id2string(read().data); }
-
-  void id(const irep_idt &_data)
-  { write().data=_data; }
+  { return id2string(id()); }
 
   const irept &find(const irep_idt &name) const;
   irept &add(const irep_idt &name);
@@ -474,7 +513,7 @@ void sharing_treet<derivedt, named_subtreest>::detach()
   std::cout << "DETACH1: " << data << '\n';
 #endif
 
-  if(data == &empty_d)
+  if(data == empty_d)
   {
     data = new dt;
 
@@ -505,7 +544,7 @@ void sharing_treet<derivedt, named_subtreest>::detach()
 template <typename derivedt, typename named_subtreest>
 void sharing_treet<derivedt, named_subtreest>::remove_ref(dt *old_data)
 {
-  if(old_data == &empty_d)
+  if(old_data == empty_d)
     return;
 
 #if 0

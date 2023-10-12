@@ -43,15 +43,19 @@ void irept::move_to_sub(irept &irep)
 
 const irep_idt &irept::get(const irep_idt &name) const
 {
+  static const irep_idt empty;
+  if(is_leaf_only())
+    return empty;
   const named_subt &s = get_named_sub();
   named_subt::const_iterator it=s.find(name);
 
   if(it==s.end())
   {
-    static const irep_idt empty;
     return empty;
   }
-  return it->second.id();
+  // Fix this evil hack!
+  static irep_idt temp_id = it->second.id();
+  return temp_id;
 }
 
 bool irept::get_bool(const irep_idt &name) const
