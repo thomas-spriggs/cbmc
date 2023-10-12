@@ -79,7 +79,7 @@ const irept &get_nil_irep();
 ///
 /// * \c hash_code : if HASH_CODE is activated, this is used to cache the
 ///   result of the hash function.
-template <typename treet, typename named_subtreest, bool sharing = true>
+template <typename treet, typename named_subtreest>
 class tree_nodet final
 {
 public:
@@ -146,7 +146,7 @@ template <typename derivedt, typename named_subtreest>
 class sharing_treet
 {
 public:
-  using dt = tree_nodet<derivedt, named_subtreest, true>;
+  using dt = tree_nodet<derivedt, named_subtreest>;
   using subt = typename dt::subt;
   using named_subt = typename dt::named_subt;
 
@@ -582,8 +582,8 @@ void sharing_treet<derivedt, named_subtreest>::nonrecursive_destructor(
   }
 }
 
-template <typename treet, typename named_subtreest, bool sharing>
-tree_nodet<treet, named_subtreest, sharing>::~tree_nodet()
+template <typename treet, typename named_subtreest>
+tree_nodet<treet, named_subtreest>::~tree_nodet()
 {
   ++irept::total_destructions;
   if(this->named_sub.empty() && this->sub.empty())
