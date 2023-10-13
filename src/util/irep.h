@@ -18,7 +18,6 @@ Author: Daniel Kroening, kroening@kroening.com
 #include "invariant.h"
 #include "irep_ids.h"
 
-#define SHARING
 #ifndef HASH_CODE
 #  define HASH_CODE 1
 #endif

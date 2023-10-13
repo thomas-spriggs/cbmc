@@ -16,19 +16,10 @@ SCENARIO("irept_memory", "[core][utils][irept]")
 
     THEN("The storage size of an irept is fixed")
     {
-#ifdef SHARING
       const std::size_t ref_count_size = sizeof(unsigned);
-#else
-      const std::size_t ref_count_size = 0;
-#endif
 
-#ifndef USE_STD_STRING
       const std::size_t data_size = sizeof(dstringt);
       REQUIRE(sizeof(dstringt) == sizeof(unsigned));
-#else
-      const std::size_t data_size = sizeof(std::string);
-      REQUIRE(sizeof(std::string) == sizeof(void *));
-#endif
 
       const std::size_t sub_size = sizeof(std::vector<int>);
 #ifndef _GLIBCXX_DEBUG

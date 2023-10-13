@@ -25,18 +25,14 @@ const irept &get_nil_irep()
 
 void irept::move_to_named_sub(const irep_idt &name, irept &irep)
 {
-  #ifdef SHARING
   detach();
-  #endif
   add(name).swap(irep);
   irep.clear();
 }
 
 void irept::move_to_sub(irept &irep)
 {
-  #ifdef SHARING
   detach();
-  #endif
   get_sub().push_back(get_nil_irep());
   get_sub().back().swap(irep);
 }
@@ -143,10 +139,8 @@ bool irept::operator==(const irept &other) const
   #ifdef IREP_HASH_STATS
   ++irep_cmp_cnt;
   #endif
-  #ifdef SHARING
   if(data==other.data)
     return true;
-  #endif
 
   if(id() != other.id() || get_sub() != other.get_sub()) // recursive call
   {
@@ -199,10 +193,8 @@ bool irept::operator==(const irept &other) const
 
 bool irept::full_eq(const irept &other) const
 {
-  #ifdef SHARING
   if(data==other.data)
     return true;
-  #endif
 
   if(id()!=other.id())
     return false;

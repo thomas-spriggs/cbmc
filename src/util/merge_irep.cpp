@@ -135,10 +135,7 @@ const merged_irept &merged_irepst::merged(const irept &irep)
 
 void merge_irept::operator()(irept &irep)
 {
-  // only useful if there is sharing
-  #ifdef SHARING
   irep=merged(irep);
-  #endif
 }
 
 const irept &merge_irept::merged(const irept &irep)
@@ -188,10 +185,7 @@ const irept &merge_irept::merged(const irept &irep)
 
 void merge_full_irept::operator()(irept &irep)
 {
-  // only useful if there is sharing
-  #ifdef SHARING
   irep=merged(irep);
-  #endif
 }
 
 const irept &merge_full_irept::merged(const irept &irep)

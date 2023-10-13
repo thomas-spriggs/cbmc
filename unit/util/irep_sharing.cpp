@@ -7,8 +7,6 @@
 #include <util/irep.h>
 #include <util/std_expr.h>
 
-#ifdef SHARING
-
 SCENARIO("irept_sharing_trade_offs", "[core][utils][irept]" XFAIL)
 {
   GIVEN("An irept created with move_to_sub")
@@ -218,5 +216,3 @@ SCENARIO("exprt_sharing", "[core][utils][exprt]")
     }
   }
 }
-
-#endif
