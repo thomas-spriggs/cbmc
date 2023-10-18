@@ -277,3 +277,23 @@ exprt struct_encodingt::decode(
   }
   return simplify_expr(struct_exprt{encoded_fields, original_type}, ns);
 }
+
+exprt struct_encodingt::decode(
+  const exprt &encoded,
+  const union_tag_typet &original_type) const
+{
+  INVARIANT(
+    can_cast_type<bv_typet>(encoded.type()),
+    "Unions are expected to be encoded into bit vectors.");
+  const union_typet definition = ns.get().follow_tag(original_type);
+  const auto &components = definition.components();
+  if(components.empty())
+    return empty_union_exprt{original_type};
+  const auto component_for_definition = components[0];
+  return simplify_expr(union_exprt{component_for_definition.get_name(),
+  typecast_exprt{
+     encode(member_exprt{
+    typecast_exprt{encoded, original_type}, component_for_definition}),
+      component_for_definition.type()},
+    component_for_definition.type()}, ns);
+}
