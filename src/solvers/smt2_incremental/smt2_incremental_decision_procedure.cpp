@@ -487,12 +487,6 @@ optionalt<exprt> smt2_incremental_decision_proceduret::get_expr(
   if(!encoded_result)
     return {};
   return {struct_encoding.decode(*encoded_result, type)};
-//  const union_typet &union_type = ns.follow_tag(type);
-//  if(union_type.components().empty())
-//    return empty_union_exprt{type};
-//  const auto &components = ns.follow_tag(type).components();
-//  // TODO: Return first component here in order to match boolbv_get.cpp
-//  return {};
 }
 
 optionalt<exprt> smt2_incremental_decision_proceduret::get_expr(
