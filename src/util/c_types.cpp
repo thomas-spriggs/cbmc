@@ -307,8 +307,8 @@ union_typet::find_widest_union_component(const namespacet &ns) const
   const union_typet::componentst &comps = components();
 
   optionalt<mp_integer> max_width;
-  typet max_comp_type;
-  irep_idt max_comp_name;
+  optionalt<std::reference_wrapper<const union_typet::componentt>>
+    max_component;
 
   for(const auto &comp : comps)
   {
@@ -321,13 +321,11 @@ union_typet::find_widest_union_component(const namespacet &ns) const
       continue;
 
     max_width = *element_width;
-    max_comp_type = comp.type();
-    max_comp_name = comp.get_name();
+    max_component = std::ref(comp);
   }
 
   if(!max_width.has_value())
     return {};
   else
-    return std::make_pair(
-      struct_union_typet::componentt{max_comp_name, max_comp_type}, *max_width);
+    return {{*max_component, *max_width}};
 }
