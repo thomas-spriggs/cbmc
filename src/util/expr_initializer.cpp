@@ -233,12 +233,12 @@ optionalt<exprt> expr_initializert::expr_initializer_rec(
       return {};
 
     auto component_value = expr_initializer_rec(
-      widest_member->first.type(), source_location, init_expr);
+      widest_member->first.get().type(), source_location, init_expr);
 
     if(!component_value.has_value())
       return {};
 
-    union_exprt value{widest_member->first.get_name(), *component_value, type};
+    union_exprt value{widest_member->first.get().get_name(), *component_value, type};
     value.add_source_location() = source_location;
 
     return std::move(value);

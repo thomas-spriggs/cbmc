@@ -154,10 +154,10 @@ static exprt bv_to_union_expr(
   const auto bounds = map_bounds(endianness_map, 0, component_bits - 1);
   bitvector_typet type = adjust_width(bitvector_expr.type(), component_bits);
   const irep_idt &component_name = widest_member.has_value()
-                                     ? widest_member->first.get_name()
+                                     ? widest_member->first.get().get_name()
                                      : components.front().get_name();
   const typet &component_type = widest_member.has_value()
-                                  ? widest_member->first.type()
+                                  ? widest_member->first.get().type()
                                   : components.front().type();
   PRECONDITION(pointer_offset_bits(bitvector_expr.type(), ns).has_value());
   return union_exprt{
@@ -970,7 +970,7 @@ static exprt unpack_rec(
     if(widest_member.has_value())
     {
       member_exprt member{
-        src, widest_member->first.get_name(), widest_member->first.type()};
+        src, widest_member->first.get().get_name(), widest_member->first.get().type()};
       return unpack_rec(
         member,
         little_endian,
@@ -1374,10 +1374,10 @@ exprt lower_byte_extract(const byte_extract_exprt &src, const namespacet &ns)
     if(widest_member.has_value())
     {
       byte_extract_exprt tmp(unpacked);
-      tmp.type() = widest_member->first.type();
+      tmp.type() = widest_member->first.get().type();
 
       return union_exprt(
-        widest_member->first.get_name(),
+        widest_member->first.get().get_name(),
         lower_byte_extract(tmp, ns),
         src.type());
     }
@@ -2297,11 +2297,11 @@ static exprt lower_byte_update_union(
 
   byte_update_exprt bu = src;
   bu.set_op(member_exprt{
-    src.op(), widest_member->first.get_name(), widest_member->first.type()});
-  bu.type() = widest_member->first.type();
+    src.op(), widest_member->first.get().get_name(), widest_member->first.get().type()});
+  bu.type() = widest_member->first.get().type();
 
   return union_exprt{
-    widest_member->first.get_name(),
+    widest_member->first.get().get_name(),
     lower_byte_update(bu, value_as_byte_array, non_const_update_bound, ns),
     src.type()};
 }

@@ -301,7 +301,9 @@ std::string c_type_as_string(const irep_idt &c_type)
     return "";
 }
 
-optionalt<std::pair<struct_union_typet::componentt, mp_integer>>
+optionalt<std::pair<std::reference_wrapper<
+                      const struct_union_typet::componentt>,
+                      mp_integer>>
 union_typet::find_widest_union_component(const namespacet &ns) const
 {
   const union_typet::componentst &comps = components();

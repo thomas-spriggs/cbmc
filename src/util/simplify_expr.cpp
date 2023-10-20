@@ -1949,8 +1949,8 @@ simplify_exprt::simplify_byte_extract(const byte_extract_exprt &expr)
       if(widest_member_opt.has_value())
       {
         byte_extract_exprt be = expr;
-        be.type() = widest_member_opt->first.type();
-        return union_exprt{widest_member_opt->first.get_name(),
+        be.type() = widest_member_opt->first.get().type();
+        return union_exprt{widest_member_opt->first.get().get_name(),
                            simplify_byte_extract(be),
                            expr.type()};
       }
