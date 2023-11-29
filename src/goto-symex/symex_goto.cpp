@@ -823,10 +823,6 @@ static void merge_names(
     rhs = goto_state_rhs;
   else if(!goto_state.reachable)
     rhs = dest_state_rhs;
-  else if(goto_count == 0)
-    rhs = dest_state_rhs;
-  else if(dest_count == 0)
-    rhs = goto_state_rhs;
   else
   {
     rhs = if_exprt(diff_guard.as_expr(), goto_state_rhs, dest_state_rhs);
