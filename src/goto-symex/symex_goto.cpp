@@ -27,6 +27,11 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <algorithm>
 
+#include <iostream>
+#define WATCHVAR(var)                                                          \
+  std::cerr << "DBG: " << __FILE__ << "(" << __LINE__ << ") " << #var          \
+            << " = [" << (var) << "]" << std::endl
+
 void goto_symext::apply_goto_condition(
   goto_symex_statet &current_state,
   goto_statet &jump_taken_state,
@@ -745,14 +750,22 @@ static void merge_names(
   const unsigned goto_count,
   const unsigned dest_count)
 {
+  WATCHVAR(ssa.pretty(0,0));
   const irep_idt l1_identifier = ssa.get_identifier();
+  WATCHVAR(l1_identifier);
   const irep_idt &obj_identifier = ssa.get_object_name();
 
   if(obj_identifier == goto_symext::statet::guard_identifier())
+  {
+    WATCHVAR("Its a guard");
     return; // just a guard, don't bother
+  }
 
   if(goto_count == dest_count)
+  {
+    WATCHVAR("Same count");
     return; // not at all changed
+  }
 
   // changed - but only on a branch that is now dead, and the other branch is
   // uninitialized/invalid
@@ -760,6 +773,7 @@ static void merge_names(
     (!dest_state.reachable && goto_count == 0) ||
     (!goto_state.reachable && dest_count == 0))
   {
+    WATCHVAR("Incorrectly discarded?");
     return;
   }
 
@@ -823,12 +837,23 @@ static void merge_names(
     rhs = goto_state_rhs;
   else if(!goto_state.reachable)
     rhs = dest_state_rhs;
+//  else if(goto_count == 0)
+//  {
+//    WATCHVAR("0 goto count");
+//    rhs = dest_state_rhs;
+//  }
+//  else if(dest_count == 0)
+//  {
+//    WATCHVAR("0 dest count");
+//    rhs = goto_state_rhs;
+//  }
   else
   {
     rhs = if_exprt(diff_guard.as_expr(), goto_state_rhs, dest_state_rhs);
     if(do_simplify)
       simplify(rhs, ns);
   }
+  WATCHVAR(rhs.pretty(0,0));
 
   dest_state.record_events.push(false);
   const ssa_exprt new_lhs =
