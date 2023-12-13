@@ -118,12 +118,6 @@ void cbmc_parse_optionst::set_default_analysis_flags(
   options.set_option("signed-overflow-check", enabled);
   options.set_option("undefined-shift-check", enabled);
 
-  // Default malloc failure profile chosen to be returning null. These options
-  // are not strictly needed, but they are staying here as part of documentation
-  // of the default option set for the tool.
-  options.set_option("malloc-may-fail", enabled);
-  options.set_option("malloc-fail-null", enabled);
-
   // Unwinding assertions required in certain cases for sound verification
   // results. See https://github.com/diffblue/cbmc/issues/6561 for elaboration.
   options.set_option("unwinding-assertions", enabled);
